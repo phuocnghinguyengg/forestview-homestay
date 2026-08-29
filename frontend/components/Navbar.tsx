@@ -14,25 +14,25 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-neutral-200 bg-white/80 backdrop-blur">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <Link href="/" className="text-xl font-bold text-rose-600">
-          Homestay<span className="text-neutral-900">Vinh</span>
+    <header className="sticky top-0 z-50 border-b border-line bg-base/90 backdrop-blur-md">
+      <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
+        <Link href="/" className="font-display text-2xl italic text-primary">
+          Homestay <span className="not-italic text-ink">Vinh</span>
         </Link>
 
-        <div className="flex items-center gap-4 text-sm">
-          <Link href="/rooms" className="text-neutral-700 hover:text-rose-600">
+        <div className="flex items-center gap-6 text-sm font-medium text-ink">
+          <Link href="/rooms" className="transition hover:text-primary">
             Danh sách phòng
           </Link>
 
           {!isAuthenticated && (
             <>
-              <Link href="/login" className="text-neutral-700 hover:text-rose-600">
+              <Link href="/login" className="transition hover:text-primary">
                 Đăng nhập
               </Link>
               <Link
                 href="/register"
-                className="rounded-full bg-rose-600 px-4 py-2 font-medium text-white hover:bg-rose-700"
+                className="rounded-full bg-primary px-5 py-2.5 text-white transition hover:bg-primary-dark"
               >
                 Đăng ký
               </Link>
@@ -41,18 +41,15 @@ export default function Navbar() {
 
           {isAuthenticated && user && (
             <>
-              {user.role === "ADMIN" ? (
-                <Link href="/admin" className="text-neutral-700 hover:text-rose-600">
-                  Trang quản trị
-                </Link>
-              ) : (
-                <Link href="/dashboard" className="text-neutral-700 hover:text-rose-600">
-                  Tài khoản của tôi
-                </Link>
-              )}
+              <Link
+                href={user.role === "ADMIN" ? "/admin" : "/dashboard"}
+                className="transition hover:text-primary"
+              >
+                {user.role === "ADMIN" ? "Trang quản trị" : "Tài khoản của tôi"}
+              </Link>
               <button
                 onClick={handleLogout}
-                className="rounded-full border border-neutral-300 px-4 py-2 font-medium text-neutral-700 hover:bg-neutral-100"
+                className="rounded-full border border-line px-5 py-2.5 transition hover:border-primary hover:text-primary"
               >
                 Đăng xuất
               </button>
