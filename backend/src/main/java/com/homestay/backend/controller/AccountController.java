@@ -12,34 +12,34 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/account")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class AccountController {
     private final AccountService accountService;
 
-    @GetMapping("/me")
+    @GetMapping({"/account/me", "/users/me"})
     public ResponseEntity<UserResponse> me(@AuthenticationPrincipal UserDetails user) {
         return ResponseEntity.ok(accountService.getMe(user.getUsername()));
     }
 
-    @PutMapping("/profile")
+    @PutMapping({"/account/profile", "/users/me"})
     public ResponseEntity<UserResponse> updateProfile(@AuthenticationPrincipal UserDetails user, @Valid @RequestBody UpdateProfileRequest request) {
         return ResponseEntity.ok(accountService.updateProfile(user.getUsername(), request));
     }
 
-    @PutMapping("/password")
+    @PutMapping({"/account/password", "/users/me/password"})
     public ResponseEntity<Void> changePassword(@AuthenticationPrincipal UserDetails user, @Valid @RequestBody ChangePasswordRequest request) {
         accountService.changePassword(user.getUsername(), request);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/email/request")
+    @PostMapping({"/account/email/request", "/users/me/email/request"})
     public ResponseEntity<Void> requestEmailChange(@AuthenticationPrincipal UserDetails user, @Valid @RequestBody ChangeEmailRequest request) {
         accountService.requestEmailChange(user.getUsername(), request);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/email/verify")
+    @PostMapping({"/account/email/verify", "/users/me/email/verify"})
     public ResponseEntity<AuthResponse> verifyEmailChange(@AuthenticationPrincipal UserDetails user, @Valid @RequestBody VerifyEmailChangeRequest request) {
         return ResponseEntity.ok(accountService.verifyEmailChange(user.getUsername(), request));
     }

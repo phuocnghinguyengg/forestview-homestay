@@ -94,6 +94,8 @@ public class AuthService {
                 .fullName(user.getFullName())
                 .email(user.getEmail())
                 .role(user.getRole().name())
+                .id(user.getId())
+                .phone(user.getPhone())
                 .build();
     }
 
@@ -135,6 +137,8 @@ public class AuthService {
                 .fullName(user.getFullName())
                 .email(user.getEmail())
                 .role(user.getRole().name())
+                .id(user.getId())
+                .phone(user.getPhone())
                 .build();
     }
 

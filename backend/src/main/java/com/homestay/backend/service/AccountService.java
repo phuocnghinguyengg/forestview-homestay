@@ -66,6 +66,8 @@ public class AccountService {
                 .fullName(saved.getFullName())
                 .email(saved.getEmail())
                 .role(saved.getRole().name())
+                .id(saved.getId())
+                .phone(saved.getPhone())
                 .build();
     }
 
