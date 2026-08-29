@@ -43,6 +43,10 @@ public class Room {
     @Column(name = "amenity")
     private List<String> amenities;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private com.homestay.backend.entity.enums.RoomType type;
+
     @Column(nullable = false)
     @Builder.Default
     private Boolean active = true;

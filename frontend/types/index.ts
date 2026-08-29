@@ -54,3 +54,14 @@ export interface DashboardStats {
   totalRevenue: number;
   revenueThisMonth: number;
 }
+
+export type RoomTypeCode = "SINGLE" | "DOUBLE" | "FAMILY" | "DELUXE";
+
+export interface RoomTypeAvailability {
+  type: RoomTypeCode;
+  label: string;
+  totalRooms: number;
+  availableRooms: number;
+  minPrice: number | null;
+  coverImage: string | null;
+}

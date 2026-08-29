@@ -1,5 +1,6 @@
 package com.homestay.backend.dto.response;
 
+import com.homestay.backend.entity.enums.RoomType;
 import lombok.Builder;
 import lombok.Data;
 
@@ -20,4 +21,6 @@ public class RoomResponse {
     private List<String> amenities;
     private Boolean active;
     private LocalDateTime createdAt;
+    private RoomType type;
+    private String typeLabel;
 }

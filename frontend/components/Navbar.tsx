@@ -16,13 +16,13 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-base/90 backdrop-blur-md">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-      <Link href="/" className="font-display text-2xl italic text-primary">
-      ForestView <span className="not-italic text-ink">Homestay</span>
-      </Link>
+        <Link href="/" className="font-display text-2xl italic text-primary">
+          ForestView <span className="not-italic text-ink">Homestay</span>
+        </Link>
 
         <div className="flex items-center gap-6 text-sm font-medium text-ink">
-          <Link href="/rooms" className="transition hover:text-primary">
-            Danh sách phòng
+          <Link href="/room-types" className="transition hover:text-primary">
+            Chọn loại phòng
           </Link>
 
           {!isAuthenticated && (
