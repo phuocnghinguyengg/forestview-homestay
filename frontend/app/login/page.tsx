@@ -58,10 +58,7 @@ export default function LoginPage() {
           />
         </div>
         <div>
-          <div className="flex items-center justify-between">
-            <label className="text-sm text-neutral-600">Mật khẩu</label>
-            <Link href="/forgot-password" className="text-sm font-medium text-primary hover:underline">Quên mật khẩu?</Link>
-          </div>
+          <label className="text-sm text-neutral-600">Mật khẩu</label>
           <input
             type="password"
             name="password"
@@ -73,6 +70,12 @@ export default function LoginPage() {
         </div>
 
         {error && <p className="text-sm text-red-600">{error}</p>}
+
+        <div className="-mt-1 text-right">
+          <Link href="/forgot-password" className="text-sm font-medium text-primary hover:underline">
+            Quên mật khẩu?
+          </Link>
+        </div>
 
         <button
           type="submit"

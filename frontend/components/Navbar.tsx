@@ -48,10 +48,10 @@ export default function Navbar() {
           {isAuthenticated && user && (
             <>
               <Link
-                href="/account"
+                href={user.role === "ADMIN" ? "/admin" : "/account"}
                 className="transition hover:text-primary"
               >
-                Tài khoản của tôi
+                {user.role === "ADMIN" ? "Trang quản trị" : "Tài khoản của tôi"}
               </Link>
               <button
                 onClick={handleLogout}

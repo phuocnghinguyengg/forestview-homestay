@@ -1,14 +1,19 @@
 import api from "@/lib/api";
-import { AuthResponse, AuthUser } from "@/types";
 
-export interface AccountUser extends AuthUser { id: number; phone: string | null; enabled: boolean; createdAt: string; }
+export interface AccountProfile {
+  fullName: string;
+  email: string;
+  phone: string | null;
+}
 
 export const accountService = {
-  me: () => api.get<AccountUser>("/account/me").then((r) => r.data),
-  updateProfile: (data: { fullName: string; phone?: string }) => api.put<AccountUser>("/account/profile", data).then((r) => r.data),
-  changePassword: (data: { currentPassword: string; newPassword: string }) => api.put("/account/password", data),
-  requestEmailChange: (data: { newEmail: string }) => api.post("/account/email/request", data),
-  verifyEmailChange: (data: { newEmail: string; otp: string }) => api.post<AuthResponse>("/account/email/verify", data).then((r) => r.data),
-  forgotPassword: (data: { email: string }) => api.post("/auth/password/forgot", data),
-  resetPassword: (data: { email: string; otp: string; newPassword: string }) => api.post("/auth/password/reset", data),
+  getProfile: () => api.get<AccountProfile>("/users/me").then((res) => res.data),
+  updateProfile: (data: { fullName: string; phone?: string }) =>
+    api.put<AccountProfile>("/users/me", data).then((res) => res.data),
+  changePassword: (data: { currentPassword: string; newPassword: string }) =>
+    api.put("/users/me/password", data).then((res) => res.data),
+  requestEmailChange: (data: { newEmail: string }) =>
+    api.post("/users/me/email/request", data).then((res) => res.data),
+  verifyEmailChange: (data: { newEmail: string; otp: string }) =>
+    api.post<AccountProfile>("/users/me/email/verify", data).then((res) => res.data),
 };

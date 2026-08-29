@@ -1,6 +1,45 @@
 "use client";
-import Link from "next/link"; import {useState} from "react"; import {useRouter} from "next/navigation"; import {accountService} from "@/lib/services/accountService"; import {getErrorMessage} from "@/lib/getErrorMessage";
-export default function ForgotPasswordPage(){const router=useRouter();const[email,setEmail]=useState("");const[otp,setOtp]=useState("");const[pw,setPw]=useState("");const[confirm,setConfirm]=useState("");const[step,setStep]=useState<"email"|"reset">("email");const[busy,setBusy]=useState(false);const[error,setError]=useState("");const[msg,setMsg]=useState("");
-const send=async(e:React.FormEvent)=>{e.preventDefault();setError("");setMsg("");setBusy(true);try{await accountService.forgotPassword({email:email.trim()});setStep("reset");setMsg("Nếu email tồn tại, mã OTP đã được gửi tới hộp thư của bạn.")}catch(e){setError(getErrorMessage(e,"Không thể gửi mã OTP."))}finally{setBusy(false)}};
-const reset=async(e:React.FormEvent)=>{e.preventDefault();setError("");if(pw!==confirm)return setError("Mật khẩu xác nhận không khớp.");setBusy(true);try{await accountService.resetPassword({email:email.trim(),otp,newPassword:pw});setMsg("Đặt lại mật khẩu thành công. Đang chuyển tới trang đăng nhập...");setTimeout(()=>router.push("/login"),900)}catch(e){setError(getErrorMessage(e,"Mã OTP không đúng hoặc đã hết hạn."))}finally{setBusy(false)}};
-return <main className="mx-auto flex min-h-[80vh] max-w-md flex-col justify-center px-5 py-12"><p className="font-display text-sm italic text-accent">Khôi phục quyền truy cập</p><h1 className="mt-1 font-display text-3xl text-ink">Quên mật khẩu</h1><p className="mt-2 text-sm leading-6 text-neutral-500">Nhập email đã đăng ký để nhận mã OTP và tạo mật khẩu mới.</p>{error&&<p className="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}{msg&&<p className="mt-5 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-primary">{msg}</p>}{step==="email"?<form onSubmit={send} className="mt-7 space-y-4"><input type="email" required placeholder="Email của bạn" value={email} onChange={e=>setEmail(e.target.value)} className="w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm focus:border-primary focus:outline-none"/><button disabled={busy} className="w-full rounded-full bg-primary py-3 text-sm font-semibold text-white hover:bg-primary-dark disabled:opacity-50">{busy?"Đang gửi...":"Gửi mã OTP"}</button></form>:<form onSubmit={reset} className="mt-7 space-y-4"><input inputMode="numeric" maxLength={6} required placeholder="Mã OTP 6 số" value={otp} onChange={e=>setOtp(e.target.value.replace(/\D/g,""))} className="w-full rounded-xl border border-line bg-surface px-4 py-3 text-center text-2xl tracking-[0.45em] focus:border-primary focus:outline-none"/><input type="password" required minLength={6} placeholder="Mật khẩu mới" value={pw} onChange={e=>setPw(e.target.value)} className="w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm focus:border-primary focus:outline-none"/><input type="password" required minLength={6} placeholder="Xác nhận mật khẩu mới" value={confirm} onChange={e=>setConfirm(e.target.value)} className="w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm focus:border-primary focus:outline-none"/><button disabled={busy||otp.length!==6} className="w-full rounded-full bg-primary py-3 text-sm font-semibold text-white hover:bg-primary-dark disabled:opacity-50">{busy?"Đang cập nhật...":"Đặt lại mật khẩu"}</button><button type="button" onClick={()=>setStep("email")} className="w-full text-sm text-primary hover:underline">Đổi email</button></form>}<p className="mt-7 text-center text-sm text-neutral-500"><Link href="/login" className="font-medium text-primary hover:underline">← Quay lại đăng nhập</Link></p></main>}
+
+import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { passwordService } from "@/lib/services/passwordService";
+import { getErrorMessage } from "@/lib/getErrorMessage";
+
+export default function ForgotPasswordPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [step, setStep] = useState<"email" | "reset">("email");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const sendOtp = async (e: React.FormEvent) => {
+    e.preventDefault(); setError(""); setMessage(""); setLoading(true);
+    try { await passwordService.forgot(email); setStep("reset"); setMessage("Mã OTP đã được gửi tới email của bạn."); }
+    catch (err) { setError(getErrorMessage(err, "Không thể gửi mã OTP.")); }
+    finally { setLoading(false); }
+  };
+
+  const reset = async (e: React.FormEvent) => {
+    e.preventDefault(); setError(""); setMessage("");
+    if (newPassword.length < 6) return setError("Mật khẩu mới cần ít nhất 6 ký tự.");
+    if (newPassword !== confirmPassword) return setError("Mật khẩu xác nhận không khớp.");
+    setLoading(true);
+    try { await passwordService.reset({ email, otp, newPassword }); setMessage("Đặt lại mật khẩu thành công. Đang chuyển tới trang đăng nhập..."); setTimeout(() => router.push("/login"), 900); }
+    catch (err) { setError(getErrorMessage(err, "OTP không đúng hoặc đã hết hạn.")); }
+    finally { setLoading(false); }
+  };
+
+  return <main className="mx-auto flex min-h-[80vh] max-w-md flex-col justify-center px-5 py-12">
+    <p className="font-display text-sm italic text-accent">Khôi phục tài khoản</p>
+    <h1 className="mt-1 font-display text-3xl text-ink">Quên mật khẩu</h1>
+    <p className="mt-2 text-sm text-neutral-500">Nhận mã OTP qua email để đặt lại mật khẩu.</p>
+    {step === "email" ? <form onSubmit={sendOtp} className="mt-8 space-y-4"><div><label className="text-sm text-neutral-600">Email</label><input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink focus:border-primary focus:outline-none" /></div>{error && <p className="text-sm text-red-600">{error}</p>}<button disabled={loading} className="w-full rounded-full bg-primary py-3 text-sm font-semibold text-white hover:bg-primary-dark disabled:opacity-50">{loading ? "Đang gửi..." : "Gửi mã OTP"}</button></form> : <form onSubmit={reset} className="mt-8 space-y-4"><input value={email} disabled className="w-full rounded-lg border border-line bg-base px-3 py-2.5 text-sm text-neutral-500" /><input required maxLength={6} inputMode="numeric" value={otp} onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))} placeholder="Mã OTP 6 số" className="w-full rounded-lg border border-line bg-surface px-3 py-3 text-center text-2xl tracking-[0.5em] text-ink focus:border-primary focus:outline-none" /><input type="password" required minLength={6} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Mật khẩu mới" className="w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink focus:border-primary focus:outline-none" /><input type="password" required minLength={6} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Xác nhận mật khẩu mới" className="w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink focus:border-primary focus:outline-none" />{error && <p className="text-sm text-red-600">{error}</p>}{message && <p className="text-sm text-primary">{message}</p>}<button disabled={loading || otp.length !== 6} className="w-full rounded-full bg-primary py-3 text-sm font-semibold text-white hover:bg-primary-dark disabled:opacity-50">{loading ? "Đang cập nhật..." : "Đặt lại mật khẩu"}</button></form>}
+    {message && step === "email" && <p className="mt-4 text-sm text-primary">{message}</p>}
+    <p className="mt-6 text-center text-sm text-neutral-500"><Link href="/login" className="font-medium text-primary hover:underline">← Quay lại đăng nhập</Link></p>
+  </main>;
+}
