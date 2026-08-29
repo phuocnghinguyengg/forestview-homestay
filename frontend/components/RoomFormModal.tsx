@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Room } from "@/types";
+import { Room, RoomTypeCode } from "@/types";
 import ImageUploader from "./ImageUploader";
 
 export interface RoomFormValues {
@@ -12,8 +12,15 @@ export interface RoomFormValues {
   maxGuests: number;
   images: string[];
   amenities: string[];
-  type: "SINGLE" | "DOUBLE" | "FAMILY" | "DELUXE";
+  type: RoomTypeCode;
 }
+
+const ROOM_TYPE_OPTIONS: { value: RoomTypeCode; label: string }[] = [
+  { value: "SINGLE", label: "Phòng đơn" },
+  { value: "DOUBLE", label: "Phòng đôi" },
+  { value: "FAMILY", label: "Phòng gia đình" },
+  { value: "DELUXE", label: "Phòng cao cấp" },
+];
 
 export default function RoomFormModal({
   initial,
@@ -34,7 +41,7 @@ export default function RoomFormModal({
     maxGuests: initial?.maxGuests ?? 2,
     images: initial?.images ?? [],
     amenities: initial?.amenities ?? [],
-    type: initial?.type ?? "DELUXE",
+    type: initial?.type ?? "DOUBLE",
   });
   const [amenityInput, setAmenityInput] = useState("");
 
@@ -52,59 +59,41 @@ export default function RoomFormModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6">
-        <h2 className="text-lg font-bold text-neutral-900">
+      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-surface p-6">
+        <h2 className="font-display text-xl text-ink">
           {initial ? "Sửa thông tin phòng" : "Thêm phòng mới"}
         </h2>
 
         <form
           onSubmit={(e) => {
             e.preventDefault();
-
-            const name = form.name.trim();
-            const address = form.address.trim();
-            const description = form.description.trim();
-            const pricePerNight = Number(form.pricePerNight);
-            const maxGuests = Number(form.maxGuests);
-
-            if (!name || !address) {
-              alert("Vui lòng nhập tên phòng và địa chỉ.");
-              return;
-            }
-
-            if (!Number.isFinite(pricePerNight) || pricePerNight <= 0) {
-              alert("Giá phòng phải lớn hơn 0.");
-              return;
-            }
-
-            if (!Number.isInteger(maxGuests) || maxGuests < 1) {
-              alert("Số khách tối đa phải từ 1 trở lên.");
-              return;
-            }
-
-            onSubmit({
-              ...form,
-              name,
-              address,
-              description,
-              pricePerNight,
-              maxGuests,
-              images: Array.isArray(form.images) ? form.images.filter(Boolean) : [],
-              amenities: Array.isArray(form.amenities)
-                ? form.amenities.map((item) => item.trim()).filter(Boolean)
-                : [],
-              type: form.type || "DELUXE",
-            });
+            onSubmit(form);
           }}
           className="mt-4 space-y-4"
         >
+          <div>
+            <label className="text-sm text-neutral-600">Loại phòng</label>
+            <select
+              required
+              value={form.type}
+              onChange={(e) => setForm({ ...form, type: e.target.value as RoomTypeCode })}
+              className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none"
+            >
+              {ROOM_TYPE_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div>
             <label className="text-sm text-neutral-600">Tên phòng</label>
             <input
               required
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
+              className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none"
             />
           </div>
 
@@ -114,7 +103,7 @@ export default function RoomFormModal({
               required
               value={form.address}
               onChange={(e) => setForm({ ...form, address: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
+              className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none"
             />
           </div>
 
@@ -124,7 +113,7 @@ export default function RoomFormModal({
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               rows={3}
-              className="mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
+              className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none"
             />
           </div>
 
@@ -134,10 +123,10 @@ export default function RoomFormModal({
               <input
                 type="number"
                 required
-                min={1}
+                min={0}
                 value={form.pricePerNight}
                 onChange={(e) => setForm({ ...form, pricePerNight: Number(e.target.value) })}
-                className="mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none"
               />
             </div>
             <div>
@@ -148,29 +137,9 @@ export default function RoomFormModal({
                 min={1}
                 value={form.maxGuests}
                 onChange={(e) => setForm({ ...form, maxGuests: Number(e.target.value) })}
-                className="mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none"
               />
             </div>
-          </div>
-
-          <div>
-            <label className="text-sm text-neutral-600">Loại phòng</label>
-            <select
-              required
-              value={form.type}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  type: e.target.value as RoomFormValues["type"],
-                })
-              }
-              className="mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
-            >
-              <option value="SINGLE">Phòng đơn</option>
-              <option value="DOUBLE">Phòng đôi</option>
-              <option value="FAMILY">Phòng gia đình</option>
-              <option value="DELUXE">Phòng Deluxe</option>
-            </select>
           </div>
 
           <div>
@@ -186,12 +155,12 @@ export default function RoomFormModal({
                   }
                 }}
                 placeholder="VD: Wifi, Bể bơi..."
-                className="flex-1 rounded-lg border border-neutral-300 px-3 py-2 text-sm"
+                className="flex-1 rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none"
               />
               <button
                 type="button"
                 onClick={addAmenity}
-                className="rounded-lg border border-neutral-300 px-3 py-2 text-sm hover:bg-neutral-50"
+                className="rounded-lg border border-line px-3 py-2 text-sm hover:bg-neutral-50"
               >
                 Thêm
               </button>
@@ -217,14 +186,14 @@ export default function RoomFormModal({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-full border border-neutral-300 px-4 py-2 text-sm hover:bg-neutral-50"
+              className="rounded-full border border-line px-4 py-2 text-sm hover:bg-neutral-50"
             >
               Hủy
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="rounded-full bg-rose-600 px-5 py-2 text-sm font-medium text-white hover:bg-rose-700 disabled:opacity-50"
+              className="rounded-full bg-primary px-5 py-2 text-sm font-medium text-white transition hover:bg-primary-dark disabled:opacity-50"
             >
               {submitting ? "Đang lưu..." : "Lưu"}
             </button>
