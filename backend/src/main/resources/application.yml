@@ -27,3 +27,8 @@ jwt:
 
 cors:
   allowed-origins: http://localhost:3000
+
+cloudinary:
+  cloud-name: homestay
+  api-key: 521865737129761
+  api-secret: sRxldbgm6AavvBQ_bS96QIksni4
