@@ -2,7 +2,7 @@ spring:
   application:
     name: backend
   datasource:
-    url: jdbc:postgresql://localhost:5432/homestay_database
+    url: jdbc:postgresql://localhost:5432/homestay_db
     username: postgres
     password: postgres
   jpa:
