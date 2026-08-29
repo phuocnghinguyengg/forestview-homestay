@@ -47,6 +47,7 @@ public class RoomService {
                 .maxGuests(request.getMaxGuests())
                 .images(request.getImages())
                 .amenities(request.getAmenities())
+                .type(request.getType())
                 .active(true)
                 .build();
         return RoomMapper.toResponse(roomRepository.save(room));
@@ -63,6 +64,7 @@ public class RoomService {
         room.setMaxGuests(request.getMaxGuests());
         room.setImages(request.getImages());
         room.setAmenities(request.getAmenities());
+        room.setType(request.getType());
 
         return RoomMapper.toResponse(roomRepository.save(room));
     }
