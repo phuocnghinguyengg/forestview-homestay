@@ -18,8 +18,8 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "Homestay Vinh — Đặt phòng homestay dễ dàng",
-  description: "Khám phá và đặt homestay đẹp tại Vinh, Nghệ An.",
+  title: "ForestView Homestay Đà Lạt — Đặt phòng dễ dàng",
+  description: "Khám phá và đặt homestay giữa rừng thông tại Đà Lạt.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

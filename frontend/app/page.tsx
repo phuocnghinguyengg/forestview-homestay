@@ -26,18 +26,13 @@ export default function Home() {
       <section className="relative overflow-hidden px-5 py-24 text-center sm:py-32">
         <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-primary/[0.06] to-transparent" />
 
-        <p className="font-display text-sm italic tracking-wide text-accent">
-          Vinh, Nghệ An
-        </p>
-
-        <h1 className="mx-auto mt-3 max-w-2xl font-display text-4xl leading-tight text-ink sm:text-6xl">
-          Chốn dừng chân giữa lòng phố Vinh
-        </h1>
-
-        <p className="mx-auto mt-5 max-w-md text-neutral-600">
-          Những homestay được chọn lọc kỹ càng, không gian ấm cúng, đặt phòng
-          chỉ trong vài phút.
-        </p>
+<p className="font-display text-sm italic tracking-wide text-accent">Đà Lạt, Lâm Đồng</p>
+<h1 className="mx-auto mt-3 max-w-2xl font-display text-4xl leading-tight text-ink sm:text-6xl">
+  Chốn dừng chân giữa rừng thông Đà Lạt
+</h1>
+<p className="mx-auto mt-5 max-w-md text-neutral-600">
+  Những homestay ẩn mình giữa thiên nhiên, không khí se lạnh, đặt phòng chỉ trong vài phút.
+</p>
 
         <div className="mt-8">
           <a

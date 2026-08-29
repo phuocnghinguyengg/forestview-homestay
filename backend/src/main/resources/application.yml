@@ -1,6 +1,6 @@
 spring:
   application:
-    name: backend
+    name: forestview-service
   datasource:
     url: jdbc:postgresql://localhost:5432/homestay_db
     username: postgres
