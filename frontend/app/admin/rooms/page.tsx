@@ -18,18 +18,50 @@ export default function AdminRoomsPage() {
   const [editingRoom, setEditingRoom] = useState<Room | undefined>(undefined);
   const [submitting, setSubmitting] = useState(false);
 
-  const loadRooms = () => {
+const loadRooms = async () => {
+  setLoading(true);
+  setError("");
+
+  try {
+    const data = await roomService.getAllAdmin();
+    setRooms(data);
+  } catch (err) {
+    setError(getErrorMessage(err));
+  } finally {
+    setLoading(false);
+  }
+};
+
+useEffect(() => {
+  let cancelled = false;
+
+  const fetchRooms = async () => {
     setLoading(true);
-    roomService
-      .getAllAdmin()
-      .then(setRooms)
-      .catch((err) => setError(getErrorMessage(err)))
-      .finally(() => setLoading(false));
+    setError("");
+
+    try {
+      const data = await roomService.getAllAdmin();
+
+      if (!cancelled) {
+        setRooms(data);
+      }
+    } catch (err) {
+      if (!cancelled) {
+        setError(getErrorMessage(err));
+      }
+    } finally {
+      if (!cancelled) {
+        setLoading(false);
+      }
+    }
   };
 
-  useEffect(() => {
-    loadRooms();
-  }, []);
+  void fetchRooms();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
 
   const openCreate = () => {
     setEditingRoom(undefined);

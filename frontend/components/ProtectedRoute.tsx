@@ -13,12 +13,29 @@ export default function ProtectedRoute({
   allowedRoles?: Role[];
 }) {
   const router = useRouter();
-  const { user, isAuthenticated, hydrate } = useAuthStore();
+
+  const user = useAuthStore((state) => state.user);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const hydrate = useAuthStore((state) => state.hydrate);
+
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
-    hydrate();
-    setChecked(true);
+    let cancelled = false;
+
+    const checkAuth = async () => {
+      await hydrate();
+
+      if (!cancelled) {
+        setChecked(true);
+      }
+    };
+
+    void checkAuth();
+
+    return () => {
+      cancelled = true;
+    };
   }, [hydrate]);
 
   useEffect(() => {
@@ -29,13 +46,33 @@ export default function ProtectedRoute({
       return;
     }
 
-    if (allowedRoles && user && !allowedRoles.includes(user.role)) {
+    if (allowedRoles && (!user || !allowedRoles.includes(user.role))) {
       router.replace("/");
     }
   }, [checked, isAuthenticated, user, allowedRoles, router]);
 
-  if (!checked || !isAuthenticated) {
-    return <div className="p-10 text-center text-neutral-500">Đang kiểm tra đăng nhập...</div>;
+  if (!checked) {
+    return (
+      <div className="p-10 text-center text-neutral-500">
+        Đang kiểm tra đăng nhập...
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="p-10 text-center text-neutral-500">
+        Đang chuyển đến trang đăng nhập...
+      </div>
+    );
+  }
+
+  if (allowedRoles && (!user || !allowedRoles.includes(user.role))) {
+    return (
+      <div className="p-10 text-center text-neutral-500">
+        Bạn không có quyền truy cập trang này...
+      </div>
+    );
   }
 
   return <>{children}</>;

@@ -17,18 +17,50 @@ export default function AdminUsersPage() {
   const [error, setError] = useState("");
   const [busyId, setBusyId] = useState<number | null>(null);
 
-  const loadUsers = () => {
+const loadUsers = async () => {
+  setLoading(true);
+  setError("");
+
+  try {
+    const data = await userService.getAll();
+    setUsers(data);
+  } catch (err) {
+    setError(getErrorMessage(err));
+  } finally {
+    setLoading(false);
+  }
+};
+
+useEffect(() => {
+  let cancelled = false;
+
+  const fetchUsers = async () => {
     setLoading(true);
-    userService
-      .getAll()
-      .then(setUsers)
-      .catch((err) => setError(getErrorMessage(err)))
-      .finally(() => setLoading(false));
+    setError("");
+
+    try {
+      const data = await userService.getAll();
+
+      if (!cancelled) {
+        setUsers(data);
+      }
+    } catch (err) {
+      if (!cancelled) {
+        setError(getErrorMessage(err));
+      }
+    } finally {
+      if (!cancelled) {
+        setLoading(false);
+      }
+    }
   };
 
-  useEffect(() => {
-    loadUsers();
-  }, []);
+  void fetchUsers();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
 
   const handleToggleEnabled = async (id: number) => {
     setBusyId(id);
