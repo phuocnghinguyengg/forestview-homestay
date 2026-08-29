@@ -48,6 +48,12 @@ private String otpCode;
 
 private java.time.LocalDateTime otpExpiresAt;
 
+private String emailChangeOtp;
+private java.time.LocalDateTime emailChangeOtpExpiresAt;
+private String pendingEmail;
+private String resetOtpCode;
+private java.time.LocalDateTime resetOtpExpiresAt;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

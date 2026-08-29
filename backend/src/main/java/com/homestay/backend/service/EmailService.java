@@ -160,4 +160,19 @@ public class EmailService {
                 .replace("\"", "&quot;")
                 .replace("'", "&#39;");
     }
+    public void sendPasswordResetOtpEmail(String toEmail, String fullName, String otp) {
+        String subject = "Mã OTP đặt lại mật khẩu - ForestView Homestay";
+        String html = """
+                <div style="font-family:Arial,sans-serif;max-width:480px;margin:auto;padding:24px;color:#333;">
+                    <h2 style="color:#2F5D50;">Đặt lại mật khẩu</h2>
+                    <p>Xin chào %s,</p>
+                    <p>Mã OTP để đặt lại mật khẩu của bạn là:</p>
+                    <p style="font-size:32px;font-weight:bold;letter-spacing:8px;color:#C97A3D;margin:24px 0;">%s</p>
+                    <p>Mã có hiệu lực trong <b>10 phút</b>.</p>
+                    <p style="margin-top:24px;color:#888;font-size:12px;">Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.</p>
+                </div>
+                """.formatted(escapeHtml(fullName), otp);
+        send(toEmail, subject, html, true);
+    }
+
 }

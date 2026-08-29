@@ -10,6 +10,11 @@ export function saveAuth(accessToken: string, refreshToken: string, user: AuthUs
   localStorage.setItem(USER_KEY, JSON.stringify(user));
 }
 
+export function getRefreshToken(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem(REFRESH_TOKEN_KEY);
+}
+
 export function getAccessToken(): string | null {
   if (typeof window === "undefined") return null;
   return localStorage.getItem(ACCESS_TOKEN_KEY);
