@@ -1,0 +1,56 @@
+export type Role = "USER" | "ADMIN";
+
+export interface AuthUser {
+  fullName: string;
+  email: string;
+  role: Role;
+}
+
+export interface AuthResponse {
+  accessToken: string;
+  refreshToken: string;
+  fullName: string;
+  email: string;
+  role: Role;
+}
+
+export interface Room {
+  id: number;
+  name: string;
+  description: string;
+  address: string;
+  pricePerNight: number;
+  maxGuests: number;
+  images: string[];
+  amenities: string[];
+  active: boolean;
+  createdAt: string;
+}
+
+export type BookingStatus = "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED";
+
+export interface Booking {
+  id: number;
+  roomId: number;
+  roomName: string;
+  roomAddress: string;
+  userFullName: string;
+  userEmail: string;
+  checkInDate: string;
+  checkOutDate: string;
+  guestCount: number;
+  totalPrice: number;
+  status: BookingStatus;
+  note: string | null;
+  createdAt: string;
+}
+
+export interface DashboardStats {
+  totalUsers: number;
+  totalRooms: number;
+  activeRooms: number;
+  totalBookings: number;
+  bookingsByStatus: Record<BookingStatus, number>;
+  totalRevenue: number;
+  revenueThisMonth: number;
+}
