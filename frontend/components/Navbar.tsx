@@ -77,8 +77,9 @@ export default function Navbar() {
                 </Link>
               ) : (
                 <>
+                  {/* Lịch sử đặt hàng → Dashboard */}
                   <Link
-                    href="/orders"
+                    href="/dashboard"
                     className="transition hover:text-primary"
                   >
                     Lịch sử đặt hàng
@@ -94,6 +95,7 @@ export default function Navbar() {
               )}
 
               <button
+                type="button"
                 onClick={handleLogout}
                 className="rounded-full border border-line px-5 py-2.5 transition hover:border-primary hover:text-primary"
               >
