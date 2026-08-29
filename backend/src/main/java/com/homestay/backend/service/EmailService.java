@@ -63,18 +63,18 @@ public class EmailService {
 
         send(toEmail, subject, html);
     }
-
-    private void send(String to, String subject, String html) {
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setFrom(fromEmail);
-            helper.setTo(to);
-            helper.setSubject(subject);
-            helper.setText(html, true);
-            mailSender.send(message);
-        } catch (Exception e) {
-            log.error("Failed to send email to {}: {}", to, e.getMessage(), e);
-        }
+private void send(String to, String subject, String html) {
+    try {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        helper.setFrom(fromEmail);
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setText(html, true);
+        mailSender.send(message);
+        log.info("Email sent successfully to {}", to);
+    } catch (Exception e) {
+        log.error("Failed to send email to {}: {}", to, e.getMessage(), e);
     }
+}
 }

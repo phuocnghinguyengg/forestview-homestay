@@ -3,6 +3,7 @@ import { Fraunces, Manrope } from "next/font/google";
 import "./globals.css";
 import AuthInitializer from "@/components/AuthInitializer";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const fraunces = Fraunces({
   variable: "--font-display",
@@ -25,10 +26,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="vi">
-      <body className={`${fraunces.variable} ${manrope.variable} antialiased`}>
+      <body className={`${fraunces.variable} ${manrope.variable} flex min-h-screen flex-col antialiased`}>
         <AuthInitializer />
         <Navbar />
-        {children}
+        <div className="flex-1">{children}</div>
+        <Footer />
       </body>
     </html>
   );
