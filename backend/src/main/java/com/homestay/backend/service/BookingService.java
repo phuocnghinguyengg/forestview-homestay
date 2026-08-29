@@ -1,0 +1,111 @@
+package com.homestay.backend.service;
+
+import com.homestay.backend.dto.request.BookingRequest;
+import com.homestay.backend.dto.response.BookingResponse;
+import com.homestay.backend.entity.Booking;
+import com.homestay.backend.entity.Room;
+import com.homestay.backend.entity.User;
+import com.homestay.backend.entity.enums.BookingStatus;
+import com.homestay.backend.exception.ResourceNotFoundException;
+import com.homestay.backend.repository.BookingRepository;
+import com.homestay.backend.repository.RoomRepository;
+import com.homestay.backend.repository.UserRepository;
+import com.homestay.backend.service.mapper.BookingMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class BookingService {
+
+    private final BookingRepository bookingRepository;
+    private final RoomRepository roomRepository;
+    private final UserRepository userRepository;
+
+    public BookingResponse createBooking(String userEmail, BookingRequest request) {
+        if (!request.getCheckOutDate().isAfter(request.getCheckInDate())) {
+            throw new IllegalArgumentException("Check-out date must be after check-in date");
+        }
+
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        Room room = roomRepository.findById(request.getRoomId())
+                .orElseThrow(() -> new ResourceNotFoundException("Room not found"));
+
+        if (!room.getActive()) {
+            throw new IllegalArgumentException("Room is not available");
+        }
+
+        if (request.getGuestCount() > room.getMaxGuests()) {
+            throw new IllegalArgumentException("Guest count exceeds room capacity");
+        }
+
+        List<Booking> overlapping = bookingRepository.findOverlappingBookings(
+                room.getId(), request.getCheckInDate(), request.getCheckOutDate());
+
+        if (!overlapping.isEmpty()) {
+            throw new IllegalArgumentException("Room is already booked for the selected dates");
+        }
+
+        long nights = ChronoUnit.DAYS.between(request.getCheckInDate(), request.getCheckOutDate());
+        BigDecimal totalPrice = room.getPricePerNight().multiply(BigDecimal.valueOf(nights));
+
+        Booking booking = Booking.builder()
+                .user(user)
+                .room(room)
+                .checkInDate(request.getCheckInDate())
+                .checkOutDate(request.getCheckOutDate())
+                .guestCount(request.getGuestCount())
+                .totalPrice(totalPrice)
+                .status(BookingStatus.PENDING)
+                .note(request.getNote())
+                .build();
+
+        return BookingMapper.toResponse(bookingRepository.save(booking));
+    }
+
+    public List<BookingResponse> getMyBookings(String userEmail) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        return bookingRepository.findByUserOrderByCreatedAtDesc(user).stream()
+                .map(BookingMapper::toResponse)
+                .toList();
+    }
+
+    public void cancelBooking(String userEmail, Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+
+        if (!booking.getUser().getEmail().equals(userEmail)) {
+            throw new IllegalArgumentException("You can only cancel your own booking");
+        }
+
+        if (booking.getStatus() == BookingStatus.CANCELLED || booking.getStatus() == BookingStatus.COMPLETED) {
+            throw new IllegalArgumentException("Booking cannot be cancelled");
+        }
+
+        booking.setStatus(BookingStatus.CANCELLED);
+        bookingRepository.save(booking);
+    }
+
+    // ---- Admin ----
+
+    public List<BookingResponse> getAllBookings() {
+        return bookingRepository.findAllByOrderByCreatedAtDesc().stream()
+                .map(BookingMapper::toResponse)
+                .toList();
+    }
+
+    public BookingResponse updateBookingStatus(Long bookingId, BookingStatus status) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+        booking.setStatus(status);
+        return BookingMapper.toResponse(bookingRepository.save(booking));
+    }
+}
