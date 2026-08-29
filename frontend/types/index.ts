@@ -66,3 +66,8 @@ export interface RoomTypeAvailability {
   minPrice: number | null;
   coverImage: string | null;
 }
+
+export interface RegisterResponse {
+  message: string;
+  email: string;
+}

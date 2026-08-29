@@ -1,8 +1,11 @@
 package com.homestay.backend.controller;
 
 import com.homestay.backend.dto.request.LoginRequest;
+import com.homestay.backend.dto.request.OtpVerifyRequest;
 import com.homestay.backend.dto.request.RegisterRequest;
+import com.homestay.backend.dto.request.ResendOtpRequest;
 import com.homestay.backend.dto.response.AuthResponse;
+import com.homestay.backend.dto.response.RegisterResponse;
 import com.homestay.backend.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +20,19 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.register(request));
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<AuthResponse> verifyOtp(@Valid @RequestBody OtpVerifyRequest request) {
+        return ResponseEntity.ok(authService.verifyOtp(request));
+    }
+
+    @PostMapping("/resend-otp")
+    public ResponseEntity<Void> resendOtp(@Valid @RequestBody ResendOtpRequest request) {
+        authService.resendOtp(request);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/login")

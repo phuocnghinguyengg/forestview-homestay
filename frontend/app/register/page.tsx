@@ -4,12 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { authService } from "@/lib/services/authService";
-import { useAuthStore } from "@/hooks/useAuthStore";
 import { getErrorMessage } from "@/lib/getErrorMessage";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const login = useAuthStore((s) => s.login);
 
   const [form, setForm] = useState({ fullName: "", email: "", password: "", phone: "" });
   const [error, setError] = useState("");
@@ -22,29 +20,11 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-
-    const payload = {
-      fullName: form.fullName.trim(),
-      email: form.email.trim().toLowerCase(),
-      password: form.password,
-      phone: form.phone.trim(),
-    };
-
-    if (!payload.fullName || !payload.email || !payload.password) {
-      setError("Vui lòng nhập đầy đủ thông tin bắt buộc.");
-      return;
-    }
-
     setSubmitting(true);
 
     try {
-      const res = await authService.register(payload);
-      login(res.accessToken, res.refreshToken, {
-        fullName: res.fullName,
-        email: res.email,
-        role: res.role,
-      });
-      router.push("/dashboard");
+      const res = await authService.register(form);
+      router.push(`/verify-otp?email=${encodeURIComponent(res.email)}`);
     } catch (err) {
       setError(getErrorMessage(err, "Đăng ký thất bại, vui lòng thử lại"));
     } finally {

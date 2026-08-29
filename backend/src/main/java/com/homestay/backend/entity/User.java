@@ -40,6 +40,14 @@ public class User {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
+@Builder.Default
+private Boolean emailVerified = false;
+
+private String otpCode;
+
+private java.time.LocalDateTime otpExpiresAt;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
