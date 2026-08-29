@@ -82,7 +82,7 @@ useEffect(() => {
         await roomService.create(values);
       }
       setModalOpen(false);
-      loadRooms();
+      await loadRooms();
     } catch (err) {
       alert(getErrorMessage(err, "Lưu phòng thất bại"));
     } finally {

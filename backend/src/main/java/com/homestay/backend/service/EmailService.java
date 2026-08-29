@@ -1,12 +1,12 @@
 package com.homestay.backend.service;
 
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -25,6 +25,7 @@ public class EmailService {
 
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+    @Async("mailTaskExecutor")
     public void sendWelcomeEmail(String toEmail, String fullName) {
         String subject = "Chào mừng bạn đến với ForestView Homestay";
         String html = """
@@ -39,6 +40,7 @@ public class EmailService {
         send(toEmail, subject, html);
     }
 
+    @Async("mailTaskExecutor")
     public void sendBookingConfirmation(String toEmail, String fullName, String roomName,
                                          LocalDate checkIn, LocalDate checkOut,
                                          Integer guestCount, BigDecimal totalPrice) {
@@ -71,8 +73,8 @@ public class EmailService {
             helper.setSubject(subject);
             helper.setText(html, true);
             mailSender.send(message);
-        } catch (MessagingException e) {
-            log.error("Failed to send email to {}: {}", to, e.getMessage());
+        } catch (Exception e) {
+            log.error("Failed to send email to {}: {}", to, e.getMessage(), e);
         }
     }
 }

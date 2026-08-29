@@ -22,10 +22,23 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    const payload = {
+      fullName: form.fullName.trim(),
+      email: form.email.trim().toLowerCase(),
+      password: form.password,
+      phone: form.phone.trim(),
+    };
+
+    if (!payload.fullName || !payload.email || !payload.password) {
+      setError("Vui lòng nhập đầy đủ thông tin bắt buộc.");
+      return;
+    }
+
     setSubmitting(true);
 
     try {
-      const res = await authService.register(form);
+      const res = await authService.register(payload);
       login(res.accessToken, res.refreshToken, {
         fullName: res.fullName,
         email: res.email,

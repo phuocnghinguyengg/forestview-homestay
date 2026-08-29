@@ -12,6 +12,7 @@ export interface RoomFormValues {
   maxGuests: number;
   images: string[];
   amenities: string[];
+  type: "SINGLE" | "DOUBLE" | "FAMILY" | "DELUXE";
 }
 
 export default function RoomFormModal({
@@ -33,6 +34,7 @@ export default function RoomFormModal({
     maxGuests: initial?.maxGuests ?? 2,
     images: initial?.images ?? [],
     amenities: initial?.amenities ?? [],
+    type: initial?.type ?? "DELUXE",
   });
   const [amenityInput, setAmenityInput] = useState("");
 
@@ -58,7 +60,41 @@ export default function RoomFormModal({
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            onSubmit(form);
+
+            const name = form.name.trim();
+            const address = form.address.trim();
+            const description = form.description.trim();
+            const pricePerNight = Number(form.pricePerNight);
+            const maxGuests = Number(form.maxGuests);
+
+            if (!name || !address) {
+              alert("Vui lòng nhập tên phòng và địa chỉ.");
+              return;
+            }
+
+            if (!Number.isFinite(pricePerNight) || pricePerNight <= 0) {
+              alert("Giá phòng phải lớn hơn 0.");
+              return;
+            }
+
+            if (!Number.isInteger(maxGuests) || maxGuests < 1) {
+              alert("Số khách tối đa phải từ 1 trở lên.");
+              return;
+            }
+
+            onSubmit({
+              ...form,
+              name,
+              address,
+              description,
+              pricePerNight,
+              maxGuests,
+              images: Array.isArray(form.images) ? form.images.filter(Boolean) : [],
+              amenities: Array.isArray(form.amenities)
+                ? form.amenities.map((item) => item.trim()).filter(Boolean)
+                : [],
+              type: form.type || "DELUXE",
+            });
           }}
           className="mt-4 space-y-4"
         >
@@ -98,7 +134,7 @@ export default function RoomFormModal({
               <input
                 type="number"
                 required
-                min={0}
+                min={1}
                 value={form.pricePerNight}
                 onChange={(e) => setForm({ ...form, pricePerNight: Number(e.target.value) })}
                 className="mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
@@ -115,6 +151,26 @@ export default function RoomFormModal({
                 className="mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
               />
             </div>
+          </div>
+
+          <div>
+            <label className="text-sm text-neutral-600">Loại phòng</label>
+            <select
+              required
+              value={form.type}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  type: e.target.value as RoomFormValues["type"],
+                })
+              }
+              className="mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
+            >
+              <option value="SINGLE">Phòng đơn</option>
+              <option value="DOUBLE">Phòng đôi</option>
+              <option value="FAMILY">Phòng gia đình</option>
+              <option value="DELUXE">Phòng Deluxe</option>
+            </select>
           </div>
 
           <div>

@@ -25,9 +25,7 @@ export default function ImageUploader({
     formData.append("file", file);
 
     try {
-      const res = await api.post<{ url: string }>("/admin/upload/image", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const res = await api.post<{ url: string }>("/admin/upload/image", formData);
       onChange([...images, res.data.url]);
     } catch (err) {
       setError(getErrorMessage(err, "Tải ảnh thất bại"));

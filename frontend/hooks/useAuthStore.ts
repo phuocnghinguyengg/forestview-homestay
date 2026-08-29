@@ -23,6 +23,11 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
   hydrate: () => {
     const user = getStoredUser();
-    if (user) set({ user, isAuthenticated: true });
+    if (user && (user.role === "USER" || user.role === "ADMIN")) {
+      set({ user, isAuthenticated: true });
+    } else if (user) {
+      clearAuth();
+      set({ user: null, isAuthenticated: false });
+    }
   },
 }));

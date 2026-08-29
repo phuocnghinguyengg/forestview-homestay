@@ -24,6 +24,7 @@ export interface Room {
   images: string[];
   amenities: string[];
   active: boolean;
+  type: RoomTypeCode;
   createdAt: string;
 }
 
