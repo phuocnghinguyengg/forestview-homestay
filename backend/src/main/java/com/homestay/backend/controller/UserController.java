@@ -1,0 +1,34 @@
+package com.homestay.backend.controller;
+
+import com.homestay.backend.dto.response.UserResponse;
+import com.homestay.backend.entity.enums.Role;
+import com.homestay.backend.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/admin/users")
+@RequiredArgsConstructor
+public class UserController {
+
+    private final UserService userService;
+
+    @GetMapping
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @PatchMapping("/{id}/toggle-enabled")
+    public ResponseEntity<Void> toggleEnabled(@PathVariable Long id) {
+        userService.toggleUserEnabled(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/role")
+    public ResponseEntity<UserResponse> updateRole(@PathVariable Long id, @RequestParam Role role) {
+        return ResponseEntity.ok(userService.updateUserRole(id, role));
+    }
+}
