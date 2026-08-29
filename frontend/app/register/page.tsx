@@ -40,11 +40,14 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="mx-auto flex min-h-[80vh] max-w-md flex-col justify-center px-4 py-10">
-      <h1 className="text-2xl font-bold text-neutral-900">Tạo tài khoản</h1>
-      <p className="mt-1 text-sm text-neutral-500">Đăng ký để bắt đầu đặt homestay.</p>
+    <main className="mx-auto flex min-h-[80vh] max-w-md flex-col justify-center px-5 py-12">
+      <p className="font-display text-sm italic text-accent">Chào mừng bạn</p>
+      <h1 className="mt-1 font-display text-3xl text-ink">Tạo tài khoản</h1>
+      <p className="mt-2 text-sm text-neutral-500">
+        Đăng ký để bắt đầu đặt homestay giữa rừng thông Đà Lạt.
+      </p>
 
-      <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+      <form onSubmit={handleSubmit} className="mt-8 space-y-4">
         <div>
           <label className="text-sm text-neutral-600">Họ và tên</label>
           <input
@@ -52,7 +55,7 @@ export default function RegisterPage() {
             required
             value={form.fullName}
             onChange={handleChange}
-            className="mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink focus:border-primary focus:outline-none"
           />
         </div>
         <div>
@@ -63,7 +66,7 @@ export default function RegisterPage() {
             required
             value={form.email}
             onChange={handleChange}
-            className="mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink focus:border-primary focus:outline-none"
           />
         </div>
         <div>
@@ -72,7 +75,7 @@ export default function RegisterPage() {
             name="phone"
             value={form.phone}
             onChange={handleChange}
-            className="mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink focus:border-primary focus:outline-none"
           />
         </div>
         <div>
@@ -84,7 +87,7 @@ export default function RegisterPage() {
             minLength={6}
             value={form.password}
             onChange={handleChange}
-            className="mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink focus:border-primary focus:outline-none"
           />
         </div>
 
@@ -93,15 +96,15 @@ export default function RegisterPage() {
         <button
           type="submit"
           disabled={submitting}
-          className="w-full rounded-full bg-rose-600 py-2.5 font-medium text-white hover:bg-rose-700 disabled:opacity-50"
+          className="w-full rounded-full bg-primary py-3 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:opacity-50"
         >
           {submitting ? "Đang xử lý..." : "Đăng ký"}
         </button>
       </form>
 
-      <p className="mt-4 text-center text-sm text-neutral-500">
+      <p className="mt-6 text-center text-sm text-neutral-500">
         Đã có tài khoản?{" "}
-        <Link href="/login" className="font-medium text-rose-600 hover:underline">
+        <Link href="/login" className="font-medium text-primary hover:underline">
           Đăng nhập
         </Link>
       </p>
