@@ -1,15 +1,15 @@
 const BADGES = [
   {
-    title: "Xác thực chủ homestay",
-    desc: "Mỗi homestay đều được đội ngũ ForestView kiểm duyệt trước khi đăng.",
+    title: "Không gian riêng tư",
+    desc: "Homestay nằm trọn giữa rừng thông, tách biệt hoàn toàn khỏi phố xá ồn ào.",
   },
   {
     title: "Hủy phòng linh hoạt",
-    desc: "Hủy miễn phí trước 48 giờ nhận phòng theo chính sách từng homestay.",
+    desc: "Hủy miễn phí trước 48 giờ nhận phòng, hoàn tiền nhanh chóng.",
   },
   {
-    title: "Hỗ trợ tận tâm",
-    desc: "Đội ngũ ForestView sẵn sàng hỗ trợ bạn trong suốt chuyến đi.",
+    title: "Đón tiếp tận tình",
+    desc: "Chủ nhà luôn sẵn sàng hỗ trợ và tư vấn lịch trình khám phá Đà Lạt.",
   },
   {
     title: "Đặt phòng an toàn",

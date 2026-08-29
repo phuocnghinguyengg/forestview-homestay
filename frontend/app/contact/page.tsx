@@ -17,9 +17,9 @@ export default function ContactPage() {
     <main className="mx-auto max-w-2xl px-5 py-16">
       <p className="font-display text-sm italic text-accent">Chúng tôi luôn lắng nghe</p>
       <h1 className="mt-1 font-display text-3xl text-ink">Liên hệ với ForestView</h1>
-      <p className="mt-2 text-neutral-600">
-        Có thắc mắc về đặt phòng hoặc muốn hợp tác cùng chúng tôi? Gửi tin nhắn ngay bên dưới.
-      </p>
+<p className="mt-2 text-neutral-600">
+  Có thắc mắc về phòng nghỉ hoặc muốn đặt lịch trực tiếp với chúng tôi? Gửi tin nhắn ngay bên dưới.
+</p>
 
       <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
         <div className="space-y-3 text-sm text-neutral-600">

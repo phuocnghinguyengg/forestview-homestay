@@ -9,9 +9,9 @@ export default function Footer() {
             <p className="font-display text-xl italic text-primary">
               ForestView <span className="not-italic text-ink">Homestay</span>
             </p>
-            <p className="mt-3 max-w-xs text-sm text-neutral-500">
-              Những homestay ẩn mình giữa rừng thông Đà Lạt — nơi bạn dừng chân, hít thở không khí trong lành và tận hưởng sự yên tĩnh.
-            </p>
+<p className="mt-3 max-w-xs text-sm text-neutral-500">
+  Căn nhà gỗ nhỏ giữa rừng thông Đà Lạt — nơi bạn dừng chân, hít thở không khí trong lành và tận hưởng sự yên tĩnh.
+</p>
           </div>
 
           <div>

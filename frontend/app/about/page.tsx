@@ -6,24 +6,24 @@ export default function AboutPage() {
 
       <div className="mt-8 space-y-5 leading-relaxed text-neutral-600">
         <p>
-          ForestView Homestay ra đời từ tình yêu với những buổi sáng sương mù giữa rừng thông Đà Lạt —
-          nơi nhịp sống chậm lại và thiên nhiên trở thành người bạn đồng hành.
+          ForestView Homestay là một căn nhà gỗ nhỏ nằm giữa rừng thông ở Đà Lạt, được chúng tôi
+          xây dựng và vun đắp từ tình yêu với những buổi sáng sương mù và nhịp sống chậm rãi.
         </p>
         <p>
-          Chúng tôi chọn lọc kỹ càng từng homestay trong hệ thống, đảm bảo không gian ấm cúng,
-          sạch sẽ và mang đậm bản sắc địa phương — để mỗi chuyến đi của bạn không chỉ là một
-          chỗ ở, mà là một trải nghiệm đáng nhớ.
+          Chúng tôi tự tay chăm chút từng phòng nghỉ — từ phòng đơn ấm cúng cho khách đi một mình,
+          đến phòng gia đình rộng rãi có sân vườn riêng — để mỗi vị khách đều tìm được không gian
+          phù hợp nhất với chuyến đi của mình.
         </p>
         <p>
-          Từ những căn phòng nhỏ xinh giữa vườn hoa đến các homestay gia đình rộng rãi nhìn ra
-          thung lũng, ForestView đồng hành cùng bạn tìm đúng nơi dừng chân phù hợp nhất.
+          Đây không phải là một nền tảng trung gian — ForestView là homestay của chính chúng tôi,
+          và chúng tôi trực tiếp đón tiếp, chăm sóc từng vị khách trong suốt thời gian lưu trú.
         </p>
       </div>
 
       <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-4">
         {[
-          { label: "Homestay đối tác", value: "20+" },
-          { label: "Lượt đặt phòng", value: "1.000+" },
+          { label: "Loại phòng", value: "4" },
+          { label: "Lượt khách đã đón", value: "1.000+" },
           { label: "Đánh giá trung bình", value: "4.8/5" },
           { label: "Năm hoạt động", value: "3+" },
         ].map((s) => (
