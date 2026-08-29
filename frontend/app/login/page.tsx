@@ -26,12 +26,16 @@ export default function LoginPage() {
 
     try {
       const res = await authService.login(form);
+
       login(res.accessToken, res.refreshToken, {
         fullName: res.fullName,
         email: res.email,
         role: res.role,
       });
-      router.push(res.role === "ADMIN" ? "/admin" : "/dashboard");
+
+      // ADMIN vẫn vào trang quản trị.
+      // USER đăng nhập thành công sẽ về Main Page.
+      router.push(res.role === "ADMIN" ? "/admin" : "/");
     } catch (err) {
       setError(getErrorMessage(err, "Email hoặc mật khẩu không đúng"));
     } finally {
@@ -41,13 +45,24 @@ export default function LoginPage() {
 
   return (
     <main className="mx-auto flex min-h-[80vh] max-w-md flex-col justify-center px-5 py-12">
-      <p className="font-display text-sm italic text-accent">Rất vui được gặp lại</p>
-      <h1 className="mt-1 font-display text-3xl text-ink">Đăng nhập</h1>
-      <p className="mt-2 text-sm text-neutral-500">Chào mừng bạn quay lại ForestView.</p>
+      <p className="font-display text-sm italic text-accent">
+        Rất vui được gặp lại
+      </p>
+
+      <h1 className="mt-1 font-display text-3xl text-ink">
+        Đăng nhập
+      </h1>
+
+      <p className="mt-2 text-sm text-neutral-500">
+        Chào mừng bạn quay lại ForestView.
+      </p>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-4">
         <div>
-          <label className="text-sm text-neutral-600">Email</label>
+          <label className="text-sm text-neutral-600">
+            Email
+          </label>
+
           <input
             type="email"
             name="email"
@@ -57,13 +72,21 @@ export default function LoginPage() {
             className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink focus:border-primary focus:outline-none"
           />
         </div>
+
         <div>
           <div className="flex items-center justify-between">
-            <label className="text-sm text-neutral-600">Mật khẩu</label>
-            <Link href="/forgot-password" className="text-xs font-medium text-primary hover:underline">
+            <label className="text-sm text-neutral-600">
+              Mật khẩu
+            </label>
+
+            <Link
+              href="/forgot-password"
+              className="text-xs font-medium text-primary hover:underline"
+            >
               Quên mật khẩu?
             </Link>
           </div>
+
           <input
             type="password"
             name="password"
@@ -74,7 +97,11 @@ export default function LoginPage() {
           />
         </div>
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && (
+          <p className="text-sm text-red-600">
+            {error}
+          </p>
+        )}
 
         <button
           type="submit"
@@ -87,7 +114,10 @@ export default function LoginPage() {
 
       <p className="mt-6 text-center text-sm text-neutral-500">
         Chưa có tài khoản?{" "}
-        <Link href="/register" className="font-medium text-primary hover:underline">
+        <Link
+          href="/register"
+          className="font-medium text-primary hover:underline"
+        >
           Đăng ký ngay
         </Link>
       </p>

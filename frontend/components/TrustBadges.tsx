@@ -22,10 +22,26 @@ export default function TrustBadges() {
     <section className="mx-auto max-w-6xl px-5 py-16">
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
         {BADGES.map((b) => (
-          <div key={b.title} className="rounded-2xl border border-line bg-surface p-5">
-            <div className="h-8 w-8 rounded-full bg-primary/10" />
-            <h3 className="mt-4 font-display text-base text-ink">{b.title}</h3>
-            <p className="mt-1.5 text-sm text-neutral-500">{b.desc}</p>
+          <div
+            key={b.title}
+            className="rounded-2xl border border-line bg-surface p-5"
+          >
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+              <span
+                className="text-base leading-none text-primary"
+                aria-hidden="true"
+              >
+                ★
+              </span>
+            </div>
+
+            <h3 className="mt-4 font-display text-base text-ink">
+              {b.title}
+            </h3>
+
+            <p className="mt-1.5 text-sm text-neutral-500">
+              {b.desc}
+            </p>
           </div>
         ))}
       </div>
