@@ -25,6 +25,7 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
+    private final EmailService emailService;
 
     public BookingResponse createBooking(String userEmail, BookingRequest request) {
         if (!request.getCheckOutDate().isAfter(request.getCheckInDate())) {
@@ -66,7 +67,19 @@ public class BookingService {
                 .note(request.getNote())
                 .build();
 
-        return BookingMapper.toResponse(bookingRepository.save(booking));
+        Booking saved = bookingRepository.save(booking);
+
+        emailService.sendBookingConfirmation(
+                user.getEmail(),
+                user.getFullName(),
+                room.getName(),
+                saved.getCheckInDate(),
+                saved.getCheckOutDate(),
+                saved.getGuestCount(),
+                saved.getTotalPrice()
+        );
+
+        return BookingMapper.toResponse(saved);
     }
 
     public List<BookingResponse> getMyBookings(String userEmail) {

@@ -23,6 +23,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final org.springframework.security.core.userdetails.UserDetailsService userDetailsService;
+    private final EmailService emailService;
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -38,6 +39,8 @@ public class AuthService {
                 .build();
 
         userRepository.save(user);
+
+        emailService.sendWelcomeEmail(user.getEmail(), user.getFullName());
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
         String accessToken = jwtService.generateAccessToken(userDetails, user.getRole().name());
