@@ -3,7 +3,6 @@ export type Role = "USER" | "ADMIN";
 export interface AuthUser {
   fullName: string;
   email: string;
-  phone?: string | null;
   role: Role;
 }
 
@@ -12,7 +11,6 @@ export interface AuthResponse {
   refreshToken: string;
   fullName: string;
   email: string;
-  phone?: string | null;
   role: Role;
 }
 

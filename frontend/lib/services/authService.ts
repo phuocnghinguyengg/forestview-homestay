@@ -12,10 +12,4 @@ export const authService = {
 
   login: (data: { email: string; password: string }) =>
     api.post<AuthResponse>("/auth/login", data).then((res) => res.data),
-
-  forgotPassword: (data: { email: string }) =>
-    api.post("/auth/forgot-password", data).then((res) => res.data),
-
-  resetPassword: (data: { email: string; otp: string; newPassword: string }) =>
-    api.post("/auth/reset-password", data).then((res) => res.data),
 };

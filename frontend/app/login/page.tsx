@@ -71,12 +71,6 @@ export default function LoginPage() {
 
         {error && <p className="text-sm text-red-600">{error}</p>}
 
-        <div className="-mt-1 text-right">
-          <Link href="/forgot-password" className="text-sm font-medium text-primary hover:underline">
-            Quên mật khẩu?
-          </Link>
-        </div>
-
         <button
           type="submit"
           disabled={submitting}

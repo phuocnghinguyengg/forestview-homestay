@@ -48,7 +48,7 @@ export default function Navbar() {
           {isAuthenticated && user && (
             <>
               <Link
-                href={user.role === "ADMIN" ? "/admin" : "/account"}
+                href={user.role === "ADMIN" ? "/admin" : "/dashboard"}
                 className="transition hover:text-primary"
               >
                 {user.role === "ADMIN" ? "Trang quản trị" : "Tài khoản của tôi"}
