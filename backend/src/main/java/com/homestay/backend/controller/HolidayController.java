@@ -33,4 +33,5 @@ public class HolidayController {
         holidayRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
 }

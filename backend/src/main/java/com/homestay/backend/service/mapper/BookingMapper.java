@@ -4,23 +4,16 @@ import com.homestay.backend.dto.response.BookingResponse;
 import com.homestay.backend.entity.Booking;
 
 public class BookingMapper {
-    public static BookingResponse toResponse(Booking booking, boolean hasReview) {
+    public static BookingResponse toResponse(Booking b, boolean hasReview) {
         return BookingResponse.builder()
-                .id(booking.getId())
-                .bookingCode(booking.getBookingCode())
-                .roomId(booking.getRoom().getId())
-                .roomName(booking.getRoom().getName())
-                .roomAddress(booking.getRoom().getAddress())
-                .userFullName(booking.getUser().getFullName())
-                .userEmail(booking.getUser().getEmail())
-                .checkInDate(booking.getCheckInDate())
-                .checkOutDate(booking.getCheckOutDate())
-                .guestCount(booking.getGuestCount())
-                .totalPrice(booking.getTotalPrice())
-                .status(booking.getStatus())
-                .note(booking.getNote())
-                .createdAt(booking.getCreatedAt())
-                .hasReview(hasReview)
-                .build();
+                .id(b.getId()).bookingCode(b.getBookingCode()).roomId(b.getRoom().getId()).roomName(b.getRoom().getName())
+                .roomAddress(b.getRoom().getAddress()).userFullName(b.getUser().getFullName()).userEmail(b.getUser().getEmail())
+                .checkInDate(b.getCheckInDate()).checkOutDate(b.getCheckOutDate()).guestCount(b.getGuestCount())
+                .nights(b.getNights()).basePrice(b.getBasePrice()).holidayPriceTotal(b.getHolidayPriceTotal())
+                .extraGuestFee(b.getExtraGuestFee()).membershipDiscountAmount(b.getMembershipDiscountAmount())
+                .membershipDiscountPercent(b.getMembershipDiscountPercent()).membershipTierApplied(b.getMembershipTierApplied())
+                .totalPrice(b.getTotalPrice()).status(b.getStatus()).paymentMethod(b.getPaymentMethod()).paymentStatus(b.getPaymentStatus())
+                .paymentHoldExpiresAt(b.getPaymentHoldExpiresAt()).rejectionReason(b.getRejectionReason()).note(b.getNote())
+                .createdAt(b.getCreatedAt()).hasReview(hasReview).build();
     }
 }

@@ -1,6 +1,9 @@
 package com.homestay.backend.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.homestay.backend.entity.Booking;
+import com.homestay.backend.entity.enums.MembershipTier;
+import org.springframework.scheduling.annotation.Async;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +37,7 @@ public class EmailService {
     @Value("${app.mail.from:onboarding@resend.dev}")
     private String fromEmail;
 
+    @Async("mailTaskExecutor")
     public void sendOtpEmail(String toEmail, String fullName, String otp) {
         String subject = "Mã xác thực ForestView Homestay";
         String html = """
@@ -49,6 +53,7 @@ public class EmailService {
         send(toEmail, subject, html, true);
     }
 
+    @Async("mailTaskExecutor")
     public void sendWelcomeEmail(String toEmail, String fullName) {
         String subject = "Chào mừng bạn đến với ForestView Homestay";
         String html = """
@@ -63,6 +68,7 @@ public class EmailService {
         send(toEmail, subject, html, false);
     }
 
+    @Async("mailTaskExecutor")
     public void sendBookingConfirmation(String toEmail, String fullName, String roomName,
                                          LocalDate checkIn, LocalDate checkOut,
                                          Integer guestCount, BigDecimal totalPrice) {
@@ -160,6 +166,7 @@ public class EmailService {
                 .replace("\"", "&quot;")
                 .replace("'", "&#39;");
     }
+    @Async("mailTaskExecutor")
     public void sendPasswordResetOtpEmail(String toEmail, String fullName, String otp) {
         String subject = "Mã OTP đặt lại mật khẩu - ForestView Homestay";
         String html = """
@@ -173,6 +180,58 @@ public class EmailService {
                 </div>
                 """.formatted(escapeHtml(fullName), otp);
         send(toEmail, subject, html, true);
+    }
+
+
+    @Async("mailTaskExecutor")
+    public void sendBookingPaidEmail(Booking b) {
+        sendBookingStatusEmail(b, "Đặt phòng đã xác nhận", "Thanh toán của bạn đã được ghi nhận và đơn đặt phòng đã được xác nhận.", "Đã xác nhận");
+    }
+
+    @Async("mailTaskExecutor")
+    public void sendBookingHoldEmail(Booking b) {
+        String extra = b.getPaymentHoldExpiresAt() == null ? "" : " Bạn được giữ chỗ đến " + b.getPaymentHoldExpiresAt().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy")) + ".";
+        sendBookingStatusEmail(b, "Giữ chỗ đặt phòng - chờ thanh toán", "Đơn của bạn đang được giữ chỗ và chờ admin xác nhận." + extra, "Chờ xác nhận");
+    }
+
+    @Async("mailTaskExecutor")
+    public void sendBookingAdminConfirmedEmail(Booking b) {
+        sendBookingStatusEmail(b, "Đơn đặt phòng đã được xác nhận", "Admin đã xác nhận đơn đặt phòng của bạn.", "Đã xác nhận");
+    }
+
+    @Async("mailTaskExecutor")
+    public void sendBookingRejectedEmail(Booking b) {
+        String reason = b.getRejectionReason() == null ? "Không có lý do cụ thể." : escapeHtml(b.getRejectionReason());
+        sendBookingStatusEmail(b, "Đơn đặt phòng bị từ chối", "Đơn đặt phòng của bạn đã bị từ chối. Lý do: <b>" + reason + "</b>", "Đã hủy");
+    }
+
+    @Async("mailTaskExecutor")
+    public void sendBookingHoldExpiredEmail(Booking b) {
+        sendBookingStatusEmail(b, "Hết thời gian giữ chỗ", "Thời gian giữ chỗ 2 giờ của đơn đã hết nên đơn đã được hủy tự động.", "Đã hủy");
+    }
+
+    @Async("mailTaskExecutor")
+    public void sendMembershipUpgradeEmail(String toEmail, String fullName, MembershipTier tier) {
+        String subject = "Chúc mừng bạn đạt hạng thành viên " + tier.getLabel();
+        String html = "<div style='font-family:Arial,sans-serif;max-width:520px;margin:auto;padding:24px;color:#333'>"
+                + "<h2 style='color:#2F5D50'>Chúc mừng " + escapeHtml(fullName) + "!</h2>"
+                + "<p>Bạn đã được nâng lên hạng thành viên <b>" + escapeHtml(tier.getLabel()) + "</b>.</p>"
+                + "<p>Quyền lợi giảm giá hiện tại: <b>" + tier.getDiscountPercent() + "%</b> cho các lần đặt phòng đủ điều kiện.</p>"
+                + "<p style='color:#888;font-size:12px;margin-top:24px'>ForestView Homestay</p></div>";
+        send(toEmail, subject, html, false);
+    }
+
+    private void sendBookingStatusEmail(Booking b, String subject, String message, String status) {
+        String html = "<div style='font-family:Arial,sans-serif;max-width:520px;margin:auto;padding:24px;color:#333'>"
+                + "<h2 style='color:#2F5D50'>ForestView Homestay</h2>"
+                + "<p>Xin chào " + escapeHtml(b.getUser().getFullName()) + ",</p><p>" + message + "</p>"
+                + "<table style='width:100%;border-collapse:collapse'><tr><td>Phòng</td><td><b>" + escapeHtml(b.getRoom().getName()) + "</b></td></tr>"
+                + "<tr><td>Mã đặt phòng</td><td><b>#" + escapeHtml(b.getBookingCode()) + "</b></td></tr>"
+                + "<tr><td>Nhận phòng</td><td>" + b.getCheckInDate().format(DATE_FMT) + "</td></tr>"
+                + "<tr><td>Trả phòng</td><td>" + b.getCheckOutDate().format(DATE_FMT) + "</td></tr>"
+                + "<tr><td>Tổng tiền</td><td><b>" + String.format("%,.0f₫", b.getTotalPrice()) + "</b></td></tr>"
+                + "<tr><td>Trạng thái</td><td><b>" + status + "</b></td></tr></table></div>";
+        send(b.getUser().getEmail(), subject, html, false);
     }
 
 }

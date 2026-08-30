@@ -25,12 +25,17 @@ public class AccountService {
     private final EmailService emailService;
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final MembershipService membershipService;
     private static final SecureRandom RANDOM = new SecureRandom();
 
     private User user(String email) { return userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found")); }
     private String otp() { return String.valueOf(100000 + RANDOM.nextInt(900000)); }
 
-    public UserResponse getMe(String email) { return UserMapper.toResponse(user(email)); }
+    public UserResponse getMe(String email) {
+        User u = user(email);
+        membershipService.refreshTier(u);
+        return UserMapper.toResponse(u, membershipService.progress(u));
+    }
 
     public UserResponse updateProfile(String email, UpdateProfileRequest r) {
         User u = user(email); u.setFullName(r.getFullName().trim()); u.setPhone(r.getPhone()); return UserMapper.toResponse(userRepository.save(u));
@@ -68,10 +73,14 @@ public class AccountService {
                 .role(saved.getRole().name())
                 .id(saved.getId())
                 .phone(saved.getPhone())
+                .membershipTier(saved.getMembershipTier())
+                .membershipLabel(saved.getMembershipTier() == null ? null : saved.getMembershipTier().getLabel())
+                .membershipDiscountPercent(saved.getMembershipTier() == null ? 0 : saved.getMembershipTier().getDiscountPercent())
                 .build();
     }
 
     public void forgotPassword(ForgotPasswordRequest r) {
+        // Luôn trả về cùng một kết quả dù email tồn tại hay không để tránh account enumeration.
         userRepository.findByEmail(r.getEmail().trim().toLowerCase()).ifPresent(u -> {
             String code = otp(); u.setResetOtpCode(code); u.setResetOtpExpiresAt(LocalDateTime.now().plusMinutes(10)); userRepository.save(u); emailService.sendPasswordResetOtpEmail(u.getEmail(), u.getFullName(), code);
         });

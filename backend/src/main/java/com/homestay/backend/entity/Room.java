@@ -33,6 +33,13 @@ public class Room {
     @Column(nullable = false)
     private Integer maxGuests;
 
+@Builder.Default
+private Integer recommendedGuests = 2;
+
+@Column(precision = 15, scale = 2)
+@Builder.Default
+private BigDecimal extraGuestFeePerNight = BigDecimal.ZERO;
+
     @ElementCollection
     @CollectionTable(name = "room_images", joinColumns = @JoinColumn(name = "room_id"))
     @Column(name = "image_url")
