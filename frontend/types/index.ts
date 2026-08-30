@@ -1,5 +1,21 @@
 export type Role = "USER" | "ADMIN";
 
+export interface AuthUser {
+  fullName: string;
+  email: string;
+  role: Role;
+  emailVerified: boolean;
+}
+
+export interface AuthResponse {
+  accessToken: string;
+  refreshToken: string;
+  fullName: string;
+  email: string;
+  role: Role;
+  emailVerified: boolean;
+}
+
 export interface Room {
   id: number;
   name: string;
@@ -11,6 +27,7 @@ export interface Room {
   amenities: string[];
   active: boolean;
   type: RoomTypeCode;
+  typeLabel: string;
   createdAt: string;
 }
 
@@ -18,6 +35,7 @@ export type BookingStatus = "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED";
 
 export interface Booking {
   id: number;
+  bookingCode: string;
   roomId: number;
   roomName: string;
   roomAddress: string;
@@ -30,6 +48,7 @@ export interface Booking {
   status: BookingStatus;
   note: string | null;
   createdAt: string;
+  hasReview: boolean;
 }
 
 export interface DashboardStats {
@@ -56,38 +75,4 @@ export interface RoomTypeAvailability {
 export interface RegisterResponse {
   message: string;
   email: string;
-}
-
-export interface Booking {
-  id: number;
-  bookingCode: string;
-  roomId: number;
-  roomName: string;
-  roomAddress: string;
-  userFullName: string;
-  userEmail: string;
-  checkInDate: string;
-  checkOutDate: string;
-  guestCount: number;
-  totalPrice: number;
-  status: BookingStatus;
-  note: string | null;
-  createdAt: string;
-  hasReview: boolean;
-}
-
-export interface AuthUser {
-  fullName: string;
-  email: string;
-  role: Role;
-  emailVerified: boolean;
-}
-
-export interface AuthResponse {
-  accessToken: string;
-  refreshToken: string;
-  fullName: string;
-  email: string;
-  role: Role;
-  emailVerified: boolean;
 }

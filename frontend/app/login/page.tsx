@@ -11,12 +11,19 @@ export default function LoginPage() {
   const router = useRouter();
   const login = useAuthStore((s) => s.login);
 
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
+
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -31,13 +38,16 @@ export default function LoginPage() {
         fullName: res.fullName,
         email: res.email,
         role: res.role,
+        emailVerified: res.emailVerified,
       });
 
-      // ADMIN vẫn vào trang quản trị.
-      // USER đăng nhập thành công sẽ về Main Page.
+      // ADMIN → trang quản trị
+      // USER → trang chính
       router.push(res.role === "ADMIN" ? "/admin" : "/");
     } catch (err) {
-      setError(getErrorMessage(err, "Email hoặc mật khẩu không đúng"));
+      setError(
+        getErrorMessage(err, "Email hoặc mật khẩu không đúng")
+      );
     } finally {
       setSubmitting(false);
     }
