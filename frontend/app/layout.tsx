@@ -24,14 +24,24 @@ export const metadata: Metadata = {
   description: "Khám phá và đặt homestay giữa rừng thông tại Đà Lạt.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="vi">
-      <body className={`${fraunces.variable} ${manrope.variable} flex min-h-screen flex-col antialiased`}>
+      <body
+        className={`${fraunces.variable} ${manrope.variable} flex min-h-screen flex-col antialiased`}
+      >
         <AuthInitializer />
         <Navbar />
         <UnverifiedBanner />
-        <div className="flex-1">{children}</div>
+
+        <div className="min-h-[calc(100vh+180px)] flex-1">
+          {children}
+        </div>
+
         <Footer />
       </body>
     </html>

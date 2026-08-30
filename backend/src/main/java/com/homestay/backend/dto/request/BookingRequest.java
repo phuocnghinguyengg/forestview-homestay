@@ -22,5 +22,7 @@ public class BookingRequest {
 
     private String note;
 
+    private String discountCode;
+
     private PaymentMethod paymentMethod = PaymentMethod.HOLD;
 }

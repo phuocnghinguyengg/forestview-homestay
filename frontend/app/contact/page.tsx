@@ -8,8 +8,6 @@ export default function ContactPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Ghi chú: hiện tại chưa có API backend nhận liên hệ — form chỉ hiển thị trạng thái gửi thành công.
-    // Có thể nối vào backend (endpoint /api/contact) hoặc gửi email qua EmailService ở bước sau nếu cần.
     setSent(true);
   };
 

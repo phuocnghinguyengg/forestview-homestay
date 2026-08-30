@@ -3,6 +3,7 @@ package com.homestay.backend.service;
 import com.homestay.backend.dto.request.BookingRequest;
 import com.homestay.backend.dto.response.BookingResponse;
 import com.homestay.backend.entity.Booking;
+import com.homestay.backend.entity.DiscountCode;
 import com.homestay.backend.entity.Room;
 import com.homestay.backend.entity.User;
 import com.homestay.backend.entity.enums.BookingStatus;
@@ -21,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -34,6 +34,7 @@ public class BookingService {
     private final PricingService pricingService;
     private final ReviewRepository reviewRepository;
     private final MembershipService membershipService;
+    private final DiscountCodeService discountCodeService;
 
     @Transactional
     public BookingResponse createBooking(String userEmail, BookingRequest request) {
@@ -55,9 +56,22 @@ public class BookingService {
         int extraGuests = Math.max(0, request.getGuestCount() - (room.getRecommendedGuests() == null ? 0 : room.getRecommendedGuests()));
         BigDecimal extraFee = room.getExtraGuestFee() == null ? BigDecimal.ZERO : room.getExtraGuestFee().multiply(BigDecimal.valueOf(extraGuests)).multiply(BigDecimal.valueOf(price.nights()));
         BigDecimal beforeDiscount = subtotal.add(extraFee);
+
+        String normalizedCode = request.getDiscountCode() == null ? null : request.getDiscountCode().trim();
+        Integer discountCodePercent = null;
+        BigDecimal discountCodeAmount = BigDecimal.ZERO;
+        BigDecimal afterCoupon = beforeDiscount;
+        if (normalizedCode != null && !normalizedCode.isBlank()) {
+            DiscountCode discountCode = discountCodeService.getValidOrThrow(normalizedCode);
+            discountCodePercent = discountCode.getPercent();
+            discountCodeAmount = beforeDiscount.multiply(BigDecimal.valueOf(discountCodePercent)).divide(BigDecimal.valueOf(100));
+            afterCoupon = beforeDiscount.subtract(discountCodeAmount);
+            normalizedCode = discountCode.getCode();
+        }
+
         int discountPercent = membershipService.discountPercent(user);
-        BigDecimal discount = beforeDiscount.multiply(BigDecimal.valueOf(discountPercent)).divide(BigDecimal.valueOf(100));
-        BigDecimal total = beforeDiscount.subtract(discount).max(BigDecimal.ZERO);
+        BigDecimal discount = afterCoupon.multiply(BigDecimal.valueOf(discountPercent)).divide(BigDecimal.valueOf(100));
+        BigDecimal total = afterCoupon.subtract(discount).max(BigDecimal.ZERO);
 
         PaymentMethod method = request.getPaymentMethod() == null ? PaymentMethod.HOLD : request.getPaymentMethod();
         boolean instant = method != PaymentMethod.HOLD;
@@ -67,6 +81,7 @@ public class BookingService {
                 .user(user).room(room).checkInDate(request.getCheckInDate()).checkOutDate(request.getCheckOutDate())
                 .guestCount(request.getGuestCount()).nights(price.nights()).basePrice(price.basePrice()).holidayPrice(price.holidayPrice())
                 .extraGuestFee(extraFee).membershipDiscountPercent(discountPercent).membershipDiscountAmount(discount)
+                .discountCode(normalizedCode).discountCodePercent(discountCodePercent).discountCodeAmount(discountCodeAmount)
                 .totalPrice(total).status(instant ? BookingStatus.CONFIRMED : BookingStatus.PENDING)
                 .paymentMethod(method).paymentStatus(instant ? PaymentStatus.PAID : PaymentStatus.HOLD)
                 .paymentHoldExpiresAt(holdExpires).note(request.getNote()).build();

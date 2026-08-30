@@ -31,106 +31,234 @@ public class AuthService {
     private final org.springframework.security.core.userdetails.UserDetailsService userDetailsService;
     private final EmailService emailService;
 
-    private static final SecureRandom RANDOM = new SecureRandom();
+    private static final SecureRandom RANDOM =
+            new SecureRandom();
 
-    public RegisterResponse register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email already registered");
+    public RegisterResponse register(
+            RegisterRequest request
+    ) {
+        String fullName =
+                request.getFullName() == null
+                        ? ""
+                        : request.getFullName().trim();
+
+        String email =
+                request.getEmail() == null
+                        ? ""
+                        : request.getEmail()
+                            .trim()
+                            .toLowerCase();
+
+        if (fullName.isBlank()) {
+            throw new IllegalArgumentException(
+                    "Vui lòng nhập họ và tên"
+            );
+        }
+
+        if (email.isBlank()) {
+            throw new IllegalArgumentException(
+                    "Vui lòng nhập email"
+            );
+        }
+
+        if (userRepository
+                .existsByEmailIgnoreCase(email)) {
+
+            throw new IllegalArgumentException(
+                    "Email này đã được đăng ký"
+            );
         }
 
         String otp = generateOtp();
 
         User user = User.builder()
-                .fullName(request.getFullName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
+                .fullName(fullName)
+                .email(email)
+                .password(
+                        passwordEncoder.encode(
+                                request.getPassword()
+                        )
+                )
                 .phone(request.getPhone())
                 .role(Role.USER)
                 .emailVerified(false)
                 .otpCode(otp)
-                .otpExpiresAt(LocalDateTime.now().plusMinutes(10))
+                .otpExpiresAt(
+                        LocalDateTime.now()
+                                .plusMinutes(10)
+                )
                 .build();
 
         userRepository.save(user);
 
-        emailService.sendOtpEmail(user.getEmail(), user.getFullName(), otp);
+        emailService.sendOtpEmail(
+                user.getEmail(),
+                user.getFullName(),
+                otp
+        );
 
         return RegisterResponse.builder()
-                .message("Vui lòng kiểm tra email để lấy mã xác thực")
+                .message(
+                        "Vui lòng kiểm tra email để lấy mã xác thực"
+                )
                 .email(user.getEmail())
                 .build();
     }
 
-    public AuthResponse verifyOtp(OtpVerifyRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Tài khoản không tồn tại"));
+    public AuthResponse verifyOtp(
+            OtpVerifyRequest request
+    ) {
+        User user =
+                userRepository
+                        .findByEmail(request.getEmail())
+                        .orElseThrow(
+                                () -> new IllegalArgumentException(
+                                        "Tài khoản không tồn tại"
+                                )
+                        );
 
-        if (Boolean.TRUE.equals(user.getEmailVerified())) {
-            throw new IllegalArgumentException("Tài khoản đã được xác thực trước đó");
+        if (Boolean.TRUE.equals(
+                user.getEmailVerified())) {
+
+            throw new IllegalArgumentException(
+                    "Tài khoản đã được xác thực trước đó"
+            );
         }
 
-        if (user.getOtpCode() == null || !user.getOtpCode().equals(request.getOtp())) {
-            throw new IllegalArgumentException("Mã OTP không đúng");
+        if (user.getOtpCode() == null ||
+                !user.getOtpCode()
+                        .equals(request.getOtp())) {
+
+            throw new IllegalArgumentException(
+                    "Mã OTP không đúng"
+            );
         }
 
-        if (user.getOtpExpiresAt() == null || user.getOtpExpiresAt().isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Mã OTP đã hết hạn, vui lòng gửi lại mã mới");
+        if (user.getOtpExpiresAt() == null ||
+                user.getOtpExpiresAt()
+                        .isBefore(LocalDateTime.now())) {
+
+            throw new IllegalArgumentException(
+                    "Mã OTP đã hết hạn, vui lòng gửi lại mã mới"
+            );
         }
 
         user.setEmailVerified(true);
         user.setOtpCode(null);
         user.setOtpExpiresAt(null);
+
         userRepository.save(user);
 
-        emailService.sendWelcomeEmail(user.getEmail(), user.getFullName());
+        emailService.sendWelcomeEmail(
+                user.getEmail(),
+                user.getFullName()
+        );
 
         return buildAuthResponse(user);
     }
 
-    public AuthResponse skipVerification(ResendOtpRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Tài khoản không tồn tại"));
+    public AuthResponse skipVerification(
+            ResendOtpRequest request
+    ) {
+        User user =
+                userRepository
+                        .findByEmail(request.getEmail())
+                        .orElseThrow(
+                                () -> new IllegalArgumentException(
+                                        "Tài khoản không tồn tại"
+                                )
+                        );
 
-        if (Boolean.TRUE.equals(user.getEmailVerified())) {
-            throw new IllegalArgumentException("Tài khoản đã được xác thực trước đó");
+        if (Boolean.TRUE.equals(
+                user.getEmailVerified())) {
+
+            throw new IllegalArgumentException(
+                    "Tài khoản đã được xác thực trước đó"
+            );
         }
 
-        // Cho phép đăng nhập tạm thời với trạng thái CHƯA xác thực.
-        // Người dùng vẫn phải xác thực trước khi đặt phòng (kiểm tra ở BookingService).
         return buildAuthResponse(user);
     }
 
-    public void resendOtp(ResendOtpRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Tài khoản không tồn tại"));
+    public void resendOtp(
+            ResendOtpRequest request
+    ) {
+        User user =
+                userRepository
+                        .findByEmail(request.getEmail())
+                        .orElseThrow(
+                                () -> new IllegalArgumentException(
+                                        "Tài khoản không tồn tại"
+                                )
+                        );
 
-        if (Boolean.TRUE.equals(user.getEmailVerified())) {
-            throw new IllegalArgumentException("Tài khoản đã được xác thực trước đó");
+        if (Boolean.TRUE.equals(
+                user.getEmailVerified())) {
+
+            throw new IllegalArgumentException(
+                    "Tài khoản đã được xác thực trước đó"
+            );
         }
 
         String otp = generateOtp();
+
         user.setOtpCode(otp);
-        user.setOtpExpiresAt(LocalDateTime.now().plusMinutes(10));
-        userRepository.save(user);
 
-        emailService.sendOtpEmail(user.getEmail(), user.getFullName(), otp);
-    }
-
-    public AuthResponse login(LoginRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+        user.setOtpExpiresAt(
+                LocalDateTime.now()
+                        .plusMinutes(10)
         );
 
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid credentials"));
+        userRepository.save(user);
+
+        emailService.sendOtpEmail(
+                user.getEmail(),
+                user.getFullName(),
+                otp
+        );
+    }
+
+    public AuthResponse login(
+            LoginRequest request
+    ) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+
+        User user =
+                userRepository
+                        .findByEmail(request.getEmail())
+                        .orElseThrow(
+                                () -> new IllegalArgumentException(
+                                        "Invalid credentials"
+                                )
+                        );
 
         return buildAuthResponse(user);
     }
 
-    private AuthResponse buildAuthResponse(User user) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
-        String accessToken = jwtService.generateAccessToken(userDetails, user.getRole().name());
-        String refreshToken = jwtService.generateRefreshToken(userDetails);
+    private AuthResponse buildAuthResponse(
+            User user
+    ) {
+        UserDetails userDetails =
+                userDetailsService
+                        .loadUserByUsername(
+                                user.getEmail()
+                        );
+
+        String accessToken =
+                jwtService.generateAccessToken(
+                        userDetails,
+                        user.getRole().name()
+                );
+
+        String refreshToken =
+                jwtService.generateRefreshToken(
+                        userDetails
+                );
 
         return AuthResponse.builder()
                 .accessToken(accessToken)
@@ -144,7 +272,10 @@ public class AuthService {
     }
 
     private String generateOtp() {
-        int otp = 100000 + RANDOM.nextInt(900000);
+        int otp =
+                100000 +
+                RANDOM.nextInt(900000);
+
         return String.valueOf(otp);
     }
 }

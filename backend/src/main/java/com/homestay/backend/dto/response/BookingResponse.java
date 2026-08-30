@@ -28,6 +28,9 @@ public class BookingResponse {
     private BigDecimal extraGuestFee;
     private Integer membershipDiscountPercent;
     private BigDecimal membershipDiscountAmount;
+    private String discountCode;
+    private Integer discountCodePercent;
+    private BigDecimal discountCodeAmount;
     private BigDecimal totalPrice;
     private BookingStatus status;
     private PaymentMethod paymentMethod;

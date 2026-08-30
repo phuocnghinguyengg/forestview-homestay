@@ -51,6 +51,10 @@ public class Booking {
     private Integer membershipDiscountPercent;
     private BigDecimal membershipDiscountAmount;
 
+    private String discountCode;
+    private Integer discountCodePercent;
+    private BigDecimal discountCodeAmount;
+
     @Enumerated(EnumType.STRING)
     @Column
     @Builder.Default

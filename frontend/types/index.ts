@@ -59,6 +59,9 @@ export interface Booking {
   extraGuestFee?: number | null;
   membershipDiscountPercent?: number | null;
   membershipDiscountAmount?: number | null;
+  discountCode?: string | null;
+  discountCodePercent?: number | null;
+  discountCodeAmount?: number | null;
   totalPrice: number;
   paymentMethod?: PaymentMethod;
   paymentStatus?: PaymentStatus;
@@ -94,4 +97,21 @@ export interface RoomTypeAvailability {
 export interface RegisterResponse {
   message: string;
   email: string;
+}
+
+export interface DiscountCode {
+  id: number;
+  code: string;
+  percent: number;
+  description: string | null;
+  startAt: string;
+  endAt: string;
+  active: boolean;
+  createdAt: string;
+}
+
+export interface DiscountCodePreview {
+  code: string;
+  percent: number;
+  valid: boolean;
 }

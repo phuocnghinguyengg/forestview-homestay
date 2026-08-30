@@ -3,10 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import type { Metadata } from "next";
-import { Fraunces, Manrope } from "next/font/google";
-import AuthInitializer from "@/components/AuthInitializer";
-import Navbar from "@/components/Navbar";
 
 const NAV_ITEMS = [
   { href: "/admin", label: "Tổng quan" },
@@ -14,6 +10,7 @@ const NAV_ITEMS = [
   { href: "/admin/bookings", label: "Đơn đặt phòng" },
   { href: "/admin/users", label: "Người dùng" },
   { href: "/admin/holidays", label: "Ngày lễ & giá lễ" },
+  { href: "/admin/discount-codes", label: "Mã giảm giá" },
 ];
 
 function AdminNav() {

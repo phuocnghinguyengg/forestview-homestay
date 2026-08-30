@@ -42,8 +42,6 @@ export default function LoginPage() {
         membershipTier: res.membershipTier,
       });
 
-      // ADMIN → trang quản trị
-      // USER → trang chính
       router.push(res.role === "ADMIN" ? "/admin" : "/");
     } catch (err) {
       setError(

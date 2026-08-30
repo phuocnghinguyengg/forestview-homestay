@@ -25,6 +25,7 @@ function tomorrowISO() {
 
 function formatDate(value: string) {
   if (!value) return "Chọn ngày";
+
   return new Intl.DateTimeFormat("vi-VN", {
     weekday: "short",
     day: "2-digit",
@@ -35,9 +36,13 @@ function formatDate(value: string) {
 
 function getNights(checkIn: string, checkOut: string) {
   if (!checkIn || !checkOut) return 0;
+
   const start = new Date(`${checkIn}T00:00:00`).getTime();
   const end = new Date(`${checkOut}T00:00:00`).getTime();
-  return end > start ? Math.round((end - start) / 86400000) : 0;
+
+  return end > start
+    ? Math.round((end - start) / 86400000)
+    : 0;
 }
 
 type SortOption = "none" | "price-asc" | "price-desc";
@@ -45,15 +50,16 @@ type SortOption = "none" | "price-asc" | "price-desc";
 export default function RoomTypesPage() {
   const router = useRouter();
 
-  const [checkIn, setCheckIn] = useState("");
-  const [checkOut, setCheckOut] = useState("");
+    const [checkIn, setCheckIn] = useState(() => todayISO());
+  const [checkOut, setCheckOut] = useState(() => tomorrowISO());
+
   const [results, setResults] = useState<RoomTypeAvailability[]>([]);
   const [searched, setSearched] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [sort, setSort] = useState<SortOption>("none");
 
-  useEffect(() => {
+    useEffect(() => {
     const ci = todayISO();
     const co = tomorrowISO();
 
@@ -73,11 +79,23 @@ export default function RoomTypesPage() {
     setError("");
     setCheckIn(value);
 
-    if (checkOut && value >= checkOut) {
+        if (checkOut && value >= checkOut) {
       const next = new Date(`${value}T00:00:00`);
       next.setDate(next.getDate() + 1);
+
       setCheckOut(next.toISOString().split("T")[0]);
     }
+  };
+
+  const handleCheckOutChange = (value: string) => {
+    setError("");
+
+    if (checkIn && value <= checkIn) {
+      setError("Ngày trả phòng phải sau ngày nhận phòng.");
+      return;
+    }
+
+    setCheckOut(value);
   };
 
   const handleSearch = async () => {
@@ -97,7 +115,11 @@ export default function RoomTypesPage() {
     setSearched(true);
 
     try {
-      const data = await roomTypeService.getAvailability(checkIn, checkOut);
+      const data = await roomTypeService.getAvailability(
+        checkIn,
+        checkOut
+      );
+
       setResults(data);
     } catch (err) {
       setError(getErrorMessage(err));
@@ -110,16 +132,24 @@ export default function RoomTypesPage() {
     const ci = checkIn || todayISO();
     const co = checkOut || tomorrowISO();
 
-    router.push(`/room-types/${type}?checkIn=${ci}&checkOut=${co}`);
+    router.push(
+      `/room-types/${type}?checkIn=${ci}&checkOut=${co}`
+    );
   };
 
   const sortedResults = [...results].sort((a, b) => {
     if (sort === "price-asc") {
-      return (a.minPrice ?? Infinity) - (b.minPrice ?? Infinity);
+      return (
+        (a.minPrice ?? Infinity) -
+        (b.minPrice ?? Infinity)
+      );
     }
 
     if (sort === "price-desc") {
-      return (b.minPrice ?? -Infinity) - (a.minPrice ?? -Infinity);
+      return (
+        (b.minPrice ?? -Infinity) -
+        (a.minPrice ?? -Infinity)
+      );
     }
 
     return 0;
@@ -127,7 +157,7 @@ export default function RoomTypesPage() {
 
   return (
     <main className="mx-auto max-w-6xl px-5 py-12 sm:py-16">
-      {/* Header */}
+
       <section className="max-w-3xl">
         <p className="font-display text-sm italic text-accent">
           Đà Lạt, Lâm Đồng
@@ -138,12 +168,12 @@ export default function RoomTypesPage() {
         </h1>
 
         <p className="mt-3 max-w-2xl text-sm leading-6 text-neutral-600 sm:text-base">
-          Chọn ngày lưu trú để xem chính xác phòng còn trống và tìm không gian
-          phù hợp nhất với chuyến đi của bạn.
+          Chọn ngày lưu trú để xem chính xác phòng còn trống
+          và tìm không gian phù hợp nhất với chuyến đi của bạn.
         </p>
       </section>
 
-      {/* Date picker / search panel */}
+
       <section className="mt-8 overflow-hidden rounded-3xl border border-line bg-surface shadow-sm">
         <div className="border-b border-line px-5 py-5 sm:px-7">
           <div className="flex items-center gap-3">
@@ -155,6 +185,7 @@ export default function RoomTypesPage() {
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
                 Thời gian lưu trú
               </p>
+
               <p className="mt-0.5 text-sm text-neutral-500">
                 Chọn ngày nhận và trả phòng
               </p>
@@ -163,7 +194,7 @@ export default function RoomTypesPage() {
         </div>
 
         <div className="grid gap-4 p-5 sm:grid-cols-[1fr_auto_1fr_auto] sm:items-end sm:p-7">
-          {/* Check-in */}
+
           <label className="block">
             <span className="text-xs font-semibold uppercase tracking-wide text-neutral-500">
               Nhận phòng
@@ -179,7 +210,10 @@ export default function RoomTypesPage() {
                 </span>
 
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs text-neutral-400">Ngày nhận</p>
+                  <p className="text-xs text-neutral-400">
+                    Ngày nhận
+                  </p>
+
                   <p className="mt-0.5 truncate text-sm font-semibold text-ink">
                     {formatDate(checkIn)}
                   </p>
@@ -189,7 +223,9 @@ export default function RoomTypesPage() {
                   type="date"
                   value={checkIn}
                   min={todayISO()}
-                  onChange={(e) => handleCheckInChange(e.target.value)}
+                  onChange={(e) =>
+                    handleCheckInChange(e.target.value)
+                  }
                   className="h-10 w-10 cursor-pointer rounded-lg opacity-0"
                   aria-label="Chọn ngày nhận phòng"
                 />
@@ -197,11 +233,15 @@ export default function RoomTypesPage() {
             </div>
           </label>
 
-          <div className="hidden pb-6 text-neutral-300 sm:block" aria-hidden="true">
+
+          <div
+            className="hidden pb-6 text-neutral-300 sm:block"
+            aria-hidden="true"
+          >
             →
           </div>
 
-          {/* Check-out */}
+
           <label className="block">
             <span className="text-xs font-semibold uppercase tracking-wide text-neutral-500">
               Trả phòng
@@ -217,7 +257,10 @@ export default function RoomTypesPage() {
                 </span>
 
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs text-neutral-400">Ngày trả</p>
+                  <p className="text-xs text-neutral-400">
+                    Ngày trả
+                  </p>
+
                   <p className="mt-0.5 truncate text-sm font-semibold text-ink">
                     {formatDate(checkOut)}
                   </p>
@@ -227,10 +270,9 @@ export default function RoomTypesPage() {
                   type="date"
                   value={checkOut}
                   min={checkIn || todayISO()}
-                  onChange={(e) => {
-                    setError("");
-                    setCheckOut(e.target.value);
-                  }}
+                  onChange={(e) =>
+                    handleCheckOutChange(e.target.value)
+                  }
                   className="h-10 w-10 cursor-pointer rounded-lg opacity-0"
                   aria-label="Chọn ngày trả phòng"
                 />
@@ -238,25 +280,31 @@ export default function RoomTypesPage() {
             </div>
           </label>
 
+
           <button
             type="button"
             onClick={handleSearch}
             disabled={loading}
-            className="h-16.5 rounded-2xl bg-primary px-7 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
+            className="h-[66px] rounded-2xl bg-primary px-7 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? "Đang tìm..." : "Tìm phòng"}
           </button>
         </div>
 
+
         <div className="flex flex-col gap-2 border-t border-line bg-base/50 px-5 py-4 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-7">
           <div className="flex items-center gap-2 text-neutral-500">
             <span aria-hidden="true">✓</span>
-            <span>Ngày nhận từ hôm nay</span>
+
+            <span>
+              Ngày nhận từ hôm nay
+            </span>
           </div>
 
           {nights > 0 ? (
             <p className="font-medium text-primary">
-              {nights} đêm lưu trú · {formatDate(checkIn)} → {formatDate(checkOut)}
+              {nights} đêm lưu trú ·{" "}
+              {formatDate(checkIn)} → {formatDate(checkOut)}
             </p>
           ) : (
             <p className="text-neutral-400">
@@ -266,13 +314,14 @@ export default function RoomTypesPage() {
         </div>
       </section>
 
+
       {error && (
         <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
           {error}
         </div>
       )}
 
-      {/* Results heading */}
+
       <section className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
@@ -280,32 +329,50 @@ export default function RoomTypesPage() {
           </p>
 
           <h2 className="mt-1 font-display text-2xl text-ink">
-            {searched ? "Phòng phù hợp với lịch của bạn" : "Các loại phòng"}
+            {searched
+              ? "Phòng phù hợp với lịch của bạn"
+              : "Các loại phòng"}
           </h2>
 
           <p className="mt-1 text-sm text-neutral-500">
             {searched
-              ? `${sortedResults.filter((rt) => rt.availableRooms > 0).length} loại phòng còn khả dụng`
+              ? `${
+                  sortedResults.filter(
+                    (rt) => rt.availableRooms > 0
+                  ).length
+                } loại phòng còn khả dụng`
               : `${sortedResults.length} loại phòng đang có`}
           </p>
         </div>
 
+
         <select
           value={sort}
-          onChange={(e) => setSort(e.target.value as SortOption)}
+          onChange={(e) =>
+            setSort(e.target.value as SortOption)
+          }
           className="rounded-xl border border-line bg-surface px-4 py-2.5 text-sm text-ink focus:border-primary focus:outline-none"
           aria-label="Sắp xếp phòng"
         >
-          <option value="none">Sắp xếp mặc định</option>
-          <option value="price-asc">Giá: thấp đến cao</option>
-          <option value="price-desc">Giá: cao đến thấp</option>
+          <option value="none">
+            Sắp xếp mặc định
+          </option>
+
+          <option value="price-asc">
+            Giá: thấp đến cao
+          </option>
+
+          <option value="price-desc">
+            Giá: cao đến thấp
+          </option>
         </select>
       </section>
 
-      {/* Room cards */}
+
       <div className="mt-5 grid grid-cols-1 gap-6 lg:grid-cols-2">
         {sortedResults.map((rt) => {
-          const soldOut = searched && rt.availableRooms === 0;
+          const soldOut =
+            searched && rt.availableRooms === 0;
 
           return (
             <article
@@ -317,6 +384,7 @@ export default function RoomTypesPage() {
               }`}
             >
               <div className="grid grid-cols-1 sm:grid-cols-[190px_1fr]">
+
                 <div className="relative min-h-52 overflow-hidden bg-neutral-100 sm:min-h-full">
                   {rt.coverImage ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -330,6 +398,7 @@ export default function RoomTypesPage() {
                       Chưa có hình ảnh
                     </div>
                   )}
+
 
                   {searched && (
                     <span
@@ -345,6 +414,7 @@ export default function RoomTypesPage() {
                     </span>
                   )}
                 </div>
+
 
                 <div className="flex flex-col p-5 sm:p-6">
                   <div className="flex items-start justify-between gap-3">
@@ -366,17 +436,23 @@ export default function RoomTypesPage() {
                     </span>
                   </div>
 
+
                   {rt.minPrice != null && (
                     <div className="mt-4">
-                      <span className="text-xs text-neutral-400">Từ</span>
+                      <span className="text-xs text-neutral-400">
+                        Từ
+                      </span>
+
                       <p className="text-lg font-semibold text-primary">
                         {formatPrice(rt.minPrice)}
+
                         <span className="ml-1 text-xs font-normal text-neutral-400">
                           / đêm
                         </span>
                       </p>
                     </div>
                   )}
+
 
                   <p className="mt-3 text-sm leading-6 text-neutral-500">
                     {!searched
@@ -386,6 +462,7 @@ export default function RoomTypesPage() {
                         : `Còn ${rt.availableRooms}/${rt.totalRooms} phòng trong khoảng thời gian đã chọn.`}
                   </p>
 
+
                   <div className="mt-5 flex flex-col gap-2 sm:flex-row">
                     <button
                       type="button"
@@ -393,7 +470,9 @@ export default function RoomTypesPage() {
                       disabled={soldOut}
                       className="flex-1 rounded-full bg-primary px-5 py-3 text-center text-sm font-semibold text-white transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:bg-neutral-200 disabled:text-neutral-500"
                     >
-                      {soldOut ? "Hết phòng" : "Xem & đặt phòng"}
+                      {soldOut
+                        ? "Hết phòng"
+                        : "Xem & đặt phòng"}
                     </button>
 
                     {!searched && (
@@ -413,11 +492,13 @@ export default function RoomTypesPage() {
         })}
       </div>
 
+
       {!loading && sortedResults.length === 0 && (
         <div className="mt-8 rounded-3xl border border-line bg-surface px-6 py-12 text-center">
           <p className="font-display text-xl text-ink">
             Chưa tìm thấy loại phòng
           </p>
+
           <p className="mt-2 text-sm text-neutral-500">
             Hãy thử chọn một khoảng thời gian khác.
           </p>

@@ -2,11 +2,10 @@
 import { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { accountService, AccountProfile } from "@/lib/services/accountService";
-import { useAuthStore } from "@/hooks/useAuthStore";
 import { getErrorMessage } from "@/lib/getErrorMessage";
 
 function AccountContent() {
- const authUser=useAuthStore(s=>s.user); const [profile,setProfile]=useState<AccountProfile|null>(null); const [fullName,setFullName]=useState(""); const [phone,setPhone]=useState(""); const [newEmail,setNewEmail]=useState(""); const [otp,setOtp]=useState(""); const [currentPassword,setCurrentPassword]=useState(""); const [newPassword,setNewPassword]=useState(""); const [confirm,setConfirm]=useState(""); const [loading,setLoading]=useState(true); const [busy,setBusy]=useState(""); const [emailSent,setEmailSent]=useState(false); const [message,setMessage]=useState(""); const [error,setError]=useState("");
+ const [profile,setProfile]=useState<AccountProfile|null>(null); const [fullName,setFullName]=useState(""); const [phone,setPhone]=useState(""); const [newEmail,setNewEmail]=useState(""); const [otp,setOtp]=useState(""); const [currentPassword,setCurrentPassword]=useState(""); const [newPassword,setNewPassword]=useState(""); const [confirm,setConfirm]=useState(""); const [loading,setLoading]=useState(true); const [busy,setBusy]=useState(""); const [emailSent,setEmailSent]=useState(false); const [message,setMessage]=useState(""); const [error,setError]=useState("");
  useEffect(()=>{ void accountService.getMe().then(d=>{setProfile(d);setFullName(d.fullName);setPhone(d.phone??"");setNewEmail(d.email)}).catch(e=>setError(getErrorMessage(e,"Không thể tải thông tin tài khoản"))).finally(()=>setLoading(false));},[]);
  const notice=(m="",e="")=>{setMessage(m);setError(e)};
  const saveProfile=async(e:React.FormEvent)=>{e.preventDefault();notice();setBusy("profile");try{const d=await accountService.updateProfile({fullName:fullName.trim(),phone:phone.trim()});setProfile(d);setMessage("Thông tin tài khoản đã được cập nhật.");}catch(e){setError(getErrorMessage(e,"Không thể cập nhật thông tin"))}finally{setBusy("")}};

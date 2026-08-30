@@ -25,6 +25,7 @@ public class EmailService {
 
     private static final String RESEND_API_URL = "https://api.resend.com/emails";
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final DateTimeFormatter DATETIME_FMT = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -220,6 +221,24 @@ public class EmailService {
             case DIAMOND -> "Kim cương";
             default -> "Thành viên";
         };
+    }
+
+    @Async("mailTaskExecutor")
+    public void sendDiscountCodeEmail(String toEmail, String fullName, String code, Integer percent,
+                                       LocalDateTime startAt, LocalDateTime endAt) {
+        String subject = "Mã giảm giá mới từ ForestView Homestay: " + code;
+        String html = """
+                <div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;padding:24px;color:#333;">
+                    <h2 style="color:#2F5D50;">Xin chào %s,</h2>
+                    <p>ForestView Homestay vừa phát hành một mã giảm giá dành cho bạn:</p>
+                    <p style="font-size:28px;font-weight:bold;letter-spacing:4px;color:#C97A3D;margin:24px 0;">%s</p>
+                    <p>Giảm <b>%d%%</b> trên giá phòng, áp dụng cùng ưu đãi hạng thành viên hiện có của bạn.</p>
+                    <p>Thời gian sử dụng: từ <b>%s</b> đến <b>%s</b>.</p>
+                    <p style="margin-top:24px;color:#888;font-size:12px;">Đây là email tự động của ForestView Homestay.</p>
+                </div>
+                """.formatted(escapeHtml(fullName), code, percent,
+                startAt.format(DATETIME_FMT), endAt.format(DATETIME_FMT));
+        send(toEmail, subject, html, false);
     }
 
 }

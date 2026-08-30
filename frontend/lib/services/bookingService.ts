@@ -2,7 +2,7 @@ import api from "@/lib/api";
 import { Booking, BookingStatus } from "@/types";
 
 export const bookingService = {
-  create: (data: { roomId: number; checkInDate: string; checkOutDate: string; guestCount: number; note?: string; paymentMethod?: "CASH" | "QR_CODE" | "CARD" | "HOLD" }) =>
+  create: (data: { roomId: number; checkInDate: string; checkOutDate: string; guestCount: number; note?: string; discountCode?: string; paymentMethod?: "CASH" | "QR_CODE" | "CARD" | "HOLD" }) =>
     api.post<Booking>("/bookings", data).then((res) => res.data),
 
   getMine: () => api.get<Booking[]>("/bookings/me").then((res) => res.data),

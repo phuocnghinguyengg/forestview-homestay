@@ -77,7 +77,6 @@ export default function Navbar() {
                 </Link>
               ) : (
                 <>
-                  {/* Lịch sử đặt hàng → Dashboard */}
                   <Link
                     href="/dashboard"
                     className="transition hover:text-primary"

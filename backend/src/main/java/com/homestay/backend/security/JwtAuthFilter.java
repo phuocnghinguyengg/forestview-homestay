@@ -28,7 +28,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        // Never let a stale JWT block public authentication endpoints.
         String path = request.getRequestURI();
 
         if (request.getMethod().equalsIgnoreCase("OPTIONS")

@@ -30,45 +30,112 @@ public class DashboardService {
     private final BookingRepository bookingRepository;
 
     public DashboardStatsResponse getStats() {
-        Map<String, Long> byStatus = Arrays.stream(BookingStatus.values())
-                .collect(Collectors.toMap(Enum::name, bookingRepository::countByStatus));
 
-        LocalDateTime startOfMonth = LocalDate.now().withDayOfMonth(1).atStartOfDay();
+        Map<String, Long> byStatus =
+                Arrays.stream(BookingStatus.values())
+                        .collect(
+                                Collectors.toMap(
+                                        Enum::name,
+                                        bookingRepository::countByStatus
+                                )
+                        );
+
+        LocalDateTime startOfMonth =
+                LocalDate.now()
+                        .withDayOfMonth(1)
+                        .atStartOfDay();
 
         return DashboardStatsResponse.builder()
-                .totalUsers(userRepository.count())
-                .totalRooms(roomRepository.count())
-                .activeRooms(roomRepository.countByActiveTrue())
-                .totalBookings(bookingRepository.count())
+                .totalUsers(
+                        userRepository.count()
+                )
+                .totalRooms(
+                        roomRepository.count()
+                )
+                .activeRooms(
+                        roomRepository.countByActiveTrue()
+                )
+                .totalBookings(
+                        bookingRepository.count()
+                )
                 .bookingsByStatus(byStatus)
-                .totalRevenue(bookingRepository.sumRevenue())
-                .revenueThisMonth(bookingRepository.sumRevenueSince(startOfMonth))
+                .totalRevenue(
+                        bookingRepository.sumRevenue()
+                )
+                .revenueThisMonth(
+                        bookingRepository
+                                .sumRevenueSince(
+                                        startOfMonth
+                                )
+                )
+
                 .build();
     }
 
-    public List<RevenuePointResponse> getRevenueChart(int months) {
-        LocalDate fromMonth = LocalDate.now().minusMonths(months - 1L).withDayOfMonth(1);
-        LocalDateTime from = fromMonth.atStartOfDay();
+    public List<RevenuePointResponse> getRevenueChart(
+            int months
+    ) {
+        LocalDate fromMonth =
+                LocalDate.now()
+                        .minusMonths(months - 1L)
+                        .withDayOfMonth(1);
 
-        List<Booking> bookings = bookingRepository.findByStatusInAndCreatedAtAfter(
-                List.of(BookingStatus.CONFIRMED, BookingStatus.COMPLETED), from);
+        LocalDateTime from =
+                fromMonth.atStartOfDay();
 
-        Map<YearMonth, BigDecimal> grouped = bookings.stream()
-                .collect(Collectors.groupingBy(
-                        b -> YearMonth.from(b.getCreatedAt()),
-                        Collectors.reducing(BigDecimal.ZERO, Booking::getTotalPrice, BigDecimal::add)
-                ));
+        /*
+         * Biểu đồ cũng chỉ lấy COMPLETED.
+         */
+        List<Booking> bookings =
+                bookingRepository
+                        .findByStatusInAndCreatedAtAfter(
+                                List.of(
+                                        BookingStatus.COMPLETED
+                                ),
+                                from
+                        );
 
-        List<RevenuePointResponse> result = new ArrayList<>();
-        DateTimeFormatter labelFmt = DateTimeFormatter.ofPattern("MM/yyyy");
-        YearMonth cursor = YearMonth.from(fromMonth);
-        YearMonth end = YearMonth.now();
+        Map<YearMonth, BigDecimal> grouped =
+                bookings.stream()
+                        .collect(
+                                Collectors.groupingBy(
+                                        b ->
+                                                YearMonth.from(
+                                                        b.getCreatedAt()
+                                                ),
+                                        Collectors.reducing(
+                                                BigDecimal.ZERO,
+                                                Booking::getTotalPrice,
+                                                BigDecimal::add
+                                        )
+                                )
+                        );
+
+        List<RevenuePointResponse> result =
+                new ArrayList<>();
+
+        DateTimeFormatter labelFmt =
+                DateTimeFormatter.ofPattern(
+                        "MM/yyyy"
+                );
+
+        YearMonth cursor =
+                YearMonth.from(fromMonth);
+
+        YearMonth end =
+                YearMonth.now();
 
         while (!cursor.isAfter(end)) {
-            result.add(new RevenuePointResponse(
-                    cursor.format(labelFmt),
-                    grouped.getOrDefault(cursor, BigDecimal.ZERO)
-            ));
+            result.add(
+                    new RevenuePointResponse(
+                            cursor.format(labelFmt),
+                            grouped.getOrDefault(
+                                    cursor,
+                                    BigDecimal.ZERO
+                            )
+                    )
+            );
+
             cursor = cursor.plusMonths(1);
         }
 

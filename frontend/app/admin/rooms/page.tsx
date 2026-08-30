@@ -19,7 +19,6 @@ export default function AdminRoomsPage() {
   const [submitting, setSubmitting] = useState(false);
 
   const loadRooms = () => {
-    setLoading(true);
     roomService
       .getAllAdmin()
       .then(setRooms)

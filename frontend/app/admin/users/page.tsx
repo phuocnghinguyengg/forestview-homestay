@@ -21,7 +21,6 @@ export default function AdminUsersPage() {
   const [submitting, setSubmitting] = useState(false);
 
   const loadUsers = () => {
-    setLoading(true);
     userService
       .getAll()
       .then(setUsers)
