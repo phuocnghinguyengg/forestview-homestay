@@ -10,6 +10,11 @@
       "static/media/03bda585a99c6450-s.p.32sris142tqlb.woff2",
       "static/media/a343f882a40d2cc9-s.p.1sj6eobyi31rd.woff2"
     ],
+    "[project]/app/account/page": [
+      "static/media/3c7c6164b2587822-s.p.16u3vygyjnhr0.woff2",
+      "static/media/03bda585a99c6450-s.p.32sris142tqlb.woff2",
+      "static/media/a343f882a40d2cc9-s.p.1sj6eobyi31rd.woff2"
+    ],
     "[project]/app/admin/bookings/page": [
       "static/media/3c7c6164b2587822-s.p.16u3vygyjnhr0.woff2",
       "static/media/03bda585a99c6450-s.p.32sris142tqlb.woff2",
@@ -36,6 +41,11 @@
       "static/media/a343f882a40d2cc9-s.p.1sj6eobyi31rd.woff2"
     ],
     "[project]/app/dashboard/page": [
+      "static/media/3c7c6164b2587822-s.p.16u3vygyjnhr0.woff2",
+      "static/media/03bda585a99c6450-s.p.32sris142tqlb.woff2",
+      "static/media/a343f882a40d2cc9-s.p.1sj6eobyi31rd.woff2"
+    ],
+    "[project]/app/forgot-password/page": [
       "static/media/3c7c6164b2587822-s.p.16u3vygyjnhr0.woff2",
       "static/media/03bda585a99c6450-s.p.32sris142tqlb.woff2",
       "static/media/a343f882a40d2cc9-s.p.1sj6eobyi31rd.woff2"
