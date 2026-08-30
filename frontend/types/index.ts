@@ -71,3 +71,21 @@ export interface RegisterResponse {
   message: string;
   email: string;
 }
+
+export interface Booking {
+  id: number;
+  bookingCode: string;
+  roomId: number;
+  roomName: string;
+  roomAddress: string;
+  userFullName: string;
+  userEmail: string;
+  checkInDate: string;
+  checkOutDate: string;
+  guestCount: number;
+  totalPrice: number;
+  status: BookingStatus;
+  note: string | null;
+  createdAt: string;
+  hasReview: boolean;
+}
