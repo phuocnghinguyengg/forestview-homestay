@@ -5,6 +5,7 @@ import { roomTypeService } from "@/lib/services/roomTypeService";
 import { RoomTypeAvailability, RoomTypeCode } from "@/types";
 import { getErrorMessage } from "@/lib/getErrorMessage";
 import RoomTypeBookingModal from "@/components/RoomTypeBookingModal";
+import DateRangeCalendar from "@/components/DateRangeCalendar";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);
@@ -32,6 +33,7 @@ export default function RoomTypesPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [sort, setSort] = useState<SortOption>("none");
+  const [calendarOpen, setCalendarOpen] = useState(false);
 
   const [activeModal, setActiveModal] = useState<{ type: RoomTypeCode; label: string } | null>(null);
 
@@ -75,27 +77,14 @@ export default function RoomTypesPage() {
         Chọn ngày và loại phòng để kiểm tra tình trạng còn trống.
       </p>
 
-      <div className="mt-8 flex flex-col gap-3 rounded-2xl border border-line bg-surface p-5 sm:flex-row sm:items-end">
-        <div className="flex-1">
-          <label className="text-sm text-neutral-600">Nhận phòng</label>
-          <input
-            type="date"
-            value={checkIn}
-            min={todayISO()}
-            onChange={(e) => setCheckIn(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-line px-3 py-2.5 text-sm focus:border-primary focus:outline-none"
-          />
-        </div>
-        <div className="flex-1">
-          <label className="text-sm text-neutral-600">Trả phòng</label>
-          <input
-            type="date"
-            value={checkOut}
-            min={checkIn || todayISO()}
-            onChange={(e) => setCheckOut(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-line px-3 py-2.5 text-sm focus:border-primary focus:outline-none"
-          />
-        </div>
+      <div className="relative mt-8 rounded-2xl border border-line bg-surface p-5">
+        <div className="grid gap-3 sm:grid-cols-[1fr_1fr_1fr_auto] sm:items-end">
+          <button type="button" onClick={()=>setCalendarOpen(v=>!v)} className="rounded-xl border border-line p-3 text-left hover:border-primary">
+            <span className="block text-xs text-neutral-400">Nhận phòng</span><span className="mt-1 block text-sm font-medium text-ink">{checkIn ? new Date(`${checkIn}T00:00:00`).toLocaleDateString("vi-VN",{day:"2-digit",month:"2-digit",year:"numeric"}) : "Chọn ngày"}</span>
+          </button>
+          <button type="button" onClick={()=>setCalendarOpen(true)} className="rounded-xl border border-line p-3 text-left hover:border-primary">
+            <span className="block text-xs text-neutral-400">Trả phòng</span><span className="mt-1 block text-sm font-medium text-ink">{checkOut ? new Date(`${checkOut}T00:00:00`).toLocaleDateString("vi-VN",{day:"2-digit",month:"2-digit",year:"numeric"}) : "Chọn ngày"}</span>
+          </button>
         <div className="flex-1">
           <label className="text-sm text-neutral-600">Loại phòng</label>
           <select
@@ -117,6 +106,9 @@ export default function RoomTypesPage() {
         >
           {loading ? "Đang tìm..." : "Kiểm tra phòng trống"}
         </button>
+      </div>
+
+      {calendarOpen && <div className="absolute left-5 right-5 top-[150px] z-40 sm:left-auto sm:right-5 sm:w-[700px]"><DateRangeCalendar checkIn={checkIn} checkOut={checkOut} minDate={todayISO()} onChange={(a,b)=>{setCheckIn(a);setCheckOut(b);if(a&&b)setCalendarOpen(false)}} /></div>}
       </div>
 
       {error && <p className="mt-3 text-sm text-red-600">{error}</p>}

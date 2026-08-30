@@ -10,6 +10,10 @@ export interface RoomFormValues {
   address: string;
   pricePerNight: number;
   maxGuests: number;
+  recommendedGuests: number;
+  extraGuestFeePerNight: number;
+  weekendPrice: number;
+  holidayPrice: number;
   images: string[];
   amenities: string[];
   type: RoomTypeCode;
@@ -39,6 +43,10 @@ export default function RoomFormModal({
     address: initial?.address ?? "",
     pricePerNight: initial?.pricePerNight ?? 0,
     maxGuests: initial?.maxGuests ?? 2,
+    recommendedGuests: initial?.recommendedGuests ?? Math.min(2, initial?.maxGuests ?? 2),
+    extraGuestFeePerNight: initial?.extraGuestFeePerNight ?? 0,
+    weekendPrice: initial?.weekendPrice ?? 0,
+    holidayPrice: initial?.holidayPrice ?? 0,
     images: initial?.images ?? [],
     amenities: initial?.amenities ?? [],
     type: initial?.type ?? "DOUBLE",
@@ -140,6 +148,13 @@ export default function RoomFormModal({
                 className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none"
               />
             </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div><label className="text-sm text-neutral-600">Khách đề xuất</label><input type="number" min={1} max={form.maxGuests} value={form.recommendedGuests} onChange={e=>setForm({...form,recommendedGuests:Math.min(form.maxGuests,Math.max(1,Number(e.target.value)))})} className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none"/></div>
+            <div><label className="text-sm text-neutral-600">Phụ thu / khách / đêm</label><input type="number" min={0} value={form.extraGuestFeePerNight} onChange={e=>setForm({...form,extraGuestFeePerNight:Number(e.target.value)})} className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none"/></div>
+            <div><label className="text-sm text-neutral-600">Giá cuối tuần</label><input type="number" min={0} value={form.weekendPrice} onChange={e=>setForm({...form,weekendPrice:Number(e.target.value)})} className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none"/></div>
+            <div><label className="text-sm text-neutral-600">Giá ngày lễ</label><input type="number" min={0} value={form.holidayPrice} onChange={e=>setForm({...form,holidayPrice:Number(e.target.value)})} className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none"/><p className="mt-1 text-[11px] text-neutral-400">Để trống/0: đại lễ Việt Nam tự động x2 giá áp dụng. Nếu nhập giá lễ &gt; 0, hệ thống dùng giá lễ này.</p></div>
           </div>
 
           <div>

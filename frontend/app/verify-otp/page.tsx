@@ -43,6 +43,9 @@ function VerifyOtpContent() {
         email: res.email,
         role: res.role,
         emailVerified: res.emailVerified,
+        membershipTier: res.membershipTier,
+        membershipLabel: res.membershipLabel,
+        membershipDiscountPercent: res.membershipDiscountPercent,
       });
 
       router.push(res.role === "ADMIN" ? "/admin" : "/");
@@ -112,6 +115,9 @@ function VerifyOtpContent() {
         email: res.email,
         role: res.role,
         emailVerified: res.emailVerified,
+        membershipTier: res.membershipTier,
+        membershipLabel: res.membershipLabel,
+        membershipDiscountPercent: res.membershipDiscountPercent,
       });
 
       router.push(res.role === "ADMIN" ? "/admin" : "/");

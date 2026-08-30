@@ -1,189 +1,23 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import BookingStatusBadge from "@/components/BookingStatusBadge";
 import { bookingService } from "@/lib/services/bookingService";
-import { Booking } from "@/types";
+import { accountService } from "@/lib/services/accountService";
+import { Booking, AuthUser } from "@/types";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { getErrorMessage } from "@/lib/getErrorMessage";
-
-function formatPrice(price: number) {
-  return new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: "VND",
-  }).format(price);
-}
-
-function formatDate(date: string) {
-  return new Date(date).toLocaleDateString("vi-VN");
-}
-
-function DashboardContent() {
-  const { user } = useAuthStore();
-
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [cancellingId, setCancellingId] = useState<number | null>(null);
-
-  const loadBookings = async () => {
-    const data = await bookingService.getMine();
-    setBookings(data);
-  };
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const fetchBookings = async () => {
-      try {
-        setLoading(true);
-        setError("");
-
-        const data = await bookingService.getMine();
-
-        if (!cancelled) {
-          setBookings(data);
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setError(getErrorMessage(err));
-          setBookings([]);
-        }
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      }
-    };
-
-    fetchBookings();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const handleCancel = async (id: number) => {
-    if (!confirm("Bạn chắc chắn muốn hủy đơn đặt phòng này?")) {
-      return;
-    }
-
-    setCancellingId(id);
-
-    try {
-      await bookingService.cancel(id);
-
-      setError("");
-
-      await loadBookings();
-    } catch (err) {
-      alert(getErrorMessage(err, "Không thể hủy đơn này"));
-    } finally {
-      setCancellingId(null);
-    }
-  };
-
-  return (
-    <main className="mx-auto max-w-4xl px-5 py-16">
-      <p className="font-display text-sm italic text-accent">
-        Tài khoản của tôi
-      </p>
-
-      <h1 className="mt-1 font-display text-3xl text-ink">
-        Xin chào, {user?.fullName}
-      </h1>
-
-      <p className="mt-2 text-neutral-500">{user?.email}</p>
-
-      <div className="mt-10 flex items-end justify-between border-b border-line pb-4">
-        <h2 className="font-display text-xl text-ink">
-          Lịch sử đặt phòng
-        </h2>
-
-        <span className="text-sm text-neutral-500">
-          {bookings.length} đơn
-        </span>
-      </div>
-
-      {loading && (
-        <p className="mt-6 text-neutral-500">
-          Đang tải...
-        </p>
-      )}
-
-      {error && (
-        <p className="mt-6 text-red-600">
-          {error}
-        </p>
-      )}
-
-      {!loading && !error && bookings.length === 0 && (
-        <p className="mt-6 text-neutral-500">
-          Bạn chưa có đơn đặt phòng nào.
-        </p>
-      )}
-
-      {!loading && bookings.length > 0 && (
-        <div className="mt-6 space-y-4">
-          {bookings.map((b) => (
-            <div
-              key={b.id}
-              className="flex flex-col justify-between gap-3 rounded-2xl border border-line bg-surface p-5 sm:flex-row sm:items-center"
-            >
-              <div>
-                {b.bookingCode && (
-                  <p className="font-display text-xs italic text-accent">
-                    #{b.bookingCode}
-                  </p>
-                )}
-
-                <p className="mt-0.5 font-display text-lg text-ink">
-                  {b.roomName}
-                </p>
-
-                <p className="text-sm text-neutral-500">
-                  {b.roomAddress}
-                </p>
-
-                <p className="mt-1 text-sm text-neutral-600">
-                  {formatDate(b.checkInDate)} →{" "}
-                  {formatDate(b.checkOutDate)} · {b.guestCount} khách
-                </p>
-
-                <p className="mt-1 text-sm font-medium text-accent">
-                  {formatPrice(b.totalPrice)}
-                </p>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <BookingStatusBadge status={b.status} />
-
-                {(b.status === "PENDING" ||
-                  b.status === "CONFIRMED") && (
-                  <button
-                    onClick={() => handleCancel(b.id)}
-                    disabled={cancellingId === b.id}
-                    className="rounded-full border border-line px-3 py-1.5 text-sm text-red-600 transition hover:border-red-300 hover:bg-red-50 disabled:opacity-50"
-                  >
-                    {cancellingId === b.id
-                      ? "Đang hủy..."
-                      : "Hủy đơn"}
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </main>
-  );
-}
-
-export default function DashboardPage() {
-  return (
-    <ProtectedRoute allowedRoles={["USER", "ADMIN"]}>
-      <DashboardContent />
-    </ProtectedRoute>
-  );
-}
+function money(v:number){return new Intl.NumberFormat("vi-VN",{style:"currency",currency:"VND"}).format(v)}
+function date(v:string){return new Date(`${v}T00:00:00`).toLocaleDateString("vi-VN")}
+const tierNames:any={NONE:"Chưa có",BRONZE:"Đồng",SILVER:"Bạc",GOLD:"Vàng",DIAMOND:"Kim cương"};
+function Progress({label,value,target}:{label:string;value:number;target:number}){const pct=target?Math.min(100,Math.round(value*100/target)):100;return <div><div className="flex justify-between text-xs"><span>{label}</span><b>{pct}%</b></div><div className="mt-1 h-2 overflow-hidden rounded-full bg-neutral-100"><div className="h-full rounded-full bg-primary transition-all" style={{width:`${pct}%`}}/></div></div>}
+function Content(){const storeUser=useAuthStore(s=>s.user);const [user,setUser]=useState<AuthUser|null>(storeUser);const [bookings,setBookings]=useState<Booking[]>([]);const [loading,setLoading]=useState(true);const [error,setError]=useState("");const [cancelId,setCancelId]=useState<number|null>(null);
+ useEffect(()=>{Promise.all([bookingService.getMine(),accountService.getMe()]).then(([b,u])=>{setBookings(b);setUser(u)}).catch(e=>setError(getErrorMessage(e))).finally(()=>setLoading(false))},[]);
+ const cancel=async(id:number)=>{if(!confirm("Bạn chắc chắn muốn hủy đơn đặt phòng này?"))return;setCancelId(id);try{await bookingService.cancel(id);setBookings(await bookingService.getMine())}catch(e){alert(getErrorMessage(e))}finally{setCancelId(null)}};
+ const tier=user?.membershipTier||"NONE";
+ return <main className="mx-auto max-w-5xl px-5 py-12"><p className="font-display text-sm italic text-accent">Tài khoản của tôi</p><h1 className="mt-1 font-display text-3xl text-ink">Xin chào, {user?.fullName}</h1><p className="mt-2 text-neutral-500">{user?.email}</p>
+ <section className="mt-8 rounded-2xl border border-line bg-surface p-6"><div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-wider text-primary">Membership</p><h2 className="mt-1 font-display text-2xl text-ink">{tierNames[tier]} {user?.membershipDiscountPercent?`· giảm ${user.membershipDiscountPercent}%`:''}</h2><p className="mt-1 text-sm text-neutral-500">{user?.nextMembershipLabel?`Mục tiêu tiếp theo: ${user.nextMembershipLabel}`:'Bạn đã đạt hạng cao nhất.'}</p></div><div className="rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">{user?.successfulBookingCount??0} booking</div></div>{user?.nextMembershipTier&&<div className="mt-6 grid gap-4 md:grid-cols-2"><Progress label={`Booking: ${user.successfulBookingCount}/${user.successfulBookingTarget}`} value={user.successfulBookingCount??0} target={user.successfulBookingTarget??0}/><Progress label={`Chi tiêu: ${money(user.spendingVnd??0)} / ${money(user.spendingTargetVnd??0)}`} value={user.spendingVnd??0} target={user.spendingTargetVnd??0}/></div>}</section>
+ <div className="mt-10 flex items-end justify-between border-b border-line pb-4"><h2 className="font-display text-xl text-ink">Lịch sử đặt phòng</h2><span className="text-sm text-neutral-500">{bookings.length} đơn</span></div>
+ {loading&&<p className="mt-6 text-neutral-500">Đang tải...</p>}{error&&<p className="mt-6 text-red-600">{error}</p>}
+ <div className="mt-6 space-y-4">{bookings.map(b=><div key={b.id} className="rounded-2xl border border-line bg-surface p-5"><div className="flex flex-col justify-between gap-4 md:flex-row"><div className="min-w-0">{b.bookingCode&&<p className="font-display text-xs italic text-accent">#{b.bookingCode}</p>}<p className="mt-1 font-display text-lg text-ink">{b.roomName}</p><p className="text-sm text-neutral-500">{b.roomAddress}</p><p className="mt-1 text-sm text-neutral-600">{date(b.checkInDate)} → {date(b.checkOutDate)} · {b.nights} đêm · {b.guestCount} khách</p>{b.note&&<p className="mt-1 text-sm italic text-neutral-500">Yêu cầu: {b.note}</p>}<div className="mt-3 rounded-xl bg-neutral-50 p-3 text-xs text-neutral-600"><div className="flex justify-between"><span>Giá phòng</span><span>{money(b.basePrice)}</span></div>{b.holidayPriceTotal>0&&<div className="mt-1 flex justify-between"><span>Giá lễ áp dụng</span><span>{money(b.holidayPriceTotal)}</span></div>}{b.extraGuestFee>0&&<div className="mt-1 flex justify-between"><span>Phụ thu khách</span><span>+{money(b.extraGuestFee)}</span></div>}{b.membershipDiscountAmount>0&&<div className="mt-1 flex justify-between text-primary"><span>{tierNames[b.membershipTierApplied||'NONE']} -{b.membershipDiscountPercent}%</span><span>-{money(b.membershipDiscountAmount)}</span></div>}<div className="mt-2 flex justify-between border-t border-line pt-2 font-semibold text-ink"><span>Tổng</span><span className="text-accent">{money(b.totalPrice)}</span></div></div></div><div className="flex shrink-0 flex-col items-end gap-2"><BookingStatusBadge status={b.status}/>{b.paymentMethod&&<span className="rounded-full bg-neutral-100 px-3 py-1 text-xs text-neutral-600">{b.paymentMethod==='HOLD'?'Giữ thanh toán':b.paymentMethod==='QR_CODE'?'QR Code':b.paymentMethod==='CARD'?'NAPAS/VISA/MasterCard':'Tiền mặt'}</span>}{b.paymentHoldExpiresAt&&b.status==='PENDING'&&<span className="text-xs text-accent">Giữ chỗ đến {new Date(b.paymentHoldExpiresAt).toLocaleString('vi-VN')}</span>}{b.rejectionReason&&<span className="max-w-64 text-right text-xs text-red-600">Lý do: {b.rejectionReason}</span>}{(b.status==='PENDING'||b.status==='CONFIRMED')&&<button onClick={()=>cancel(b.id)} disabled={cancelId===b.id} className="rounded-full border border-line px-3 py-1.5 text-sm text-red-600">{cancelId===b.id?'Đang hủy...':'Hủy đơn'}</button>}</div></div></div>)}{!loading&&!bookings.length&&<p className="mt-6 text-neutral-500">Bạn chưa có đơn đặt phòng nào.</p>}</div></main>}
+export default function DashboardPage(){return <ProtectedRoute allowedRoles={["USER","ADMIN"]}><Content/></ProtectedRoute>}

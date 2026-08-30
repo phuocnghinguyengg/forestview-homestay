@@ -39,6 +39,9 @@ export default function LoginPage() {
         email: res.email,
         role: res.role,
         emailVerified: res.emailVerified,
+        membershipTier: res.membershipTier,
+        membershipLabel: res.membershipLabel,
+        membershipDiscountPercent: res.membershipDiscountPercent,
       });
 
       // ADMIN → trang quản trị

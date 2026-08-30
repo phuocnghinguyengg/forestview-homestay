@@ -1,10 +1,23 @@
 export type Role = "USER" | "ADMIN";
 
+export type MembershipTier = "NONE" | "BRONZE" | "SILVER" | "GOLD" | "DIAMOND";
+
 export interface AuthUser {
   fullName: string;
   email: string;
   role: Role;
   emailVerified: boolean;
+  membershipTier?: MembershipTier;
+  membershipLabel?: string;
+  membershipDiscountPercent?: number;
+  successfulBookingCount?: number;
+  successfulBookingTarget?: number;
+  successfulBookingProgressPercent?: number;
+  spendingVnd?: number;
+  spendingTargetVnd?: number;
+  spendingProgressPercent?: number;
+  nextMembershipTier?: MembershipTier | null;
+  nextMembershipLabel?: string | null;
 }
 
 export interface AuthResponse {
@@ -14,6 +27,9 @@ export interface AuthResponse {
   email: string;
   role: Role;
   emailVerified: boolean;
+  membershipTier?: MembershipTier;
+  membershipLabel?: string;
+  membershipDiscountPercent?: number;
 }
 
 export interface Room {
@@ -29,9 +45,15 @@ export interface Room {
   type: RoomTypeCode;
   typeLabel: string;
   createdAt: string;
+  recommendedGuests: number;
+  extraGuestFeePerNight: number;
+  weekendPrice?: number | null;
+  holidayPrice?: number | null;
 }
 
 export type BookingStatus = "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED";
+export type PaymentMethod = "CASH" | "QR_CODE" | "CARD" | "HOLD";
+export type PaymentStatus = "UNPAID" | "PAID" | "HOLD";
 
 export interface Booking {
   id: number;
@@ -45,6 +67,17 @@ export interface Booking {
   checkOutDate: string;
   guestCount: number;
   totalPrice: number;
+  nights: number;
+  basePrice: number;
+  holidayPriceTotal: number;
+  extraGuestFee: number;
+  membershipDiscountAmount: number;
+  membershipDiscountPercent: number;
+  membershipTierApplied?: MembershipTier | null;
+  paymentMethod: PaymentMethod;
+  paymentStatus: PaymentStatus;
+  paymentHoldExpiresAt?: string | null;
+  rejectionReason?: string | null;
   status: BookingStatus;
   note: string | null;
   createdAt: string;

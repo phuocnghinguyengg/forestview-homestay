@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { href: "/admin/rooms", label: "Quản lý phòng" },
   { href: "/admin/bookings", label: "Đơn đặt phòng" },
   { href: "/admin/users", label: "Người dùng" },
+  { href: "/admin/holidays", label: "Ngày lễ & giá lễ" },
 ];
 
 function AdminNav() {
@@ -29,7 +30,7 @@ function AdminNav() {
               key={item.href}
               href={item.href}
               className={`block rounded-lg px-3 py-2 text-sm font-medium ${
-                active ? "bg-rose-600 text-white" : "text-neutral-700 hover:bg-neutral-100"
+                active ? "bg-primary text-white" : "text-neutral-700 hover:bg-neutral-100"
               }`}
             >
               {item.label}

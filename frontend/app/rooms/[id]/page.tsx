@@ -1,119 +1,17 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { roomService } from "@/lib/services/roomService";
-import { bookingService } from "@/lib/services/bookingService";
 import { Room } from "@/types";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { getErrorMessage } from "@/lib/getErrorMessage";
-
-function formatPrice(price: number) {
-  return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);
-}
-
-export default function RoomDetailPage() {
-  const { id } = useParams<{ id: string }>();
-  const router = useRouter();
-  const { isAuthenticated } = useAuthStore();
-
-  const [room, setRoom] = useState<Room | null>(null);
-  const [checkIn, setCheckIn] = useState("");
-  const [checkOut, setCheckOut] = useState("");
-  const [guests, setGuests] = useState(1);
-  const [error, setError] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
-
-  useEffect(() => {
-    roomService.getById(Number(id)).then(setRoom).catch(console.error);
-  }, [id]);
-
-  const handleBooking = async () => {
-    setError("");
-    setSuccess(false);
-
-    if (!isAuthenticated) {
-      router.push("/login");
-      return;
-    }
-
-    if (!checkIn || !checkOut) {
-      setError("Vui lòng chọn ngày nhận và trả phòng");
-      return;
-    }
-
-    setSubmitting(true);
-    try {
-      await bookingService.create({ roomId: Number(id), checkInDate: checkIn, checkOutDate: checkOut, guestCount: guests });
-      setSuccess(true);
-    } catch (err) {
-      setError(getErrorMessage(err, "Đặt phòng thất bại, vui lòng thử lại"));
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  if (!room) return <main className="p-10 text-center text-neutral-500">Đang tải...</main>;
-
-  return (
-    <main className="mx-auto max-w-4xl px-5 py-12">
-      <p className="font-display text-sm italic text-accent">{room.address}</p>
-      <h1 className="mt-1 font-display text-3xl text-ink">{room.name}</h1>
-
-      <div className="mt-6 h-80 w-full overflow-hidden rounded-t-[2.5rem] rounded-b-md bg-neutral-100">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={room.images?.[0] ?? "/placeholder-room.jpg"} alt={room.name} className="h-full w-full object-cover" />
-      </div>
-
-      <div className="mt-8 grid grid-cols-1 gap-10 sm:grid-cols-3">
-        <div className="sm:col-span-2">
-          <h2 className="font-display text-xl text-ink">Mô tả</h2>
-          <p className="mt-2 leading-relaxed text-neutral-600">{room.description || "Chưa có mô tả."}</p>
-
-          <h2 className="mt-8 font-display text-xl text-ink">Tiện ích</h2>
-          <ul className="mt-3 flex flex-wrap gap-2">
-            {room.amenities.map((a) => (
-              <li key={a} className="rounded-full border border-line px-3 py-1 text-sm text-neutral-700">
-                {a}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="h-fit rounded-2xl border border-line bg-surface p-5">
-          <p className="text-xl font-semibold text-accent">
-            {formatPrice(room.pricePerNight)} <span className="text-sm font-normal text-neutral-400">/đêm</span>
-          </p>
-
-          <div className="mt-4 space-y-3">
-            <div>
-              <label className="text-sm text-neutral-600">Nhận phòng</label>
-              <input type="date" value={checkIn} onChange={(e) => setCheckIn(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none" />
-            </div>
-            <div>
-              <label className="text-sm text-neutral-600">Trả phòng</label>
-              <input type="date" value={checkOut} onChange={(e) => setCheckOut(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none" />
-            </div>
-            <div>
-              <label className="text-sm text-neutral-600">Số khách</label>
-              <input type="number" min={1} max={room.maxGuests} value={guests}
-                onChange={(e) => setGuests(Number(e.target.value))}
-                className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none" />
-            </div>
-          </div>
-
-          {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
-          {success && <p className="mt-3 text-sm text-primary">Đặt phòng thành công!</p>}
-
-          <button onClick={handleBooking} disabled={submitting}
-            className="mt-4 w-full rounded-full bg-primary py-2.5 font-medium text-white transition hover:bg-primary-dark disabled:opacity-50">
-            {submitting ? "Đang xử lý..." : "Đặt phòng ngay"}
-          </button>
-        </div>
-      </div>
-    </main>
-  );
-}
+import DateRangeCalendar from "@/components/DateRangeCalendar";
+import BookingPaymentModal from "@/components/BookingPaymentModal";
+import { Booking } from "@/types";
+function money(v:number){return new Intl.NumberFormat("vi-VN",{style:"currency",currency:"VND"}).format(v)}
+export default function RoomDetailPage(){const {id}=useParams<{id:string}>();const router=useRouter();const {isAuthenticated,user}=useAuthStore();const [room,setRoom]=useState<Room|null>(null);const [checkIn,setCheckIn]=useState("");const [checkOut,setCheckOut]=useState("");const [guests,setGuests]=useState(1);const [note,setNote]=useState("");const [error,setError]=useState("");const [calendar,setCalendar]=useState(false);const [payment,setPayment]=useState(false);const [success,setSuccess]=useState<Booking|null>(null);
+ useEffect(()=>{roomService.getById(Number(id)).then(setRoom).catch(e=>setError(getErrorMessage(e)))},[id]);
+ if(!room)return <main className="p-10 text-center text-neutral-500">Đang tải...</main>;
+ const recommended=room.recommendedGuests??Math.min(2,room.maxGuests);
+ const startBooking=()=>{setError("");if(!isAuthenticated){router.push('/login');return}if(!checkIn||!checkOut||checkOut<=checkIn){setError('Vui lòng chọn ngày nhận/trả phòng hợp lệ');return}if(guests<1||guests>room.maxGuests){setError(`Số khách phải từ 1 đến ${room.maxGuests}`);return}if(!user?.emailVerified){setError('Vui lòng xác thực email trước khi đặt phòng');return}setPayment(true)};
+ return <main className="mx-auto max-w-5xl px-5 py-12"><p className="font-display text-sm italic text-accent">{room.address}</p><h1 className="mt-1 font-display text-3xl text-ink">{room.name}</h1><div className="mt-6 h-80 overflow-hidden rounded-t-[2.5rem] rounded-b-md bg-neutral-100">{room.images?.[0]&&<img src={room.images[0]} alt={room.name} className="h-full w-full object-cover"/>}</div><div className="mt-8 grid gap-8 md:grid-cols-[1.4fr_1fr]"><div><p className="text-neutral-600">{room.description}</p><div className="mt-5 flex flex-wrap gap-2">{room.amenities?.map(a=><span key={a} className="rounded-full bg-neutral-100 px-3 py-1 text-xs">{a}</span>)}</div></div><section className="rounded-2xl border border-line bg-surface p-5"><p className="text-sm text-neutral-500">Từ</p><p className="font-display text-2xl text-accent">{money(room.pricePerNight)}<span className="text-sm text-neutral-400">/đêm</span></p><button onClick={()=>setCalendar(v=>!v)} className="mt-4 w-full rounded-xl border border-line p-3 text-left"><span className="text-xs text-neutral-400">Ngày ở</span><span className="mt-1 block text-sm">{checkIn||'Nhận phòng'} → {checkOut||'Trả phòng'}</span></button>{calendar&&<div className="mt-3"><DateRangeCalendar checkIn={checkIn} checkOut={checkOut} onChange={(a,b)=>{setCheckIn(a);setCheckOut(b);if(a&&b)setCalendar(false)}}/></div>}<div className="mt-4"><p className="text-sm text-neutral-600">Số khách</p><div className="mt-2 flex flex-wrap gap-2">{Array.from({length:Math.min(10,room.maxGuests)},(_,i)=>i+1).map(n=><button key={n} onClick={()=>setGuests(n)} className={`h-9 w-9 rounded-full border text-sm ${guests===n?'border-primary bg-primary text-white':'border-line'}`}>{n}</button>)}{room.maxGuests>10&&<input type="number" min={11} max={room.maxGuests} value={guests>10?guests:''} onChange={e=>setGuests(Number(e.target.value))} className="w-24 rounded-full border border-line px-3 text-sm" placeholder="Khác"/>}</div><p className="mt-2 text-xs text-neutral-400">Đề xuất {recommended} khách · tối đa {room.maxGuests}</p></div><textarea value={note} onChange={e=>setNote(e.target.value)} rows={3} placeholder="Ghi chú / yêu cầu" className="mt-4 w-full rounded-xl border border-line p-3 text-sm"/><button onClick={startBooking} className="mt-4 w-full rounded-full bg-primary py-3 text-sm font-semibold text-white hover:bg-primary-dark">Xác nhận đặt phòng</button>{error&&<p className="mt-3 text-sm text-red-600">{error}</p>}</section></div>{success&&<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"><div className="w-full max-w-md rounded-2xl bg-surface p-6 text-center"><h2 className="font-display text-2xl">Đặt phòng thành công</h2><p className="mt-2 text-sm text-neutral-500">#{success.bookingCode} · {success.status==='PENDING'?'Đang chờ admin xác nhận':'Đã xác nhận'}</p><button onClick={()=>router.push('/dashboard')} className="mt-5 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-white">Xem lịch sử</button></div></div>}{payment&&<BookingPaymentModal bookingData={{roomId:room.id,checkInDate:checkIn,checkOutDate:checkOut,guestCount:guests,note}} onClose={()=>setPayment(false)} onSuccess={b=>{setPayment(false);setSuccess(b)}}/>}</main>}
