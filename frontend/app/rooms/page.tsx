@@ -242,7 +242,7 @@ export default function RoomTypesPage() {
             type="button"
             onClick={handleSearch}
             disabled={loading}
-            className="h-[66px] rounded-2xl bg-primary px-7 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
+            className="h-16.5 rounded-2xl bg-primary px-7 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? "Đang tìm..." : "Tìm phòng"}
           </button>

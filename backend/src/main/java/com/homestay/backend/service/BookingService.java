@@ -35,7 +35,15 @@ public class BookingService {
         }
 
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (!Boolean.TRUE.equals(user.getEmailVerified())) {
+        throw new IllegalArgumentException("Vui lòng xác thực email trước khi đặt phòng");
+        }
+
+        if (!request.getCheckOutDate().isAfter(request.getCheckInDate())) {
+        throw new IllegalArgumentException("Check-out date must be after check-in date");
+        }
 
         Room room = roomRepository.findById(request.getRoomId())
                 .orElseThrow(() -> new ResourceNotFoundException("Room not found"));

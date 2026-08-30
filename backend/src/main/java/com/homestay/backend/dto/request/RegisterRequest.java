@@ -16,5 +16,9 @@ public class RegisterRequest {
     @NotBlank @Size(min = 6, message = "Password must be at least 6 characters")
     private String password;
 
+    @jakarta.validation.constraints.Pattern(
+    regexp = "^\\+[1-9]\\d{6,14}$",
+    message = "Số điện thoại không hợp lệ"
+    )
     private String phone;
 }

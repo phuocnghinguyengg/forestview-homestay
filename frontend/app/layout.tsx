@@ -4,6 +4,7 @@ import "./globals.css";
 import AuthInitializer from "@/components/AuthInitializer";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import UnverifiedBanner from "@/components/UnverifiedBanner";
 
 const fraunces = Fraunces({
   variable: "--font-display",
@@ -29,6 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${fraunces.variable} ${manrope.variable} flex min-h-screen flex-col antialiased`}>
         <AuthInitializer />
         <Navbar />
+        <UnverifiedBanner />
         <div className="flex-1">{children}</div>
         <Footer />
       </body>

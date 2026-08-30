@@ -1,8 +1,10 @@
 package com.homestay.backend.controller;
 
+import com.homestay.backend.dto.request.AdminUserUpdateRequest;
 import com.homestay.backend.dto.response.UserResponse;
 import com.homestay.backend.entity.enums.Role;
 import com.homestay.backend.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,12 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponse> updateUser(
+            @PathVariable Long id, @Valid @RequestBody AdminUserUpdateRequest request) {
+        return ResponseEntity.ok(userService.updateUser(id, request));
+    }
+
     @PatchMapping("/{id}/toggle-enabled")
     public ResponseEntity<Void> toggleEnabled(@PathVariable Long id) {
         userService.toggleUserEnabled(id);
@@ -30,5 +38,11 @@ public class UserController {
     @PatchMapping("/{id}/role")
     public ResponseEntity<UserResponse> updateRole(@PathVariable Long id, @RequestParam Role role) {
         return ResponseEntity.ok(userService.updateUserRole(id, role));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 }

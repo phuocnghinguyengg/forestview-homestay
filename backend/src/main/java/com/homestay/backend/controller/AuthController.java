@@ -39,4 +39,9 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
     }
+
+    @PostMapping("/skip-otp")
+    public ResponseEntity<AuthResponse> skipOtp(@Valid @RequestBody ResendOtpRequest request) {
+        return ResponseEntity.ok(authService.skipVerification(request));
+    }
 }

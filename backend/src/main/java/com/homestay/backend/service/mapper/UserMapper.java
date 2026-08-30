@@ -13,6 +13,7 @@ public class UserMapper {
                 .role(user.getRole())
                 .enabled(user.getEnabled())
                 .createdAt(user.getCreatedAt())
+                .emailVerified(user.getEmailVerified())
                 .build();
     }
 }

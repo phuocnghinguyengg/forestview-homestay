@@ -7,6 +7,7 @@ import { bookingService } from "@/lib/services/bookingService";
 import { Room, RoomTypeCode } from "@/types";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { getErrorMessage } from "@/lib/getErrorMessage";
+import Link from "next/link";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);
@@ -164,33 +165,42 @@ export default function RoomTypeBookingModal({
               </div>
             )}
 
-            {selectedRoom && (
-              <div className="mt-5 rounded-xl border border-line p-4">
-                <label className="text-sm text-neutral-600">Số khách</label>
-                <input
-                  type="number"
-                  min={1}
-                  max={selectedRoom.maxGuests}
-                  value={guestCount}
-                  onChange={(e) => setGuestCount(Number(e.target.value))}
-                  className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none"
-                />
+{selectedRoom && (
+  <div className="mt-5 rounded-xl border border-line p-4">
+    <label className="text-sm text-neutral-600">Số khách</label>
+    <input
+      type="number"
+      min={1}
+      max={selectedRoom.maxGuests}
+      value={guestCount}
+      onChange={(e) => setGuestCount(Number(e.target.value))}
+      className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none"
+    />
 
-                {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+    {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
 
-                <button
-                  onClick={handleBook}
-                  disabled={submitting}
-                  className="mt-4 w-full rounded-full bg-primary py-2.5 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:opacity-50"
-                >
-                  {submitting
-                    ? "Đang xử lý..."
-                    : isAuthenticated
-                      ? "Xác nhận đặt phòng"
-                      : "Đăng nhập để đặt phòng"}
-                </button>
-              </div>
-            )}
+    {isAuthenticated && !useAuthStore.getState().user?.emailVerified && (
+      <p className="mt-3 text-sm text-accent">
+        Bạn cần xác thực email trước khi đặt phòng.{" "}
+        <Link href="/verify-otp" className="underline">Xác thực ngay</Link>
+      </p>
+    )}
+
+    <button
+      onClick={handleBook}
+      disabled={submitting || (isAuthenticated && !useAuthStore.getState().user?.emailVerified)}
+      className="mt-4 w-full rounded-full bg-primary py-2.5 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:opacity-50"
+    >
+      {submitting
+        ? "Đang xử lý..."
+        : !isAuthenticated
+          ? "Đăng nhập để đặt phòng"
+          : !useAuthStore.getState().user?.emailVerified
+            ? "Cần xác thực email"
+            : "Xác nhận đặt phòng"}
+    </button>
+  </div>
+)}
           </>
         )}
       </div>

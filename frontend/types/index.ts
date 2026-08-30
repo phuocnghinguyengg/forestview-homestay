@@ -1,19 +1,5 @@
 export type Role = "USER" | "ADMIN";
 
-export interface AuthUser {
-  fullName: string;
-  email: string;
-  role: Role;
-}
-
-export interface AuthResponse {
-  accessToken: string;
-  refreshToken: string;
-  fullName: string;
-  email: string;
-  role: Role;
-}
-
 export interface Room {
   id: number;
   name: string;
@@ -88,4 +74,20 @@ export interface Booking {
   note: string | null;
   createdAt: string;
   hasReview: boolean;
+}
+
+export interface AuthUser {
+  fullName: string;
+  email: string;
+  role: Role;
+  emailVerified: boolean;
+}
+
+export interface AuthResponse {
+  accessToken: string;
+  refreshToken: string;
+  fullName: string;
+  email: string;
+  role: Role;
+  emailVerified: boolean;
 }

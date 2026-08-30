@@ -10,12 +10,8 @@ export const authService = {
 
   resendOtp: (data: { email: string }) => api.post("/auth/resend-otp", data),
 
+  skipOtp: (data: { email: string }) => api.post<AuthResponse>("/auth/skip-otp", data).then((res) => res.data),
+
   login: (data: { email: string; password: string }) =>
     api.post<AuthResponse>("/auth/login", data).then((res) => res.data),
-
-  requestPasswordReset: (data: { email: string }) =>
-    api.post("/auth/forgot-password", data).then((res) => res.data),
-
-  resetPassword: (data: { email: string; otp: string; newPassword: string }) =>
-    api.post("/auth/reset-password", data).then((res) => res.data),
 };

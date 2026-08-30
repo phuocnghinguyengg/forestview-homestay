@@ -3,27 +3,33 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 import { authService } from "@/lib/services/authService";
 import { getErrorMessage } from "@/lib/getErrorMessage";
 
 export default function RegisterPage() {
   const router = useRouter();
 
-  const [form, setForm] = useState({ fullName: "", email: "", password: "", phone: "" });
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState<string | undefined>();
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setSubmitting(true);
 
+    if (phone && !isValidPhoneNumber(phone)) {
+      setError("Số điện thoại không hợp lệ cho khu vực đã chọn");
+      return;
+    }
+
+    setSubmitting(true);
     try {
-      const res = await authService.register(form);
+      const res = await authService.register({ fullName, email, password, phone });
       router.push(`/verify-otp?email=${encodeURIComponent(res.email)}`);
     } catch (err) {
       setError(getErrorMessage(err, "Đăng ký thất bại, vui lòng thử lại"));
@@ -44,10 +50,9 @@ export default function RegisterPage() {
         <div>
           <label className="text-sm text-neutral-600">Họ và tên</label>
           <input
-            name="fullName"
             required
-            value={form.fullName}
-            onChange={handleChange}
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
             className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink focus:border-primary focus:outline-none"
           />
         </div>
@@ -55,31 +60,32 @@ export default function RegisterPage() {
           <label className="text-sm text-neutral-600">Email</label>
           <input
             type="email"
-            name="email"
             required
-            value={form.email}
-            onChange={handleChange}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink focus:border-primary focus:outline-none"
           />
         </div>
         <div>
           <label className="text-sm text-neutral-600">Số điện thoại</label>
-          <input
-            name="phone"
-            value={form.phone}
-            onChange={handleChange}
-            className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink focus:border-primary focus:outline-none"
-          />
+          <div className="phone-input-wrapper mt-1">
+            <PhoneInput
+              international
+              defaultCountry="VN"
+              value={phone}
+              onChange={setPhone}
+              placeholder="Nhập số điện thoại"
+            />
+          </div>
         </div>
         <div>
           <label className="text-sm text-neutral-600">Mật khẩu</label>
           <input
             type="password"
-            name="password"
             required
             minLength={6}
-            value={form.password}
-            onChange={handleChange}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink focus:border-primary focus:outline-none"
           />
         </div>

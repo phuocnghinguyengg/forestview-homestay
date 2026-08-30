@@ -18,50 +18,18 @@ export default function AdminRoomsPage() {
   const [editingRoom, setEditingRoom] = useState<Room | undefined>(undefined);
   const [submitting, setSubmitting] = useState(false);
 
-const loadRooms = async () => {
-  setLoading(true);
-  setError("");
-
-  try {
-    const data = await roomService.getAllAdmin();
-    setRooms(data);
-  } catch (err) {
-    setError(getErrorMessage(err));
-  } finally {
-    setLoading(false);
-  }
-};
-
-useEffect(() => {
-  let cancelled = false;
-
-  const fetchRooms = async () => {
+  const loadRooms = () => {
     setLoading(true);
-    setError("");
-
-    try {
-      const data = await roomService.getAllAdmin();
-
-      if (!cancelled) {
-        setRooms(data);
-      }
-    } catch (err) {
-      if (!cancelled) {
-        setError(getErrorMessage(err));
-      }
-    } finally {
-      if (!cancelled) {
-        setLoading(false);
-      }
-    }
+    roomService
+      .getAllAdmin()
+      .then(setRooms)
+      .catch((err) => setError(getErrorMessage(err)))
+      .finally(() => setLoading(false));
   };
 
-  void fetchRooms();
-
-  return () => {
-    cancelled = true;
-  };
-}, []);
+  useEffect(() => {
+    loadRooms();
+  }, []);
 
   const openCreate = () => {
     setEditingRoom(undefined);
@@ -82,7 +50,7 @@ useEffect(() => {
         await roomService.create(values);
       }
       setModalOpen(false);
-      await loadRooms();
+      loadRooms();
     } catch (err) {
       alert(getErrorMessage(err, "Lưu phòng thất bại"));
     } finally {
@@ -112,10 +80,10 @@ useEffect(() => {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-neutral-900">Quản lý phòng</h1>
+        <h1 className="font-display text-2xl text-ink">Quản lý phòng</h1>
         <button
           onClick={openCreate}
-          className="rounded-full bg-rose-600 px-4 py-2 text-sm font-medium text-white hover:bg-rose-700"
+          className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-primary-dark"
         >
           + Thêm phòng
         </button>
@@ -124,28 +92,30 @@ useEffect(() => {
       {loading && <p className="mt-6 text-neutral-500">Đang tải...</p>}
       {error && <p className="mt-6 text-red-600">{error}</p>}
 
-      <div className="mt-6 overflow-x-auto rounded-2xl border border-neutral-200">
+      <div className="mt-6 overflow-x-auto rounded-2xl border border-line">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 text-neutral-500">
             <tr>
               <th className="px-4 py-3">Tên phòng</th>
+              <th className="px-4 py-3">Loại phòng</th>
               <th className="px-4 py-3">Giá/đêm</th>
               <th className="px-4 py-3">Khách tối đa</th>
               <th className="px-4 py-3">Trạng thái</th>
               <th className="px-4 py-3 text-right">Hành động</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-neutral-100">
+          <tbody className="divide-y divide-line">
             {rooms.map((room) => (
               <tr key={room.id}>
-                <td className="px-4 py-3 font-medium text-neutral-900">{room.name}</td>
+                <td className="px-4 py-3 font-medium text-ink">{room.name}</td>
+                <td className="px-4 py-3 text-neutral-600">{room.typeLabel}</td>
                 <td className="px-4 py-3">{formatPrice(room.pricePerNight)}</td>
                 <td className="px-4 py-3">{room.maxGuests}</td>
                 <td className="px-4 py-3">
                   <button
                     onClick={() => handleToggleActive(room.id)}
                     className={`rounded-full px-3 py-1 text-xs font-medium ${
-                      room.active ? "bg-green-100 text-green-700" : "bg-neutral-100 text-neutral-500"
+                      room.active ? "bg-primary/10 text-primary" : "bg-neutral-100 text-neutral-500"
                     }`}
                   >
                     {room.active ? "Đang hoạt động" : "Đã ẩn"}
@@ -154,7 +124,7 @@ useEffect(() => {
                 <td className="px-4 py-3 text-right">
                   <button
                     onClick={() => openEdit(room)}
-                    className="mr-3 text-neutral-600 hover:text-rose-600"
+                    className="mr-3 text-neutral-600 transition hover:text-primary"
                   >
                     Sửa
                   </button>

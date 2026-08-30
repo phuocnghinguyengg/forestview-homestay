@@ -8,11 +8,21 @@ export interface AdminUser {
   phone: string | null;
   role: Role;
   enabled: boolean;
+  emailVerified: boolean;
   createdAt: string;
+}
+
+export interface AdminUserUpdatePayload {
+  fullName: string;
+  email: string;
+  phone?: string;
 }
 
 export const userService = {
   getAll: () => api.get<AdminUser[]>("/admin/users").then((res) => res.data),
+  update: (id: number, data: AdminUserUpdatePayload) =>
+    api.put<AdminUser>(`/admin/users/${id}`, data).then((res) => res.data),
   toggleEnabled: (id: number) => api.patch(`/admin/users/${id}/toggle-enabled`),
   updateRole: (id: number, role: Role) => api.patch(`/admin/users/${id}/role?role=${role}`),
+  remove: (id: number) => api.delete(`/admin/users/${id}`),
 };

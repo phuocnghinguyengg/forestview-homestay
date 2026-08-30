@@ -84,19 +84,20 @@ public class AuthService {
 
         emailService.sendWelcomeEmail(user.getEmail(), user.getFullName());
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
-        String accessToken = jwtService.generateAccessToken(userDetails, user.getRole().name());
-        String refreshToken = jwtService.generateRefreshToken(userDetails);
+        return buildAuthResponse(user);
+    }
 
-        return AuthResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .fullName(user.getFullName())
-                .email(user.getEmail())
-                .role(user.getRole().name())
-                .id(user.getId())
-                .phone(user.getPhone())
-                .build();
+    public AuthResponse skipVerification(ResendOtpRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Tài khoản không tồn tại"));
+
+        if (Boolean.TRUE.equals(user.getEmailVerified())) {
+            throw new IllegalArgumentException("Tài khoản đã được xác thực trước đó");
+        }
+
+        // Cho phép đăng nhập tạm thời với trạng thái CHƯA xác thực.
+        // Người dùng vẫn phải xác thực trước khi đặt phòng (kiểm tra ở BookingService).
+        return buildAuthResponse(user);
     }
 
     public void resendOtp(ResendOtpRequest request) {
@@ -123,10 +124,10 @@ public class AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid credentials"));
 
-        if (!Boolean.TRUE.equals(user.getEmailVerified())) {
-            throw new IllegalArgumentException("Tài khoản chưa xác thực email. Vui lòng kiểm tra hộp thư.");
-        }
+        return buildAuthResponse(user);
+    }
 
+    private AuthResponse buildAuthResponse(User user) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
         String accessToken = jwtService.generateAccessToken(userDetails, user.getRole().name());
         String refreshToken = jwtService.generateRefreshToken(userDetails);
@@ -137,8 +138,7 @@ public class AuthService {
                 .fullName(user.getFullName())
                 .email(user.getEmail())
                 .role(user.getRole().name())
-                .id(user.getId())
-                .phone(user.getPhone())
+                .emailVerified(user.getEmailVerified())
                 .build();
     }
 
