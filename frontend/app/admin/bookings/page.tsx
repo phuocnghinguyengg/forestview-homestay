@@ -8,7 +8,7 @@ function money(v:number){return new Intl.NumberFormat("vi-VN",{style:"currency",
 function date(v:string){return new Date(`${v}T00:00:00`).toLocaleDateString('vi-VN')}
 const statuses:BookingStatus[]=["PENDING","CONFIRMED","CANCELLED","COMPLETED"];const labels:any={PENDING:'Chờ xác nhận',CONFIRMED:'Đã xác nhận',CANCELLED:'Đã hủy',COMPLETED:'Hoàn tất'};
 export default function AdminBookingsPage(){const [items,setItems]=useState<Booking[]>([]);const [filter,setFilter]=useState<BookingStatus|'ALL'>('ALL');const [busy,setBusy]=useState<number|null>(null);const [reject,setReject]=useState<Booking|null>(null);const [reason,setReason]=useState('');
- const load=()=>bookingService.getAllAdmin().then(setItems).catch(e=>alert(getErrorMessage(e)));useEffect(load,[]);
+ const load=()=>bookingService.getAllAdmin().then(setItems).catch(e=>alert(getErrorMessage(e)));useEffect(() => { load(); }, []);
  const update=async(b:Booking,status:BookingStatus)=>{if(status==='CANCELLED'){setReject(b);setReason('');return}setBusy(b.id);try{await bookingService.updateStatus(b.id,status);await load()}catch(e){alert(getErrorMessage(e))}finally{setBusy(null)}};
  const confirmReject=async()=>{if(!reject||!reason.trim())return;setBusy(reject.id);try{await bookingService.updateStatus(reject.id,'CANCELLED',reason.trim());setReject(null);await load()}catch(e){alert(getErrorMessage(e))}finally{setBusy(null)}};
  const filtered=filter==='ALL'?items:items.filter(b=>b.status===filter);
