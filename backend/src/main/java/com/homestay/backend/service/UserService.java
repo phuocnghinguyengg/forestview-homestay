@@ -6,7 +6,6 @@ import com.homestay.backend.entity.User;
 import com.homestay.backend.entity.enums.Role;
 import com.homestay.backend.exception.ResourceNotFoundException;
 import com.homestay.backend.repository.UserRepository;
-import com.homestay.backend.service.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

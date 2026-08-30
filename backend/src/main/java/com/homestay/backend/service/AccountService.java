@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import com.homestay.backend.entity.User;
 import com.homestay.backend.exception.ResourceNotFoundException;
 import com.homestay.backend.repository.UserRepository;
-import com.homestay.backend.service.mapper.UserMapper;
 import com.homestay.backend.entity.enums.MembershipTier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
