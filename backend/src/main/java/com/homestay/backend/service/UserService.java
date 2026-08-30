@@ -4,7 +4,6 @@ import com.homestay.backend.dto.request.AdminUserUpdateRequest;
 import com.homestay.backend.dto.response.UserResponse;
 import com.homestay.backend.entity.User;
 import com.homestay.backend.entity.enums.Role;
-import com.homestay.backend.entity.enums.MembershipTier;
 import com.homestay.backend.exception.ResourceNotFoundException;
 import com.homestay.backend.repository.UserRepository;
 import com.homestay.backend.service.mapper.UserMapper;
@@ -20,7 +19,6 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final MembershipService membershipService;
 
     /**
      * Lấy danh sách tất cả người dùng.
@@ -29,7 +27,7 @@ public class UserService {
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll()
                 .stream()
-                .map(u -> UserMapper.toResponse(u, membershipService.progress(u)))
+                .map(UserMapper::toResponse)
                 .toList();
     }
 
@@ -123,7 +121,7 @@ public class UserService {
 
         User savedUser = userRepository.save(user);
 
-        return UserMapper.toResponse(savedUser, membershipService.progress(savedUser));
+        return UserMapper.toResponse(savedUser);
     }
 
     /**
@@ -147,17 +145,4 @@ public class UserService {
                         )
                 );
     }
-    public UserResponse updateMembership(Long id, com.homestay.backend.entity.enums.MembershipTier tier) {
-        User user = getUserOrThrow(id);
-        if (tier == null) throw new IllegalArgumentException("Hạng thành viên không hợp lệ");
-        MembershipTier old = user.getMembershipTier() == null ? MembershipTier.NONE : user.getMembershipTier();
-        user.setMembershipTier(tier);
-        User saved = userRepository.save(user);
-        if (tier.ordinal() > old.ordinal()) {
-            // Email được gửi trong executor riêng để admin không phải chờ Resend.
-            membershipService.notifyManualUpgrade(saved, tier);
-        }
-        return UserMapper.toResponse(saved, membershipService.progress(saved));
-    }
-
 }

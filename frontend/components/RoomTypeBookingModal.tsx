@@ -1,45 +1,209 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { roomTypeService } from "@/lib/services/roomTypeService";
 import { bookingService } from "@/lib/services/bookingService";
-import { Room, RoomTypeCode, Booking, MembershipTier } from "@/types";
+import { Room, RoomTypeCode } from "@/types";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { getErrorMessage } from "@/lib/getErrorMessage";
-import BookingPaymentModal from "@/components/BookingPaymentModal";
-import api from "@/lib/api";
+import Link from "next/link";
 
-function money(v:number){return new Intl.NumberFormat("vi-VN",{style:"currency",currency:"VND"}).format(v)}
-function nights(a:string,b:string){return Math.max(0,Math.round((new Date(`${b}T00:00:00`).getTime()-new Date(`${a}T00:00:00`).getTime())/86400000))}
-const discountOf=(tier?:MembershipTier)=>({NONE:0,BRONZE:5,SILVER:10,GOLD:15,DIAMOND:20}[tier||"NONE"]||0);
+function formatPrice(price: number) {
+  return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);
+}
 
-export default function RoomTypeBookingModal({type,typeLabel,checkIn,checkOut,onClose}:{type:RoomTypeCode;typeLabel:string;checkIn:string;checkOut:string;onClose:()=>void}){
- const router=useRouter(); const {isAuthenticated,user}=useAuthStore();
- const [rooms,setRooms]=useState<Room[]>([]); const [loading,setLoading]=useState(true); const [error,setError]=useState("");
- const [selectedRoom,setSelectedRoom]=useState<Room|null>(null); const [guestCount,setGuestCount]=useState(1); const [customGuests,setCustomGuests]=useState("");
- const [note,setNote]=useState(""); const [paymentOpen,setPaymentOpen]=useState(false); const [success,setSuccess]=useState<Booking|null>(null);
- const [holidays,setHolidays]=useState<string[]>([]);
- useEffect(()=>{Promise.all([roomTypeService.getAvailableRooms(type,checkIn,checkOut),api.get<{date:string}[]>("/holidays")]).then(([r,h])=>{setRooms(r);setHolidays(h.data.map(x=>x.date))}).catch(e=>setError(getErrorMessage(e))).finally(()=>setLoading(false))},[type,checkIn,checkOut]);
- const actualGuests=guestCount===0?Number(customGuests):guestCount;
- const pricePreview=useMemo(()=>{if(!selectedRoom)return null;const n=nights(checkIn,checkOut);let base=0,holiday=0;for(let i=0;i<n;i++){const d=new Date(`${checkIn}T00:00:00`);d.setDate(d.getDate()+i);const v=d.toISOString().slice(0,10);let p=selectedRoom.pricePerNight;if(holidays.includes(v)&&selectedRoom.holidayPrice!=null){p=selectedRoom.holidayPrice;holiday+=p}else{const day=d.getDay();if((day===5||day===6)&&selectedRoom.weekendPrice!=null)p=selectedRoom.weekendPrice}base+=p}const recommended=selectedRoom.recommendedGuests??Math.min(2,selectedRoom.maxGuests);const extra=Math.max(0,actualGuests-recommended)*(selectedRoom.extraGuestFeePerNight??0)*n;const subtotal=base+extra;const pct=discountOf(user?.membershipTier);const discount=subtotal*pct/100;return {n,base,holiday,extra,subtotal,discount,total:subtotal-discount,pct,recommended}},[selectedRoom,checkIn,checkOut,holidays,actualGuests,user?.membershipTier]);
- const submitBooking=()=>{if(!isAuthenticated){onClose();router.push("/login");return}if(!selectedRoom)return;if(!actualGuests||actualGuests<1||actualGuests>selectedRoom.maxGuests){setError(`Số khách phải từ 1 đến ${selectedRoom.maxGuests}`);return}setPaymentOpen(true)};
- return <>
- <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"><div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-surface p-6 shadow-2xl">
-  {success?<div className="py-8 text-center"><div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-2xl text-primary">✓</div><h2 className="mt-4 font-display text-2xl text-ink">Đặt phòng thành công</h2><p className="mt-2 text-sm text-neutral-500">Mã đặt phòng: <b className="text-accent">#{success.bookingCode}</b></p><p className="mt-1 text-sm text-neutral-500">{success.status==='PENDING'?'Đơn đang được giữ chỗ và chờ admin xác nhận.':'Thanh toán đã được ghi nhận và đơn đã xác nhận.'}</p><button onClick={()=>{onClose();router.push('/dashboard')}} className="mt-6 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-white">Xem lịch sử đặt phòng</button></div>:
-  <><div className="flex items-start justify-between"><div><p className="font-display text-sm italic text-accent">{checkIn} → {checkOut} · {nights(checkIn,checkOut)} đêm</p><h2 className="mt-1 font-display text-2xl text-ink">{typeLabel} còn trống</h2></div><button onClick={onClose} className="rounded-full p-2 text-neutral-400 hover:bg-neutral-100">✕</button></div>
-   {loading&&<p className="mt-6 text-neutral-500">Đang tải...</p>}{!loading&&rooms.length===0&&<p className="mt-6 text-neutral-500">Không còn phòng trong khoảng ngày này.</p>}
-   {!loading&&rooms.length>0&&<div className="mt-5 space-y-3">{rooms.map(room=>{const selected=selectedRoom?.id===room.id;return <button key={room.id} type="button" onClick={()=>{setSelectedRoom(room);setGuestCount(1);setCustomGuests("")}} className={`flex w-full items-center gap-3 rounded-xl border p-3 text-left ${selected?'border-primary bg-primary/5':'border-line hover:border-primary/40'}`}><div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-neutral-100">{room.images?.[0]&&<img src={room.images[0]} alt={room.name} className="h-full w-full object-cover"/>}</div><div className="flex-1"><p className="font-medium text-ink">{room.name}</p><p className="text-xs text-neutral-500">Đề xuất {room.recommendedGuests??Math.min(2,room.maxGuests)} · tối đa {room.maxGuests} khách</p></div><p className="text-sm font-semibold text-accent">{money(room.pricePerNight)}<span className="font-normal text-neutral-400">/đêm</span></p></button>})}</div>}
-   {selectedRoom&&<div className="mt-5 rounded-xl border border-line p-4"><label className="text-sm font-medium text-neutral-700">Số khách</label><div className="mt-2 flex flex-wrap gap-2">{Array.from({length:Math.min(10,selectedRoom.maxGuests)},(_,i)=>i+1).map(n=><button key={n} type="button" onClick={()=>{setGuestCount(n);setCustomGuests("")}} className={`h-9 w-9 rounded-full border text-sm ${guestCount===n?'border-primary bg-primary text-white':'border-line hover:border-primary'}`}>{n}</button>)}{selectedRoom.maxGuests>10&&<button type="button" onClick={()=>setGuestCount(0)} className={`rounded-full border px-4 text-sm ${guestCount===0?'border-primary bg-primary text-white':'border-line hover:border-primary'}`}>Khác</button>}</div>{guestCount===0&&<input autoFocus type="number" min={11} max={selectedRoom.maxGuests} value={customGuests} onChange={e=>setCustomGuests(e.target.value.replace(/\D/g,''))} placeholder={`Nhập 11-${selectedRoom.maxGuests}`} className="mt-3 w-full rounded-lg border border-line px-3 py-2.5 text-sm focus:border-primary focus:outline-none"/>}
-    {pricePreview&&actualGuests>(pricePreview.recommended)&&<div className="mt-4 rounded-xl border border-accent/30 bg-accent/5 p-3"><p className="font-medium text-ink">Phụ thu khách thêm</p><p className="mt-1 text-sm text-neutral-600">Phòng đề xuất {pricePreview.recommended} khách, bạn chọn {actualGuests} khách.</p><div className="mt-2 flex justify-between text-sm"><span>{actualGuests-pricePreview.recommended} khách × {money(selectedRoom.extraGuestFeePerNight??0)} × {pricePreview.n} đêm</span><b className="text-accent">+{money(pricePreview.extra)}</b></div></div>}
-    <label className="mt-4 block text-sm font-medium text-neutral-700">Ghi chú / yêu cầu</label><textarea value={note} onChange={e=>setNote(e.target.value)} rows={3} placeholder="Ví dụ: nhận phòng muộn, cần thêm gối..." className="mt-1 w-full rounded-lg border border-line px-3 py-2.5 text-sm focus:border-primary focus:outline-none"/>
-    {pricePreview&&<div className="mt-4 rounded-xl bg-neutral-50 p-4 text-sm"><div className="flex justify-between"><span>Tiền phòng ({pricePreview.n} đêm)</span><span>{money(pricePreview.base)}</span></div>{pricePreview.holiday>0&&<div className="mt-1 flex justify-between"><span>Giá lễ áp dụng</span><span>{money(pricePreview.holiday)}</span></div>}{pricePreview.extra>0&&<div className="mt-1 flex justify-between"><span>Phụ thu</span><span>+{money(pricePreview.extra)}</span></div>}{pricePreview.pct>0&&<div className="mt-1 flex justify-between text-primary"><span>Membership {user?.membershipTier} (-{pricePreview.pct}%)</span><span>-{money(pricePreview.discount)}</span></div>}<div className="mt-3 flex justify-between border-t border-line pt-3 font-semibold text-ink"><span>Tạm tính</span><span className="text-accent">{money(pricePreview.total)}</span></div></div>}
-    {error&&<p className="mt-3 text-sm text-red-600">{error}</p>}{isAuthenticated&&!user?.emailVerified&&<p className="mt-3 text-sm text-accent">Bạn cần xác thực email trước khi đặt phòng. <Link href="/verify-otp" className="underline">Xác thực ngay</Link></p>}
-    <button onClick={submitBooking} disabled={!isAuthenticated&&!selectedRoom} className="mt-4 w-full rounded-full bg-primary py-3 text-sm font-semibold text-white hover:bg-primary-dark disabled:opacity-50">{!isAuthenticated?'Đăng nhập để đặt phòng':'Xác nhận đặt phòng'}</button>
-   </div>}
-  </>}
- </div></div>
- {paymentOpen&&selectedRoom&&<BookingPaymentModal bookingData={{roomId:selectedRoom.id,checkInDate:checkIn,checkOutDate:checkOut,guestCount:actualGuests,note}} onClose={()=>setPaymentOpen(false)} onSuccess={b=>{setPaymentOpen(false);setSuccess(b)}}/>}
- </>
+function formatDate(date: string) {
+  return new Date(date).toLocaleDateString("vi-VN");
+}
+
+export default function RoomTypeBookingModal({
+  type,
+  typeLabel,
+  checkIn,
+  checkOut,
+  onClose,
+}: {
+  type: RoomTypeCode;
+  typeLabel: string;
+  checkIn: string;
+  checkOut: string;
+  onClose: () => void;
+}) {
+  const router = useRouter();
+  const { isAuthenticated } = useAuthStore();
+
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+  const [guestCount, setGuestCount] = useState(1);
+  const [submitting, setSubmitting] = useState(false);
+  const [bookingCode, setBookingCode] = useState<string | null>(null);
+
+  useEffect(() => {
+    roomTypeService
+      .getAvailableRooms(type, checkIn, checkOut)
+      .then(setRooms)
+      .catch((err) => setError(getErrorMessage(err)))
+      .finally(() => setLoading(false));
+  }, [type, checkIn, checkOut]);
+
+  const handleBook = async () => {
+    if (!isAuthenticated) {
+      onClose();
+      router.push("/login");
+      return;
+    }
+    if (!selectedRoom) return;
+
+    setError("");
+    setSubmitting(true);
+    try {
+      const res = await bookingService.create({
+        roomId: selectedRoom.id,
+        checkInDate: checkIn,
+        checkOutDate: checkOut,
+        guestCount,
+      });
+      setBookingCode(res.bookingCode);
+    } catch (err) {
+      setError(getErrorMessage(err, "Đặt phòng thất bại, vui lòng thử lại"));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+      <div className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-surface p-6">
+        {/* Trạng thái: đã đặt thành công */}
+        {bookingCode ? (
+          <div className="py-6 text-center">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+              <span className="text-2xl text-primary">✓</span>
+            </div>
+            <h2 className="mt-4 font-display text-xl text-ink">Đặt phòng thành công!</h2>
+            <p className="mt-2 text-sm text-neutral-500">
+              Mã đặt phòng của bạn: <span className="font-semibold text-accent">#{bookingCode}</span>
+            </p>
+            <p className="mt-1 text-sm text-neutral-500">
+              Chi tiết đã được gửi tới email của bạn. Trạng thái hiện tại: Chờ xác nhận.
+            </p>
+            <div className="mt-6 flex justify-center gap-3">
+              <button
+                onClick={onClose}
+                className="rounded-full border border-line px-5 py-2 text-sm hover:bg-neutral-50"
+              >
+                Đóng
+              </button>
+              <button
+                onClick={() => {
+                  onClose();
+                  router.push("/dashboard");
+                }}
+                className="rounded-full bg-primary px-5 py-2 text-sm font-medium text-white hover:bg-primary-dark"
+              >
+                Xem lịch sử đặt phòng
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="font-display text-sm italic text-accent">
+                  {formatDate(checkIn)} → {formatDate(checkOut)}
+                </p>
+                <h2 className="mt-0.5 font-display text-xl text-ink">{typeLabel} còn trống</h2>
+              </div>
+              <button
+                onClick={onClose}
+                className="rounded-full p-1 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-600"
+                aria-label="Đóng"
+              >
+                ✕
+              </button>
+            </div>
+
+            {loading && <p className="mt-6 text-neutral-500">Đang tải...</p>}
+
+            {!loading && rooms.length === 0 && (
+              <p className="mt-6 text-neutral-500">Không còn phòng loại này trong khoảng ngày đã chọn.</p>
+            )}
+
+            {!loading && rooms.length > 0 && (
+              <div className="mt-5 space-y-3">
+                {rooms.map((room) => {
+                  const isSelected = selectedRoom?.id === room.id;
+                  return (
+                    <button
+                      key={room.id}
+                      onClick={() => {
+                        setSelectedRoom(room);
+                        setGuestCount(1);
+                      }}
+                      className={`flex w-full items-center gap-3 rounded-xl border p-3 text-left transition ${
+                        isSelected ? "border-primary bg-primary/5" : "border-line hover:border-primary/50"
+                      }`}
+                    >
+                      <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-neutral-100">
+                        {room.images?.[0] && (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={room.images[0]} alt={room.name} className="h-full w-full object-cover" />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-ink">{room.name}</p>
+                        <p className="text-xs text-neutral-500">Tối đa {room.maxGuests} khách</p>
+                      </div>
+                      <p className="text-sm font-semibold text-accent">{formatPrice(room.pricePerNight)}</p>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+{selectedRoom && (
+  <div className="mt-5 rounded-xl border border-line p-4">
+    <label className="text-sm text-neutral-600">Số khách</label>
+    <input
+      type="number"
+      min={1}
+      max={selectedRoom.maxGuests}
+      value={guestCount}
+      onChange={(e) => setGuestCount(Number(e.target.value))}
+      className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none"
+    />
+
+    {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+
+    {isAuthenticated && !useAuthStore.getState().user?.emailVerified && (
+      <p className="mt-3 text-sm text-accent">
+        Bạn cần xác thực email trước khi đặt phòng.{" "}
+        <Link href="/verify-otp" className="underline">Xác thực ngay</Link>
+      </p>
+    )}
+
+    <button
+      onClick={handleBook}
+      disabled={submitting || (isAuthenticated && !useAuthStore.getState().user?.emailVerified)}
+      className="mt-4 w-full rounded-full bg-primary py-2.5 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:opacity-50"
+    >
+      {submitting
+        ? "Đang xử lý..."
+        : !isAuthenticated
+          ? "Đăng nhập để đặt phòng"
+          : !useAuthStore.getState().user?.emailVerified
+            ? "Cần xác thực email"
+            : "Xác nhận đặt phòng"}
+    </button>
+  </div>
+)}
+          </>
+        )}
+      </div>
+    </div>
+  );
 }

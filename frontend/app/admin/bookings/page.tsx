@@ -1,16 +1,143 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { bookingService } from "@/lib/services/bookingService";
 import { Booking, BookingStatus } from "@/types";
 import BookingStatusBadge from "@/components/BookingStatusBadge";
 import { getErrorMessage } from "@/lib/getErrorMessage";
-function money(v:number){return new Intl.NumberFormat("vi-VN",{style:"currency",currency:"VND"}).format(v)}
-function date(v:string){return new Date(`${v}T00:00:00`).toLocaleDateString('vi-VN')}
-const statuses:BookingStatus[]=["PENDING","CONFIRMED","CANCELLED","COMPLETED"];const labels:any={PENDING:'Chờ xác nhận',CONFIRMED:'Đã xác nhận',CANCELLED:'Đã hủy',COMPLETED:'Hoàn tất'};
-export default function AdminBookingsPage(){const [items,setItems]=useState<Booking[]>([]);const [filter,setFilter]=useState<BookingStatus|'ALL'>('ALL');const [busy,setBusy]=useState<number|null>(null);const [reject,setReject]=useState<Booking|null>(null);const [reason,setReason]=useState('');
- const load=()=>bookingService.getAllAdmin().then(setItems).catch(e=>alert(getErrorMessage(e)));useEffect(() => { load(); }, []);
- const update=async(b:Booking,status:BookingStatus)=>{if(status==='CANCELLED'){setReject(b);setReason('');return}setBusy(b.id);try{await bookingService.updateStatus(b.id,status);await load()}catch(e){alert(getErrorMessage(e))}finally{setBusy(null)}};
- const confirmReject=async()=>{if(!reject||!reason.trim())return;setBusy(reject.id);try{await bookingService.updateStatus(reject.id,'CANCELLED',reason.trim());setReject(null);await load()}catch(e){alert(getErrorMessage(e))}finally{setBusy(null)}};
- const filtered=filter==='ALL'?items:items.filter(b=>b.status===filter);
- return <div><h1 className="font-display text-2xl text-ink">Đơn đặt phòng</h1><div className="mt-4 flex flex-wrap gap-2"><button onClick={()=>setFilter('ALL')} className={`rounded-full px-3 py-1.5 text-sm ${filter==='ALL'?'bg-primary text-white':'bg-neutral-100'}`}>Tất cả ({items.length})</button>{statuses.map(s=><button key={s} onClick={()=>setFilter(s)} className={`rounded-full px-3 py-1.5 text-sm ${filter===s?'bg-primary text-white':'bg-neutral-100'}`}>{labels[s]} ({items.filter(b=>b.status===s).length})</button>)}</div><div className="mt-6 space-y-4">{filtered.map(b=><div key={b.id} className="rounded-2xl border border-line bg-surface p-5"><div className="flex flex-col justify-between gap-4 lg:flex-row"><div><p className="font-display text-xs italic text-accent">#{b.bookingCode}</p><p className="mt-1 font-display text-lg">{b.roomName}</p><p className="text-sm text-neutral-500">{b.userFullName} · {b.userEmail}</p><p className="mt-1 text-sm">{date(b.checkInDate)} → {date(b.checkOutDate)} · {b.nights} đêm · {b.guestCount} khách</p>{b.note&&<p className="mt-2 rounded-lg bg-neutral-50 p-2 text-sm italic">Yêu cầu: {b.note}</p>}<div className="mt-3 grid gap-1 text-sm text-neutral-600 sm:grid-cols-2"><span>Giá phòng: {money(b.basePrice)}</span><span>Phụ thu: {money(b.extraGuestFee)}</span><span>Membership: -{money(b.membershipDiscountAmount)} ({b.membershipDiscountPercent}%)</span><span className="font-semibold text-accent">Tổng: {money(b.totalPrice)}</span></div>{b.rejectionReason&&<p className="mt-2 text-sm text-red-600">Lý do: {b.rejectionReason}</p>}</div><div className="flex min-w-44 flex-col items-end gap-2"><BookingStatusBadge status={b.status}/><span className="text-xs text-neutral-500">{b.paymentMethod==='HOLD'?'Giữ thanh toán':b.paymentMethod==='QR_CODE'?'QR Code':b.paymentMethod==='CARD'?'NAPAS/VISA/MasterCard':'Tiền mặt'}</span>{b.paymentHoldExpiresAt&&b.status==='PENDING'&&<span className="text-xs text-accent">Hết giữ: {new Date(b.paymentHoldExpiresAt).toLocaleString('vi-VN')}</span>}{b.status==='PENDING'&&<div className="flex gap-2"><button disabled={busy===b.id} onClick={()=>update(b,'CONFIRMED')} className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-white">Xác nhận</button><button disabled={busy===b.id} onClick={()=>update(b,'CANCELLED')} className="rounded-full border border-red-200 px-4 py-2 text-xs font-semibold text-red-600">Từ chối</button></div>}{b.status!=='PENDING'&&b.status!=='COMPLETED'&&<select value={b.status} disabled={busy===b.id} onChange={e=>update(b,e.target.value as BookingStatus)} className="rounded-lg border border-line px-2 py-1 text-xs">{statuses.map(s=><option key={s} value={s}>{labels[s]}</option>)}</select>}</div></div></div>)}{!filtered.length&&<p className="text-neutral-500">Không có đơn.</p>}</div>
- {reject&&<div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 p-4"><div className="w-full max-w-md rounded-2xl bg-surface p-6"><h2 className="font-display text-xl">Từ chối đơn #{reject.bookingCode}</h2><p className="mt-2 text-sm text-neutral-500">Lý do sẽ được gửi qua email cho khách.</p><textarea autoFocus value={reason} onChange={e=>setReason(e.target.value)} rows={5} placeholder="Nhập lý do từ chối..." className="mt-4 w-full rounded-xl border border-line p-3 text-sm focus:border-primary focus:outline-none"/><div className="mt-4 flex justify-end gap-2"><button onClick={()=>setReject(null)} className="rounded-full border border-line px-4 py-2 text-sm">Hủy</button><button disabled={!reason.trim()||busy===reject.id} onClick={confirmReject} className="rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white">Xác nhận từ chối</button></div></div></div>}</div>}
+
+function formatPrice(price: number) {
+  return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);
+}
+
+function formatDate(date: string) {
+  return new Date(date).toLocaleDateString("vi-VN");
+}
+
+const STATUS_OPTIONS: BookingStatus[] = ["PENDING", "CONFIRMED", "CANCELLED", "COMPLETED"];
+
+const STATUS_LABELS: Record<BookingStatus, string> = {
+  PENDING: "Chờ xác nhận",
+  CONFIRMED: "Đã xác nhận",
+  CANCELLED: "Đã hủy",
+  COMPLETED: "Hoàn tất",
+};
+
+export default function AdminBookingsPage() {
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [filter, setFilter] = useState<BookingStatus | "ALL">("ALL");
+  const [updatingId, setUpdatingId] = useState<number | null>(null);
+
+  const loadBookings = () => {
+    setLoading(true);
+    bookingService
+      .getAllAdmin()
+      .then(setBookings)
+      .catch((err) => setError(getErrorMessage(err)))
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      setLoading(true);
+      try {
+        const data = await bookingService.getAllAdmin();
+        setBookings(data);
+      } catch (err) {
+        setError(getErrorMessage(err));
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBookings();
+  }, []);
+
+  const handleStatusChange = async (id: number, status: BookingStatus) => {
+    setUpdatingId(id);
+    try {
+      await bookingService.updateStatus(id, status);
+      loadBookings();
+    } catch (err) {
+      alert(getErrorMessage(err, "Không thể cập nhật trạng thái"));
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const filtered = filter === "ALL" ? bookings : bookings.filter((b) => b.status === filter);
+
+  return (
+    <div>
+      <h1 className="font-display text-2xl text-ink">Đơn đặt phòng</h1>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        <button
+          onClick={() => setFilter("ALL")}
+          className={`rounded-full px-3 py-1.5 text-sm font-medium transition ${
+            filter === "ALL" ? "bg-primary text-white" : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
+          }`}
+        >
+          Tất cả ({bookings.length})
+        </button>
+        {STATUS_OPTIONS.map((s) => (
+          <button
+            key={s}
+            onClick={() => setFilter(s)}
+            className={`rounded-full px-3 py-1.5 text-sm font-medium transition ${
+              filter === s ? "bg-primary text-white" : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
+            }`}
+          >
+            {STATUS_LABELS[s]} ({bookings.filter((b) => b.status === s).length})
+          </button>
+        ))}
+      </div>
+
+      {loading && <p className="mt-6 text-neutral-500">Đang tải...</p>}
+      {error && <p className="mt-6 text-red-600">{error}</p>}
+
+      <div className="mt-6 space-y-4">
+        {filtered.map((b) => (
+          <div key={b.id} className="rounded-2xl border border-line bg-surface p-4">
+            <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
+              <div>
+                {b.bookingCode && <p className="font-display text-xs italic text-accent">#{b.bookingCode}</p>}
+                <p className="mt-0.5 font-medium text-ink">{b.roomName}</p>
+                <p className="text-sm text-neutral-500">{b.roomAddress}</p>
+                <p className="mt-1 text-sm text-neutral-600">
+                  Khách: {b.userFullName} ({b.userEmail})
+                </p>
+                <p className="mt-1 text-sm text-neutral-600">
+                  {formatDate(b.checkInDate)} → {formatDate(b.checkOutDate)} · {b.guestCount} khách
+                </p>
+                {b.note && <p className="mt-1 text-sm italic text-neutral-500">Ghi chú: {b.note}</p>}
+                <p className="mt-1 text-sm font-medium text-accent">{formatPrice(b.totalPrice)}</p>
+              </div>
+
+              <div className="flex flex-col items-end gap-2">
+                <BookingStatusBadge status={b.status} />
+                <select
+                  value={b.status}
+                  disabled={updatingId === b.id}
+                  onChange={(e) => handleStatusChange(b.id, e.target.value as BookingStatus)}
+                  className="rounded-lg border border-line px-2 py-1 text-sm focus:border-primary focus:outline-none"
+                >
+                  {STATUS_OPTIONS.map((s) => (
+                    <option key={s} value={s}>
+                      {STATUS_LABELS[s]}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {!loading && filtered.length === 0 && (
+          <p className="text-neutral-500">Không có đơn nào ở trạng thái này.</p>
+        )}
+      </div>
+    </div>
+  );
+}

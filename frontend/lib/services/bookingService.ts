@@ -1,8 +1,8 @@
 import api from "@/lib/api";
-import { Booking, BookingStatus, PaymentMethod } from "@/types";
+import { Booking, BookingStatus } from "@/types";
 
 export const bookingService = {
-  create: (data: { roomId: number; checkInDate: string; checkOutDate: string; guestCount: number; note?: string; paymentMethod: PaymentMethod }) =>
+  create: (data: { roomId: number; checkInDate: string; checkOutDate: string; guestCount: number; note?: string }) =>
     api.post<Booking>("/bookings", data).then((res) => res.data),
 
   getMine: () => api.get<Booking[]>("/bookings/me").then((res) => res.data),
@@ -11,6 +11,6 @@ export const bookingService = {
 
   // Admin
   getAllAdmin: () => api.get<Booking[]>("/admin/bookings").then((res) => res.data),
-  updateStatus: (id: number, status: BookingStatus, reason?: string) =>
-    api.patch(`/admin/bookings/${id}/status`, null, { params: { status, ...(reason ? { reason } : {}) } }),
+  updateStatus: (id: number, status: BookingStatus) =>
+    api.patch(`/admin/bookings/${id}/status?status=${status}`),
 };

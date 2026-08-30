@@ -13,10 +13,6 @@ export const roomService = {
     address: string;
     pricePerNight: number;
     maxGuests: number;
-    recommendedGuests: number;
-    extraGuestFeePerNight: number;
-    weekendPrice: number;
-    holidayPrice: number;
     images: string[];
     amenities: string[];
     type: RoomTypeCode;
@@ -27,10 +23,6 @@ export const roomService = {
     address: string;
     pricePerNight: number;
     maxGuests: number;
-    recommendedGuests: number;
-    extraGuestFeePerNight: number;
-    weekendPrice: number;
-    holidayPrice: number;
     images: string[];
     amenities: string[];
     type: RoomTypeCode;

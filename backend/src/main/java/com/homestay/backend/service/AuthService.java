@@ -140,24 +140,31 @@ public class AuthService {
                 .fullName(user.getFullName())
                 .email(user.getEmail())
                 .role(user.getRole().name())
-                .id(user.getId())
-                .phone(user.getPhone())
-                .membershipTier(user.getMembershipTier())
-                .membershipLabel(user.getMembershipTier() == null ? null : user.getMembershipTier().getLabel())
-                .membershipDiscountPercent(user.getMembershipTier() == null ? 0 : user.getMembershipTier().getDiscountPercent())
                 .emailVerified(user.getEmailVerified())
                 .build();
     }
 
     public void requestPasswordReset(ForgotPasswordRequest request) {
-        userRepository.findByEmail(request.getEmail().trim().toLowerCase()).ifPresent(user -> {
-            String otp = generateOtp();
-            user.setResetOtpCode(otp);
-            user.setResetOtpExpiresAt(LocalDateTime.now().plusMinutes(10));
-            userRepository.save(user);
-            emailService.sendPasswordResetOtpEmail(user.getEmail(), user.getFullName(), otp);
-        });
-    }
+    User user = userRepository.findByEmail(request.getEmail())
+            .orElseThrow(() -> new IllegalArgumentException(
+                    "Email không tồn tại trong hệ thống"
+            ));
+
+    String otp = generateOtp();
+
+    user.setResetOtpCode(otp);
+    user.setResetOtpExpiresAt(
+            LocalDateTime.now().plusMinutes(10)
+    );
+
+    userRepository.save(user);
+
+    emailService.sendPasswordResetOtpEmail(
+            user.getEmail(),
+            user.getFullName(),
+            otp
+    );
+}
 
 public void resetPassword(ResetPasswordRequest request) {
     User user = userRepository.findByEmail(request.getEmail())

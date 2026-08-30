@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { userService, AdminUser } from "@/lib/services/userService";
-import { Role, MembershipTier } from "@/types";
+import { Role } from "@/types";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { getErrorMessage } from "@/lib/getErrorMessage";
 import UserFormModal from "@/components/UserFormModal";
@@ -71,13 +71,6 @@ export default function AdminUsersPage() {
     }
   };
 
-  const handleMembership = async (id: number, tier: MembershipTier) => {
-    setBusyId(id);
-    try { await userService.updateMembership(id, tier); loadUsers(); }
-    catch (err) { alert(getErrorMessage(err, "Không thể cập nhật membership")); }
-    finally { setBusyId(null); }
-  };
-
   const handleDelete = async (id: number) => {
     if (!confirm("Xóa tài khoản này? Toàn bộ lịch sử đặt phòng liên quan cũng có thể bị ảnh hưởng.")) return;
     setBusyId(id);
@@ -106,7 +99,7 @@ export default function AdminUsersPage() {
               <th className="px-4 py-3">Email</th>
               <th className="px-4 py-3">Xác thực</th>
               <th className="px-4 py-3">Vai trò</th>
-              <th className="px-4 py-3">Membership</th><th className="px-4 py-3">Ngày tham gia</th>
+              <th className="px-4 py-3">Ngày tham gia</th>
               <th className="px-4 py-3 text-right">Hành động</th>
             </tr>
           </thead>
@@ -137,7 +130,7 @@ export default function AdminUsersPage() {
                       <option value="ADMIN">ADMIN</option>
                     </select>
                   </td>
-                  <td className="px-4 py-3"><div className="text-xs font-semibold text-primary">{u.membershipLabel} · -{u.membershipDiscountPercent}%</div><select disabled={busyId===u.id} value={u.membershipTier} onChange={e=>handleMembership(u.id,e.target.value as MembershipTier)} className="mt-1 rounded-lg border border-line px-2 py-1 text-xs"><option value="NONE">Chưa có</option><option value="BRONZE">Đồng</option><option value="SILVER">Bạc</option><option value="GOLD">Vàng</option><option value="DIAMOND">Kim cương</option></select><div className="mt-1 text-[11px] text-neutral-500">{u.successfulBookingCount} booking · {u.spendingVnd.toLocaleString("vi-VN")}đ</div></td><td className="px-4 py-3 text-neutral-500">{formatDate(u.createdAt)}</td>
+                  <td className="px-4 py-3 text-neutral-500">{formatDate(u.createdAt)}</td>
                   <td className="px-4 py-3 text-right">
                     <button
                       onClick={() => setEditingUser(u)}
