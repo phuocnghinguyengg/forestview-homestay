@@ -19,6 +19,8 @@ public class RoomMapper {
                 .createdAt(room.getCreatedAt())
                 .type(room.getType())
                 .typeLabel(room.getType().getLabel())
+                .weekendPrice(room.getWeekendPrice())
+                .holidayPrice(room.getHolidayPrice())
                 .build();
     }
 }

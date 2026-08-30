@@ -47,6 +47,9 @@ public class Room {
     @Column(nullable = false)
     private com.homestay.backend.entity.enums.RoomType type;
 
+    private BigDecimal weekendPrice;
+    private BigDecimal holidayPrice;
+
     @Column(nullable = false)
     @Builder.Default
     private Boolean active = true;

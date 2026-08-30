@@ -24,4 +24,6 @@ public class BookingResponse {
     private BookingStatus status;
     private String note;
     private LocalDateTime createdAt;
+    private String bookingCode;
+    private Boolean hasReview;
 }

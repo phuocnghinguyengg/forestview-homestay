@@ -1,23 +1,23 @@
 package com.homestay.backend.entity;
 
-import com.homestay.backend.entity.enums.BookingStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "bookings")
+@Table(name = "reviews")
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Builder
-public class Booking {
-
+public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToOne
+    @JoinColumn(name = "booking_id", nullable = false, unique = true)
+    private Booking booking;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -28,29 +28,13 @@ public class Booking {
     private Room room;
 
     @Column(nullable = false)
-    private LocalDate checkInDate;
+    private Integer rating;
 
-    @Column(nullable = false)
-    private LocalDate checkOutDate;
-
-    @Column(nullable = false)
-    private Integer guestCount;
-
-    @Column(nullable = false)
-    private BigDecimal totalPrice;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    @Builder.Default
-    private BookingStatus status = BookingStatus.PENDING;
-
-    private String note;
+    @Column(columnDefinition = "TEXT")
+    private String comment;
 
     @Column(updatable = false)
     private LocalDateTime createdAt;
-
-    @Column(unique = true)
-    private String bookingCode;
 
     @PrePersist
     protected void onCreate() {

@@ -8,6 +8,7 @@ import com.homestay.backend.entity.User;
 import com.homestay.backend.entity.enums.BookingStatus;
 import com.homestay.backend.exception.ResourceNotFoundException;
 import com.homestay.backend.repository.BookingRepository;
+import com.homestay.backend.repository.ReviewRepository;
 import com.homestay.backend.repository.RoomRepository;
 import com.homestay.backend.repository.UserRepository;
 import com.homestay.backend.service.mapper.BookingMapper;
@@ -15,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -26,6 +26,8 @@ public class BookingService {
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
     private final EmailService emailService;
+    private final PricingService pricingService;
+    private final ReviewRepository reviewRepository;
 
     public BookingResponse createBooking(String userEmail, BookingRequest request) {
         if (!request.getCheckOutDate().isAfter(request.getCheckInDate())) {
@@ -53,8 +55,8 @@ public class BookingService {
             throw new IllegalArgumentException("Room is already booked for the selected dates");
         }
 
-        long nights = ChronoUnit.DAYS.between(request.getCheckInDate(), request.getCheckOutDate());
-        BigDecimal totalPrice = room.getPricePerNight().multiply(BigDecimal.valueOf(nights));
+        BigDecimal totalPrice = pricingService.calculateTotalPrice(
+                room, request.getCheckInDate(), request.getCheckOutDate());
 
         Booking booking = Booking.builder()
                 .user(user)
@@ -68,18 +70,16 @@ public class BookingService {
                 .build();
 
         Booking saved = bookingRepository.save(booking);
+        saved.setBookingCode("FV" + String.format("%06d", saved.getId()));
+        saved = bookingRepository.save(saved);
 
         emailService.sendBookingConfirmation(
-                user.getEmail(),
-                user.getFullName(),
-                room.getName(),
-                saved.getCheckInDate(),
-                saved.getCheckOutDate(),
-                saved.getGuestCount(),
-                saved.getTotalPrice()
+                user.getEmail(), user.getFullName(), room.getName(),
+                saved.getCheckInDate(), saved.getCheckOutDate(),
+                saved.getGuestCount(), saved.getTotalPrice()
         );
 
-        return BookingMapper.toResponse(saved);
+        return BookingMapper.toResponse(saved, false);
     }
 
     public List<BookingResponse> getMyBookings(String userEmail) {
@@ -87,8 +87,19 @@ public class BookingService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         return bookingRepository.findByUserOrderByCreatedAtDesc(user).stream()
-                .map(BookingMapper::toResponse)
+                .map(b -> BookingMapper.toResponse(b, reviewRepository.existsByBookingId(b.getId())))
                 .toList();
+    }
+
+    public BookingResponse getBookingForUser(String userEmail, Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+
+        if (!booking.getUser().getEmail().equals(userEmail)) {
+            throw new IllegalArgumentException("Bạn không có quyền xem đơn đặt phòng này");
+        }
+
+        return BookingMapper.toResponse(booking, reviewRepository.existsByBookingId(booking.getId()));
     }
 
     public void cancelBooking(String userEmail, Long bookingId) {
@@ -111,7 +122,7 @@ public class BookingService {
 
     public List<BookingResponse> getAllBookings() {
         return bookingRepository.findAllByOrderByCreatedAtDesc().stream()
-                .map(BookingMapper::toResponse)
+                .map(b -> BookingMapper.toResponse(b, reviewRepository.existsByBookingId(b.getId())))
                 .toList();
     }
 
@@ -119,6 +130,7 @@ public class BookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
         booking.setStatus(status);
-        return BookingMapper.toResponse(bookingRepository.save(booking));
+        Booking saved = bookingRepository.save(booking);
+        return BookingMapper.toResponse(saved, reviewRepository.existsByBookingId(saved.getId()));
     }
 }

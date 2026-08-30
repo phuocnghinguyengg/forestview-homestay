@@ -55,4 +55,11 @@ public class BookingController {
             @RequestParam BookingStatus status) {
         return ResponseEntity.ok(bookingService.updateBookingStatus(id, status));
     }
+
+    @GetMapping("/api/bookings/{id}")
+    public ResponseEntity<BookingResponse> getBookingById(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long id) {
+    return ResponseEntity.ok(bookingService.getBookingForUser(userDetails.getUsername(), id));
+    }   
 }

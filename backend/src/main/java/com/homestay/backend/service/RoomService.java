@@ -49,6 +49,8 @@ public class RoomService {
                 .amenities(request.getAmenities())
                 .type(request.getType())
                 .active(true)
+                .weekendPrice(request.getWeekendPrice())
+                .holidayPrice(request.getHolidayPrice())
                 .build();
         return RoomMapper.toResponse(roomRepository.save(room));
     }
@@ -65,6 +67,8 @@ public class RoomService {
         room.setImages(request.getImages());
         room.setAmenities(request.getAmenities());
         room.setType(request.getType());
+        room.setWeekendPrice(request.getWeekendPrice());
+        room.setHolidayPrice(request.getHolidayPrice());
 
         return RoomMapper.toResponse(roomRepository.save(room));
     }

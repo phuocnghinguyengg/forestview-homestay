@@ -44,4 +44,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             AND b.createdAt >= :from
             """)
     BigDecimal sumRevenueSince(@Param("from") LocalDateTime from);
+
+    List<Booking> findByStatusInAndCreatedAtAfter(List<BookingStatus> statuses, LocalDateTime from);
 }

@@ -28,4 +28,7 @@ public class RoomRequest {
 
     @NotNull
     private com.homestay.backend.entity.enums.RoomType type;
+
+    private java.math.BigDecimal weekendPrice;
+    private java.math.BigDecimal holidayPrice;
 }

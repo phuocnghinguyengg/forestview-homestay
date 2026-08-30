@@ -23,4 +23,6 @@ public class RoomResponse {
     private LocalDateTime createdAt;
     private RoomType type;
     private String typeLabel;
+    private java.math.BigDecimal weekendPrice;
+    private java.math.BigDecimal holidayPrice;
 }

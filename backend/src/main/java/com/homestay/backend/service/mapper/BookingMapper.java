@@ -4,9 +4,10 @@ import com.homestay.backend.dto.response.BookingResponse;
 import com.homestay.backend.entity.Booking;
 
 public class BookingMapper {
-    public static BookingResponse toResponse(Booking booking) {
+    public static BookingResponse toResponse(Booking booking, boolean hasReview) {
         return BookingResponse.builder()
                 .id(booking.getId())
+                .bookingCode(booking.getBookingCode())
                 .roomId(booking.getRoom().getId())
                 .roomName(booking.getRoom().getName())
                 .roomAddress(booking.getRoom().getAddress())
@@ -19,6 +20,7 @@ public class BookingMapper {
                 .status(booking.getStatus())
                 .note(booking.getNote())
                 .createdAt(booking.getCreatedAt())
+                .hasReview(hasReview)
                 .build();
     }
 }
