@@ -6,8 +6,6 @@ import com.homestay.backend.dto.request.RegisterRequest;
 import com.homestay.backend.dto.request.ResendOtpRequest;
 import com.homestay.backend.dto.response.AuthResponse;
 import com.homestay.backend.dto.response.RegisterResponse;
-import com.homestay.backend.dto.request.ForgotPasswordRequest;
-import com.homestay.backend.dto.request.ResetPasswordRequest;
 import com.homestay.backend.entity.User;
 import com.homestay.backend.entity.enums.Role;
 import com.homestay.backend.repository.UserRepository;
@@ -141,60 +139,9 @@ public class AuthService {
                 .email(user.getEmail())
                 .role(user.getRole().name())
                 .emailVerified(user.getEmailVerified())
+                .membershipTier(user.getMembershipTier())
                 .build();
     }
-
-    public void requestPasswordReset(ForgotPasswordRequest request) {
-    User user = userRepository.findByEmail(request.getEmail())
-            .orElseThrow(() -> new IllegalArgumentException(
-                    "Email không tồn tại trong hệ thống"
-            ));
-
-    String otp = generateOtp();
-
-    user.setResetOtpCode(otp);
-    user.setResetOtpExpiresAt(
-            LocalDateTime.now().plusMinutes(10)
-    );
-
-    userRepository.save(user);
-
-    emailService.sendPasswordResetOtpEmail(
-            user.getEmail(),
-            user.getFullName(),
-            otp
-    );
-}
-
-public void resetPassword(ResetPasswordRequest request) {
-    User user = userRepository.findByEmail(request.getEmail())
-            .orElseThrow(() -> new IllegalArgumentException(
-                    "Tài khoản không tồn tại"
-            ));
-
-    if (user.getResetOtpCode() == null
-            || !user.getResetOtpCode().equals(request.getOtp())) {
-
-        throw new IllegalArgumentException("Mã OTP không đúng");
-    }
-
-    if (user.getResetOtpExpiresAt() == null
-            || user.getResetOtpExpiresAt().isBefore(LocalDateTime.now())) {
-
-        throw new IllegalArgumentException(
-                "Mã OTP đã hết hạn, vui lòng yêu cầu mã mới"
-        );
-    }
-
-    user.setPassword(
-            passwordEncoder.encode(request.getNewPassword())
-    );
-
-    user.setResetOtpCode(null);
-    user.setResetOtpExpiresAt(null);
-
-    userRepository.save(user);
-}
 
     private String generateOtp() {
         int otp = 100000 + RANDOM.nextInt(900000);

@@ -22,6 +22,12 @@ public class RoomRequest {
     @NotNull @Min(1)
     private Integer maxGuests;
 
+    @Min(1)
+    private Integer recommendedGuests;
+
+    @DecimalMin(value = "0.0", inclusive = true)
+    private BigDecimal extraGuestFee;
+
     private List<String> images;
 
     private List<String> amenities;

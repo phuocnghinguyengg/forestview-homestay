@@ -19,16 +19,25 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final MembershipService membershipService;
 
     /**
      * Lấy danh sách tất cả người dùng.
      */
     @Transactional(readOnly = true)
     public List<UserResponse> getAllUsers() {
-        return userRepository.findAll()
-                .stream()
-                .map(UserMapper::toResponse)
-                .toList();
+        return userRepository.findAll().stream().map(this::toResponse).toList();
+    }
+
+    private UserResponse toResponse(User user) {
+        var tier = user.getMembershipTier() == null ? com.homestay.backend.entity.enums.MembershipTier.NONE : user.getMembershipTier();
+        var next = membershipService.nextTier(user);
+        return UserResponse.builder().id(user.getId()).fullName(user.getFullName()).email(user.getEmail()).phone(user.getPhone())
+                .role(user.getRole()).enabled(user.getEnabled()).createdAt(user.getCreatedAt()).emailVerified(user.getEmailVerified())
+                .membershipTier(tier).membershipBookingCount(membershipService.bookingCount(user)).membershipTotalSpent(membershipService.totalSpent(user))
+                .nextTierBookingThreshold(next == null ? tier.getBookingThreshold() : next.getBookingThreshold())
+                .nextTierSpendingThreshold(next == null ? tier.getSpendingThreshold() : next.getSpendingThreshold())
+                .membershipDiscountPercent(tier.getDiscountPercent()).build();
     }
 
     /**
@@ -56,7 +65,7 @@ public class UserService {
 
         User savedUser = userRepository.save(user);
 
-        return UserMapper.toResponse(savedUser);
+        return toResponse(savedUser);
     }
 
     /**
@@ -121,7 +130,13 @@ public class UserService {
 
         User savedUser = userRepository.save(user);
 
-        return UserMapper.toResponse(savedUser);
+        return toResponse(savedUser);
+    }
+
+    public UserResponse grantMembership(Long id, com.homestay.backend.entity.enums.MembershipTier tier) {
+        User user = getUserOrThrow(id);
+        membershipService.grant(user, tier);
+        return toResponse(user);
     }
 
     /**

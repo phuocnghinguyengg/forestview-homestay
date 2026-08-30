@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +46,8 @@ public class RoomService {
                 .address(request.getAddress())
                 .pricePerNight(request.getPricePerNight())
                 .maxGuests(request.getMaxGuests())
+                .recommendedGuests(request.getRecommendedGuests() == null ? Math.min(2, request.getMaxGuests()) : request.getRecommendedGuests())
+                .extraGuestFee(request.getExtraGuestFee() == null ? BigDecimal.ZERO : request.getExtraGuestFee())
                 .images(request.getImages())
                 .amenities(request.getAmenities())
                 .type(request.getType())
@@ -64,6 +67,8 @@ public class RoomService {
         room.setAddress(request.getAddress());
         room.setPricePerNight(request.getPricePerNight());
         room.setMaxGuests(request.getMaxGuests());
+        room.setRecommendedGuests(request.getRecommendedGuests() == null ? Math.min(2, request.getMaxGuests()) : request.getRecommendedGuests());
+        room.setExtraGuestFee(request.getExtraGuestFee() == null ? BigDecimal.ZERO : request.getExtraGuestFee());
         room.setImages(request.getImages());
         room.setAmenities(request.getAmenities());
         room.setType(request.getType());

@@ -83,6 +83,12 @@
       "namedRegex": "^/admin/bookings(?:/)?$"
     },
     {
+      "page": "/admin/holidays",
+      "regex": "^/admin/holidays(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/holidays(?:/)?$"
+    },
+    {
       "page": "/admin/rooms",
       "regex": "^/admin/rooms(?:/)?$",
       "routeKeys": {},

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { userService, AdminUser } from "@/lib/services/userService";
-import { Role } from "@/types";
+import { Role, MembershipTier } from "@/types";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { getErrorMessage } from "@/lib/getErrorMessage";
 import UserFormModal from "@/components/UserFormModal";
@@ -98,6 +98,7 @@ export default function AdminUsersPage() {
               <th className="px-4 py-3">Họ tên</th>
               <th className="px-4 py-3">Email</th>
               <th className="px-4 py-3">Xác thực</th>
+              <th className="px-4 py-3">Membership</th>
               <th className="px-4 py-3">Vai trò</th>
               <th className="px-4 py-3">Ngày tham gia</th>
               <th className="px-4 py-3 text-right">Hành động</th>
@@ -118,6 +119,11 @@ export default function AdminUsersPage() {
                     >
                       {u.emailVerified ? "Đã xác thực" : "Chưa xác thực"}
                     </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <select value={u.membershipTier} disabled={busyId===u.id} onChange={async (e)=>{setBusyId(u.id);try{await userService.grantMembership(u.id,e.target.value as MembershipTier);loadUsers()}catch(err){alert(getErrorMessage(err))}finally{setBusyId(null)}}} className="rounded-lg border border-line px-2 py-1 text-sm focus:border-primary focus:outline-none disabled:opacity-50">
+                      <option value="NONE">Chưa có</option><option value="BRONZE">Đồng - 5%</option><option value="SILVER">Bạc - 10%</option><option value="GOLD">Vàng - 15%</option><option value="DIAMOND">Kim cương - 20%</option>
+                    </select>
                   </td>
                   <td className="px-4 py-3">
                     <select

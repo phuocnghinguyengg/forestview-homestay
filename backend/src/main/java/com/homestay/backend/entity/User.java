@@ -1,6 +1,7 @@
 package com.homestay.backend.entity;
 
 import com.homestay.backend.entity.enums.Role;
+import com.homestay.backend.entity.enums.MembershipTier;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -53,6 +54,16 @@ private java.time.LocalDateTime emailChangeOtpExpiresAt;
 private String pendingEmail;
 private String resetOtpCode;
 private java.time.LocalDateTime resetOtpExpiresAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    @Builder.Default
+    private MembershipTier membershipTier = MembershipTier.NONE;
+
+    @PostLoad
+    protected void onLoad() {
+        if (membershipTier == null) membershipTier = MembershipTier.NONE;
+    }
 
     @PrePersist
     protected void onCreate() {

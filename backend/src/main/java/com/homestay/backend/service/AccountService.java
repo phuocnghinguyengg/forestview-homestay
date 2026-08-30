@@ -10,6 +10,7 @@ import com.homestay.backend.entity.User;
 import com.homestay.backend.exception.ResourceNotFoundException;
 import com.homestay.backend.repository.UserRepository;
 import com.homestay.backend.service.mapper.UserMapper;
+import com.homestay.backend.entity.enums.MembershipTier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,15 +26,33 @@ public class AccountService {
     private final EmailService emailService;
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final MembershipService membershipService;
     private static final SecureRandom RANDOM = new SecureRandom();
 
     private User user(String email) { return userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found")); }
     private String otp() { return String.valueOf(100000 + RANDOM.nextInt(900000)); }
 
-    public UserResponse getMe(String email) { return UserMapper.toResponse(user(email)); }
+    public UserResponse getMe(String email) {
+        User u = user(email);
+        membershipService.refreshAfterConfirmedBooking(u);
+        return profile(u);
+    }
+
+    private UserResponse profile(User u) {
+        MembershipTier tier = u.getMembershipTier() == null ? MembershipTier.NONE : u.getMembershipTier();
+        MembershipTier next = membershipService.nextTier(u);
+        return UserResponse.builder()
+                .id(u.getId()).fullName(u.getFullName()).email(u.getEmail()).phone(u.getPhone()).role(u.getRole())
+                .enabled(u.getEnabled()).createdAt(u.getCreatedAt()).emailVerified(u.getEmailVerified())
+                .membershipTier(tier).membershipBookingCount(membershipService.bookingCount(u))
+                .membershipTotalSpent(membershipService.totalSpent(u))
+                .nextTierBookingThreshold(next == null ? tier.getBookingThreshold() : next.getBookingThreshold())
+                .nextTierSpendingThreshold(next == null ? tier.getSpendingThreshold() : next.getSpendingThreshold())
+                .membershipDiscountPercent(tier.getDiscountPercent()).build();
+    }
 
     public UserResponse updateProfile(String email, UpdateProfileRequest r) {
-        User u = user(email); u.setFullName(r.getFullName().trim()); u.setPhone(r.getPhone()); return UserMapper.toResponse(userRepository.save(u));
+        User u = user(email); u.setFullName(r.getFullName().trim()); u.setPhone(r.getPhone()); return profile(userRepository.save(u));
     }
 
     public void changePassword(String email, ChangePasswordRequest r) {

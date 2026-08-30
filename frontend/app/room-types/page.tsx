@@ -5,6 +5,7 @@ import { roomTypeService } from "@/lib/services/roomTypeService";
 import { RoomTypeAvailability, RoomTypeCode } from "@/types";
 import { getErrorMessage } from "@/lib/getErrorMessage";
 import RoomTypeBookingModal from "@/components/RoomTypeBookingModal";
+import DateRangeCalendar from "@/components/DateRangeCalendar";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);
@@ -75,27 +76,9 @@ export default function RoomTypesPage() {
         Chọn ngày và loại phòng để kiểm tra tình trạng còn trống.
       </p>
 
-      <div className="mt-8 flex flex-col gap-3 rounded-2xl border border-line bg-surface p-5 sm:flex-row sm:items-end">
-        <div className="flex-1">
-          <label className="text-sm text-neutral-600">Nhận phòng</label>
-          <input
-            type="date"
-            value={checkIn}
-            min={todayISO()}
-            onChange={(e) => setCheckIn(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-line px-3 py-2.5 text-sm focus:border-primary focus:outline-none"
-          />
-        </div>
-        <div className="flex-1">
-          <label className="text-sm text-neutral-600">Trả phòng</label>
-          <input
-            type="date"
-            value={checkOut}
-            min={checkIn || todayISO()}
-            onChange={(e) => setCheckOut(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-line px-3 py-2.5 text-sm focus:border-primary focus:outline-none"
-          />
-        </div>
+      <div className="mt-8 rounded-2xl border border-line bg-surface p-5">
+        <DateRangeCalendar checkIn={checkIn} checkOut={checkOut} minDate={todayISO()} onChange={(a,b)=>{setCheckIn(a);setCheckOut(b)}} />
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
         <div className="flex-1">
           <label className="text-sm text-neutral-600">Loại phòng</label>
           <select
@@ -117,6 +100,7 @@ export default function RoomTypesPage() {
         >
           {loading ? "Đang tìm..." : "Kiểm tra phòng trống"}
         </button>
+        </div>
       </div>
 
       {error && <p className="mt-3 text-sm text-red-600">{error}</p>}

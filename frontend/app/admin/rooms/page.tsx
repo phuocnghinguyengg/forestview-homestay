@@ -99,6 +99,8 @@ export default function AdminRoomsPage() {
               <th className="px-4 py-3">Tên phòng</th>
               <th className="px-4 py-3">Loại phòng</th>
               <th className="px-4 py-3">Giá/đêm</th>
+              <th className="px-4 py-3">Cuối tuần</th>
+              <th className="px-4 py-3">Ngày lễ</th>
               <th className="px-4 py-3">Khách tối đa</th>
               <th className="px-4 py-3">Trạng thái</th>
               <th className="px-4 py-3 text-right">Hành động</th>
@@ -110,6 +112,8 @@ export default function AdminRoomsPage() {
                 <td className="px-4 py-3 font-medium text-ink">{room.name}</td>
                 <td className="px-4 py-3 text-neutral-600">{room.typeLabel}</td>
                 <td className="px-4 py-3">{formatPrice(room.pricePerNight)}</td>
+                <td className="px-4 py-3">{room.weekendPrice ? formatPrice(room.weekendPrice) : "Mặc định"}</td>
+                <td className="px-4 py-3">{room.holidayPrice ? formatPrice(room.holidayPrice) : "Tự động ×2"}</td>
                 <td className="px-4 py-3">{room.maxGuests}</td>
                 <td className="px-4 py-3">
                   <button

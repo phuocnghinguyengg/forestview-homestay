@@ -4,116 +4,22 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { roomService } from "@/lib/services/roomService";
 import { bookingService } from "@/lib/services/bookingService";
-import { Room } from "@/types";
+import { Room, PaymentMethod } from "@/types";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { getErrorMessage } from "@/lib/getErrorMessage";
+import DateRangeCalendar from "@/components/DateRangeCalendar";
+import PaymentModal from "@/components/PaymentModal";
 
-function formatPrice(price: number) {
-  return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);
-}
+function formatPrice(price: number) { return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price); }
+function nightsBetween(a:string,b:string){ return a&&b?Math.max(1,Math.round((new Date(`${b}T00:00:00`).getTime()-new Date(`${a}T00:00:00`).getTime())/86400000)):0; }
 
 export default function RoomDetailPage() {
-  const { id } = useParams<{ id: string }>();
-  const router = useRouter();
-  const { isAuthenticated } = useAuthStore();
-
-  const [room, setRoom] = useState<Room | null>(null);
-  const [checkIn, setCheckIn] = useState("");
-  const [checkOut, setCheckOut] = useState("");
-  const [guests, setGuests] = useState(1);
-  const [error, setError] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
-
-  useEffect(() => {
-    roomService.getById(Number(id)).then(setRoom).catch(console.error);
-  }, [id]);
-
-  const handleBooking = async () => {
-    setError("");
-    setSuccess(false);
-
-    if (!isAuthenticated) {
-      router.push("/login");
-      return;
-    }
-
-    if (!checkIn || !checkOut) {
-      setError("Vui lòng chọn ngày nhận và trả phòng");
-      return;
-    }
-
-    setSubmitting(true);
-    try {
-      await bookingService.create({ roomId: Number(id), checkInDate: checkIn, checkOutDate: checkOut, guestCount: guests });
-      setSuccess(true);
-    } catch (err) {
-      setError(getErrorMessage(err, "Đặt phòng thất bại, vui lòng thử lại"));
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  if (!room) return <main className="p-10 text-center text-neutral-500">Đang tải...</main>;
-
-  return (
-    <main className="mx-auto max-w-4xl px-5 py-12">
-      <p className="font-display text-sm italic text-accent">{room.address}</p>
-      <h1 className="mt-1 font-display text-3xl text-ink">{room.name}</h1>
-
-      <div className="mt-6 h-80 w-full overflow-hidden rounded-t-[2.5rem] rounded-b-md bg-neutral-100">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={room.images?.[0] ?? "/placeholder-room.jpg"} alt={room.name} className="h-full w-full object-cover" />
-      </div>
-
-      <div className="mt-8 grid grid-cols-1 gap-10 sm:grid-cols-3">
-        <div className="sm:col-span-2">
-          <h2 className="font-display text-xl text-ink">Mô tả</h2>
-          <p className="mt-2 leading-relaxed text-neutral-600">{room.description || "Chưa có mô tả."}</p>
-
-          <h2 className="mt-8 font-display text-xl text-ink">Tiện ích</h2>
-          <ul className="mt-3 flex flex-wrap gap-2">
-            {room.amenities.map((a) => (
-              <li key={a} className="rounded-full border border-line px-3 py-1 text-sm text-neutral-700">
-                {a}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="h-fit rounded-2xl border border-line bg-surface p-5">
-          <p className="text-xl font-semibold text-accent">
-            {formatPrice(room.pricePerNight)} <span className="text-sm font-normal text-neutral-400">/đêm</span>
-          </p>
-
-          <div className="mt-4 space-y-3">
-            <div>
-              <label className="text-sm text-neutral-600">Nhận phòng</label>
-              <input type="date" value={checkIn} onChange={(e) => setCheckIn(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none" />
-            </div>
-            <div>
-              <label className="text-sm text-neutral-600">Trả phòng</label>
-              <input type="date" value={checkOut} onChange={(e) => setCheckOut(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none" />
-            </div>
-            <div>
-              <label className="text-sm text-neutral-600">Số khách</label>
-              <input type="number" min={1} max={room.maxGuests} value={guests}
-                onChange={(e) => setGuests(Number(e.target.value))}
-                className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none" />
-            </div>
-          </div>
-
-          {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
-          {success && <p className="mt-3 text-sm text-primary">Đặt phòng thành công!</p>}
-
-          <button onClick={handleBooking} disabled={submitting}
-            className="mt-4 w-full rounded-full bg-primary py-2.5 font-medium text-white transition hover:bg-primary-dark disabled:opacity-50">
-            {submitting ? "Đang xử lý..." : "Đặt phòng ngay"}
-          </button>
-        </div>
-      </div>
-    </main>
-  );
+  const { id } = useParams<{ id: string }>(); const router=useRouter(); const {isAuthenticated,user}=useAuthStore();
+  const [room,setRoom]=useState<Room|null>(null); const [checkIn,setCheckIn]=useState(""); const [checkOut,setCheckOut]=useState(""); const [guests,setGuests]=useState(1); const [note,setNote]=useState(""); const [error,setError]=useState(""); const [submitting,setSubmitting]=useState(false); const [paymentOpen,setPaymentOpen]=useState(false); const [success,setSuccess]=useState<string|null>(null);
+  useEffect(()=>{roomService.getById(Number(id)).then(setRoom).catch(e=>setError(getErrorMessage(e,"Không thể tải phòng")))},[id]);
+  const nights=nightsBetween(checkIn,checkOut); const extra=Math.max(0,guests-(room?.recommendedGuests??0)); const estimate=room&&nights?Math.max(0,(room.pricePerNight*nights+(room.extraGuestFee??0)*extra*nights)*(1-((user as any)?.membershipDiscountPercent??0)/100)):0;
+  const chooseDates=(a:string,b:string)=>{setCheckIn(a);setCheckOut(b);setError("")};
+  const submit=(method:PaymentMethod)=>{if(!room)return;setSubmitting(true);bookingService.create({roomId:room.id,checkInDate:checkIn,checkOutDate:checkOut,guestCount:guests,note:note.trim()||undefined,paymentMethod:method}).then(r=>{setPaymentOpen(false);setSuccess(r.bookingCode)}).catch(e=>setError(getErrorMessage(e,"Đặt phòng thất bại, vui lòng thử lại"))).finally(()=>setSubmitting(false));};
+  if(!room)return <main className="p-10 text-center text-neutral-500">{error||"Đang tải..."}</main>;
+  return <main className="mx-auto max-w-5xl px-5 py-12"><p className="font-display text-sm italic text-accent">{room.address}</p><h1 className="mt-1 font-display text-3xl text-ink">{room.name}</h1><div className="mt-6 h-80 w-full overflow-hidden rounded-t-[2.5rem] rounded-b-md bg-neutral-100"><img src={room.images?.[0]??"/placeholder-room.jpg"} alt={room.name} className="h-full w-full object-cover"/></div><div className="mt-8 grid grid-cols-1 gap-10 lg:grid-cols-[1.4fr_.8fr]"><div><h2 className="font-display text-xl text-ink">Mô tả</h2><p className="mt-2 leading-relaxed text-neutral-600">{room.description||"Chưa có mô tả."}</p><h2 className="mt-8 font-display text-xl text-ink">Tiện ích</h2><ul className="mt-3 flex flex-wrap gap-2">{room.amenities.map(a=><li key={a} className="rounded-full border border-line px-3 py-1 text-sm text-neutral-700">{a}</li>)}</ul></div><div className="h-fit rounded-2xl border border-line bg-surface p-5"><p className="text-xl font-semibold text-accent">{formatPrice(room.pricePerNight)} <span className="text-sm font-normal text-neutral-400">/đêm</span></p><div className="mt-4"><DateRangeCalendar checkIn={checkIn} checkOut={checkOut} onChange={chooseDates} minDate={new Date().toISOString().slice(0,10)}/></div><div className="mt-4"><label className="text-sm text-neutral-600">Số khách</label><div className="mt-2 flex items-center gap-3"><button type="button" onClick={()=>setGuests(Math.max(1,guests-1))} className="h-9 w-9 rounded-full border border-line">−</button><span className="w-8 text-center font-semibold">{guests}</span><button type="button" onClick={()=>setGuests(Math.min(room.maxGuests,guests+1))} className="h-9 w-9 rounded-full border border-line">+</button><span className="text-xs text-neutral-400">Đề xuất {room.recommendedGuests}, tối đa {room.maxGuests}</span></div></div>{extra>0&&<div className="mt-3 rounded-lg bg-accent/10 p-3 text-sm text-accent">Phụ thu {extra} khách × {nights} đêm: {formatPrice((room.extraGuestFee??0)*extra*nights)}</div>}<div className="mt-4"><label className="text-sm text-neutral-600">Yêu cầu / ghi chú</label><textarea value={note} onChange={e=>setNote(e.target.value)} rows={3} className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none"/></div>{error&&<p className="mt-3 text-sm text-red-600">{error}</p>}{success&&<div className="mt-3 rounded-xl bg-primary/10 p-3 text-sm text-primary">Đặt phòng thành công. Mã: <b>#{success}</b></div>}<button disabled={!checkIn||!checkOut||submitting} onClick={()=>{if(!isAuthenticated){router.push("/login");return;}if(!user?.emailVerified){setError("Vui lòng xác thực email trước khi đặt phòng");return;}if(checkOut<=checkIn){setError("Ngày trả phòng phải sau ngày nhận phòng");return;}setPaymentOpen(true)}} className="mt-4 w-full rounded-full bg-primary py-2.5 font-medium text-white hover:bg-primary-dark disabled:opacity-50">Xác nhận đặt phòng</button></div></div><PaymentModal open={paymentOpen} onClose={()=>!submitting&&setPaymentOpen(false)} onConfirm={submit} totalPrice={estimate} loading={submitting}/></main>;
 }

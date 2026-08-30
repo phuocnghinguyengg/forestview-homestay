@@ -52,8 +52,9 @@ public class BookingController {
     @PatchMapping("/api/admin/bookings/{id}/status")
     public ResponseEntity<BookingResponse> updateStatus(
             @PathVariable Long id,
-            @RequestParam BookingStatus status) {
-        return ResponseEntity.ok(bookingService.updateBookingStatus(id, status));
+            @RequestParam BookingStatus status,
+            @RequestParam(required = false) String reason) {
+        return ResponseEntity.ok(bookingService.updateBookingStatus(id, status, reason));
     }
 
     @GetMapping("/api/bookings/{id}")

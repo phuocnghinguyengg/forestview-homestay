@@ -13,6 +13,8 @@ public class RoomMapper {
                 .address(room.getAddress())
                 .pricePerNight(room.getPricePerNight())
                 .maxGuests(room.getMaxGuests())
+                .recommendedGuests(room.getRecommendedGuests())
+                .extraGuestFee(room.getExtraGuestFee())
                 .images(room.getImages())
                 .amenities(room.getAmenities())
                 .active(room.getActive())

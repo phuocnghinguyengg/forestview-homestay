@@ -1,5 +1,5 @@
 import api from "@/lib/api";
-import { Role } from "@/types";
+import { Role, MembershipTier } from "@/types";
 
 export interface AdminUser {
   id: number;
@@ -9,6 +9,12 @@ export interface AdminUser {
   role: Role;
   enabled: boolean;
   emailVerified: boolean;
+  membershipTier: MembershipTier;
+  membershipBookingCount: number;
+  membershipTotalSpent: number;
+  nextTierBookingThreshold: number;
+  nextTierSpendingThreshold: number;
+  membershipDiscountPercent: number;
   createdAt: string;
 }
 
@@ -25,4 +31,5 @@ export const userService = {
   toggleEnabled: (id: number) => api.patch(`/admin/users/${id}/toggle-enabled`),
   updateRole: (id: number, role: Role) => api.patch(`/admin/users/${id}/role?role=${role}`),
   remove: (id: number) => api.delete(`/admin/users/${id}`),
+  grantMembership: (id: number, tier: MembershipTier) => api.patch(`/admin/users/${id}/membership`, { tier }).then((res) => res.data),
 };

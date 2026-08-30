@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.Async;
 
 import java.math.BigDecimal;
 import java.net.URI;
@@ -66,6 +67,12 @@ public class EmailService {
     public void sendBookingConfirmation(String toEmail, String fullName, String roomName,
                                          LocalDate checkIn, LocalDate checkOut,
                                          Integer guestCount, BigDecimal totalPrice) {
+        sendBookingConfirmation(toEmail, fullName, roomName, checkIn, checkOut, guestCount, totalPrice, "Chờ xác nhận");
+    }
+
+    public void sendBookingConfirmation(String toEmail, String fullName, String roomName,
+                                         LocalDate checkIn, LocalDate checkOut,
+                                         Integer guestCount, BigDecimal totalPrice, String statusText) {
         String subject = "Xác nhận đặt phòng: " + roomName;
         String html = """
                 <div style="font-family:Arial,sans-serif;max-width:480px;margin:auto;padding:24px;color:#333;">
@@ -78,11 +85,11 @@ public class EmailService {
                         <tr><td style="padding:6px 0;color:#888;">Số khách</td><td style="padding:6px 0;">%d</td></tr>
                         <tr><td style="padding:6px 0;color:#888;">Tổng tiền</td><td style="padding:6px 0;color:#C97A3D;"><b>%,.0f₫</b></td></tr>
                     </table>
-                    <p style="margin-top:20px;">Trạng thái hiện tại: <b>Chờ xác nhận</b>. Chúng tôi sẽ liên hệ sớm để xác nhận đơn đặt phòng.</p>
+                    <p style="margin-top:20px;">Trạng thái hiện tại: <b>%s</b>.</p>
                     <p style="margin-top:24px;color:#888;font-size:12px;">Đây là email tự động, vui lòng không phản hồi.</p>
                 </div>
                 """.formatted(escapeHtml(fullName), escapeHtml(roomName),
-                checkIn.format(DATE_FMT), checkOut.format(DATE_FMT), guestCount, totalPrice);
+                checkIn.format(DATE_FMT), checkOut.format(DATE_FMT), guestCount, totalPrice, escapeHtml(statusText));
 
         send(toEmail, subject, html, false);
     }
@@ -160,6 +167,7 @@ public class EmailService {
                 .replace("\"", "&quot;")
                 .replace("'", "&#39;");
     }
+    @Async("mailTaskExecutor")
     public void sendPasswordResetOtpEmail(String toEmail, String fullName, String otp) {
         String subject = "Mã OTP đặt lại mật khẩu - ForestView Homestay";
         String html = """
@@ -172,7 +180,46 @@ public class EmailService {
                     <p style="margin-top:24px;color:#888;font-size:12px;">Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.</p>
                 </div>
                 """.formatted(escapeHtml(fullName), otp);
-        send(toEmail, subject, html, true);
+        send(toEmail, subject, html, false);
+    }
+
+
+    public void sendBookingStatusEmail(String toEmail, String fullName, String roomName, String status, String reason) {
+        String subject = "Cập nhật đơn đặt phòng: " + roomName;
+        String reasonHtml = (reason == null || reason.isBlank()) ? "" : "<p><b>Lý do:</b> " + escapeHtml(reason) + "</p>";
+        String html = """
+                <div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;padding:24px;color:#333;">
+                    <h2 style="color:#2F5D50;">Cập nhật đặt phòng</h2>
+                    <p>Xin chào %s,</p>
+                    <p>Đơn đặt phòng <b>%s</b> hiện có trạng thái: <b>%s</b>.</p>
+                    %s
+                    <p style="margin-top:24px;color:#888;font-size:12px;">Đây là email tự động của ForestView Homestay.</p>
+                </div>
+                """.formatted(escapeHtml(fullName), escapeHtml(roomName), escapeHtml(status), reasonHtml);
+        send(toEmail, subject, html, false);
+    }
+
+    public void sendMembershipUpgradeEmail(String toEmail, String fullName, com.homestay.backend.entity.enums.MembershipTier tier) {
+        String subject = "Bạn đã được nâng hạng thành viên ForestView";
+        String html = """
+                <div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;padding:24px;color:#333;">
+                    <h2 style="color:#2F5D50;">Chúc mừng %s!</h2>
+                    <p>Tài khoản của bạn đã được nâng lên hạng <b>%s</b>.</p>
+                    <p>Ưu đãi hiện tại: giảm <b>%d%%</b> khi đặt phòng.</p>
+                    <p style="margin-top:24px;color:#888;font-size:12px;">Đây là email tự động của ForestView Homestay.</p>
+                </div>
+                """.formatted(escapeHtml(fullName), tierLabel(tier), tier.getDiscountPercent());
+        send(toEmail, subject, html, false);
+    }
+
+    private String tierLabel(com.homestay.backend.entity.enums.MembershipTier tier) {
+        return switch (tier) {
+            case BRONZE -> "Đồng";
+            case SILVER -> "Bạc";
+            case GOLD -> "Vàng";
+            case DIAMOND -> "Kim cương";
+            default -> "Thành viên";
+        };
     }
 
 }

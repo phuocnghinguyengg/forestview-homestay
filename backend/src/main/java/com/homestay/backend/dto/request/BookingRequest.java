@@ -1,5 +1,6 @@
 package com.homestay.backend.dto.request;
 
+import com.homestay.backend.entity.enums.PaymentMethod;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
@@ -20,4 +21,6 @@ public class BookingRequest {
     private Integer guestCount;
 
     private String note;
+
+    private PaymentMethod paymentMethod = PaymentMethod.HOLD;
 }

@@ -33,6 +33,14 @@ public class Room {
     @Column(nullable = false)
     private Integer maxGuests;
 
+    @Column
+    @Builder.Default
+    private Integer recommendedGuests = 2;
+
+    @Column
+    @Builder.Default
+    private BigDecimal extraGuestFee = BigDecimal.ZERO;
+
     @ElementCollection
     @CollectionTable(name = "room_images", joinColumns = @JoinColumn(name = "room_id"))
     @Column(name = "image_url")
@@ -56,6 +64,12 @@ public class Room {
 
     @Column(updatable = false)
     private LocalDateTime createdAt;
+
+    @PostLoad
+    protected void onLoad() {
+        if (recommendedGuests == null) recommendedGuests = Math.min(2, maxGuests == null ? 2 : maxGuests);
+        if (extraGuestFee == null) extraGuestFee = BigDecimal.ZERO;
+    }
 
     @PrePersist
     protected void onCreate() {

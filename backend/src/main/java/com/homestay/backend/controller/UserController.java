@@ -1,6 +1,7 @@
 package com.homestay.backend.controller;
 
 import com.homestay.backend.dto.request.AdminUserUpdateRequest;
+import com.homestay.backend.dto.request.AdminMembershipRequest;
 import com.homestay.backend.dto.response.UserResponse;
 import com.homestay.backend.entity.enums.Role;
 import com.homestay.backend.service.UserService;
@@ -38,6 +39,11 @@ public class UserController {
     @PatchMapping("/{id}/role")
     public ResponseEntity<UserResponse> updateRole(@PathVariable Long id, @RequestParam Role role) {
         return ResponseEntity.ok(userService.updateUserRole(id, role));
+    }
+
+    @PatchMapping("/{id}/membership")
+    public ResponseEntity<UserResponse> grantMembership(@PathVariable Long id, @Valid @RequestBody AdminMembershipRequest request) {
+        return ResponseEntity.ok(userService.grantMembership(id, request.getTier()));
     }
 
     @DeleteMapping("/{id}")

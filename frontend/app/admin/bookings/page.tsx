@@ -40,7 +40,8 @@ export default function AdminBookingsPage() {
   };
 
   useEffect(() => {
-    const fetchBookings = async () => {
+    const controller = new AbortController();
+    const fetchData = async () => {
       setLoading(true);
       try {
         const data = await bookingService.getAllAdmin();
@@ -51,13 +52,21 @@ export default function AdminBookingsPage() {
         setLoading(false);
       }
     };
-    fetchBookings();
+    fetchData();
+    return () => controller.abort();
   }, []);
 
   const handleStatusChange = async (id: number, status: BookingStatus) => {
+    let reason: string | undefined;
+    if (status === "CANCELLED") {
+      const value = window.prompt("Nhập lý do từ chối đơn:");
+      if (value === null) return;
+      reason = value.trim();
+      if (!reason) { alert("Vui lòng nhập lý do từ chối"); return; }
+    }
     setUpdatingId(id);
     try {
-      await bookingService.updateStatus(id, status);
+      await bookingService.updateStatus(id, status, reason);
       loadBookings();
     } catch (err) {
       alert(getErrorMessage(err, "Không thể cập nhật trạng thái"));
@@ -112,6 +121,9 @@ export default function AdminBookingsPage() {
                   {formatDate(b.checkInDate)} → {formatDate(b.checkOutDate)} · {b.guestCount} khách
                 </p>
                 {b.note && <p className="mt-1 text-sm italic text-neutral-500">Ghi chú: {b.note}</p>}
+                <p className="mt-1 text-sm text-neutral-500">{b.nights} đêm · Thanh toán: {b.paymentMethod === "HOLD" ? "Giữ thanh toán" : b.paymentMethod === "QR_CODE" ? "QR Code" : b.paymentMethod === "CARD" ? "NAPAS/VISA/MasterCard" : "Tiền mặt"}</p>
+                {b.membershipDiscountAmount ? <p className="mt-1 text-xs text-primary">Membership -{b.membershipDiscountPercent}%: -{formatPrice(b.membershipDiscountAmount)}</p> : null}
+                {b.rejectionReason && <p className="mt-1 text-sm text-red-600">Lý do: {b.rejectionReason}</p>}
                 <p className="mt-1 text-sm font-medium text-accent">{formatPrice(b.totalPrice)}</p>
               </div>
 

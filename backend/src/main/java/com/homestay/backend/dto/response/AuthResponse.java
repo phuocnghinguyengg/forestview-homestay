@@ -1,6 +1,7 @@
 package com.homestay.backend.dto.response;
 
 import lombok.AllArgsConstructor;
+import com.homestay.backend.entity.enums.MembershipTier;
 import lombok.Builder;
 import lombok.Data;
 
@@ -16,4 +17,5 @@ public class AuthResponse {
     private Long id;
     private String phone;
     private Boolean emailVerified;
+    private MembershipTier membershipTier;
 }

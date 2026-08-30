@@ -1,10 +1,14 @@
 export type Role = "USER" | "ADMIN";
+export type MembershipTier = "NONE" | "BRONZE" | "SILVER" | "GOLD" | "DIAMOND";
+export type PaymentMethod = "CASH" | "QR_CODE" | "CARD" | "HOLD";
+export type PaymentStatus = "UNPAID" | "PAID" | "HOLD";
 
 export interface AuthUser {
   fullName: string;
   email: string;
   role: Role;
   emailVerified: boolean;
+  membershipTier?: MembershipTier;
 }
 
 export interface AuthResponse {
@@ -14,6 +18,7 @@ export interface AuthResponse {
   email: string;
   role: Role;
   emailVerified: boolean;
+  membershipTier?: MembershipTier;
 }
 
 export interface Room {
@@ -23,6 +28,10 @@ export interface Room {
   address: string;
   pricePerNight: number;
   maxGuests: number;
+  recommendedGuests: number;
+  extraGuestFee: number;
+  weekendPrice?: number | null;
+  holidayPrice?: number | null;
   images: string[];
   amenities: string[];
   active: boolean;
@@ -43,8 +52,18 @@ export interface Booking {
   userEmail: string;
   checkInDate: string;
   checkOutDate: string;
+  nights: number;
   guestCount: number;
+  basePrice?: number | null;
+  holidayPrice?: number | null;
+  extraGuestFee?: number | null;
+  membershipDiscountPercent?: number | null;
+  membershipDiscountAmount?: number | null;
   totalPrice: number;
+  paymentMethod?: PaymentMethod;
+  paymentStatus?: PaymentStatus;
+  paymentHoldExpiresAt?: string | null;
+  rejectionReason?: string | null;
   status: BookingStatus;
   note: string | null;
   createdAt: string;

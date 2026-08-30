@@ -7,6 +7,7 @@ import { bookingService } from "@/lib/services/bookingService";
 import { Booking } from "@/types";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { getErrorMessage } from "@/lib/getErrorMessage";
+import { accountService, AccountProfile } from "@/lib/services/accountService";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("vi-VN", {
@@ -26,6 +27,7 @@ function DashboardContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [cancellingId, setCancellingId] = useState<number | null>(null);
+  const [profile, setProfile] = useState<AccountProfile | null>(null);
 
   const loadBookings = async () => {
     const data = await bookingService.getMine();
@@ -40,10 +42,11 @@ function DashboardContent() {
         setLoading(true);
         setError("");
 
-        const data = await bookingService.getMine();
+        const [data, me] = await Promise.all([bookingService.getMine(), accountService.getMe()]);
 
         if (!cancelled) {
           setBookings(data);
+          setProfile(me);
         }
       } catch (err) {
         if (!cancelled) {
@@ -95,6 +98,14 @@ function DashboardContent() {
       </h1>
 
       <p className="mt-2 text-neutral-500">{user?.email}</p>
+
+      {profile && (() => {
+        const tierLabels: Record<string,string> = { NONE:"Chưa có", BRONZE:"Đồng", SILVER:"Bạc", GOLD:"Vàng", DIAMOND:"Kim cương" };
+        const tiers = [{key:"BRONZE", bookings:20, spent:10000000},{key:"SILVER", bookings:40, spent:20000000},{key:"GOLD", bookings:80, spent:40000000},{key:"DIAMOND", bookings:160, spent:80000000}];
+        const next = tiers.find(t => (profile.membershipBookingCount < t.bookings && profile.membershipTotalSpent < t.spent));
+        const progress = next ? Math.max(0, Math.min(100, Math.max(profile.membershipBookingCount/next.bookings, Number(profile.membershipTotalSpent)/next.spent)*100)) : 100;
+        return <section className="mt-8 rounded-2xl border border-primary/20 bg-primary/5 p-5"><div className="flex flex-wrap items-center justify-between gap-3"><div><p className="text-xs uppercase tracking-wide text-primary">Membership</p><h2 className="mt-1 font-display text-2xl text-ink">{tierLabels[profile.membershipTier ?? "NONE"]}</h2></div><span className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white">Giảm {profile.membershipDiscountPercent ?? 0}%</span></div>{next && <><div className="mt-4 h-2 overflow-hidden rounded-full bg-white"><div className="h-full rounded-full bg-primary transition-all" style={{width:`${progress}%`}}/></div><p className="mt-2 text-sm text-neutral-600">Tiến độ đến <b>{tierLabels[next.key]}</b>: {profile.membershipBookingCount}/{next.bookings} booking hoặc {formatPrice(Number(profile.membershipTotalSpent))}/{formatPrice(next.spent)}.</p></>}</section>;
+      })()}
 
       <div className="mt-10 flex items-end justify-between border-b border-line pb-4">
         <h2 className="font-display text-xl text-ink">
@@ -151,9 +162,9 @@ function DashboardContent() {
                   {formatDate(b.checkOutDate)} · {b.guestCount} khách
                 </p>
 
-                <p className="mt-1 text-sm font-medium text-accent">
-                  {formatPrice(b.totalPrice)}
-                </p>
+                <p className="mt-1 text-sm text-neutral-500">{b.nights} đêm · {b.paymentMethod === "HOLD" ? "Giữ thanh toán" : b.paymentMethod === "QR_CODE" ? "QR Code" : b.paymentMethod === "CARD" ? "Thẻ" : "Tiền mặt"}</p>
+                {(b.membershipDiscountAmount ?? 0) > 0 && <p className="mt-1 text-xs text-primary">Membership giảm {b.membershipDiscountPercent}%: -{formatPrice(b.membershipDiscountAmount ?? 0)}</p>}
+                <p className="mt-1 text-sm font-medium text-accent">{formatPrice(b.totalPrice)}</p>
               </div>
 
               <div className="flex items-center gap-3">

@@ -2,6 +2,11 @@ import api from "@/lib/api";
 import { AuthUser } from "@/types";
 
 export interface AccountProfile extends AuthUser {
+  membershipBookingCount: number;
+  membershipTotalSpent: number;
+  nextTierBookingThreshold: number;
+  nextTierSpendingThreshold: number;
+  membershipDiscountPercent: number;
   id?: number;
   phone: string | null;
 }

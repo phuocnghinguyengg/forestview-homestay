@@ -1,5 +1,6 @@
 package com.homestay.backend.dto.response;
 
+import com.homestay.backend.entity.enums.MembershipTier;
 import com.homestay.backend.entity.enums.Role;
 import lombok.Builder;
 import lombok.Data;
@@ -17,4 +18,10 @@ public class UserResponse {
     private Boolean enabled;
     private LocalDateTime createdAt;
     private Boolean emailVerified;
+    private MembershipTier membershipTier;
+    private long membershipBookingCount;
+    private java.math.BigDecimal membershipTotalSpent;
+    private int nextTierBookingThreshold;
+    private long nextTierSpendingThreshold;
+    private int membershipDiscountPercent;
 }

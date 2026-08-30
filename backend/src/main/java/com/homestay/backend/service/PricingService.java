@@ -9,36 +9,53 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PricingService {
-
     private final HolidayRepository holidayRepository;
 
-    public BigDecimal calculateTotalPrice(Room room, LocalDate checkIn, LocalDate checkOut) {
+    public record PriceBreakdown(BigDecimal basePrice, BigDecimal holidayPrice, int nights) {}
+
+    public PriceBreakdown calculate(Room room, LocalDate checkIn, LocalDate checkOut) {
         Set<LocalDate> holidays = holidayRepository.findAll().stream()
                 .map(Holiday::getDate)
                 .collect(Collectors.toSet());
+        holidays.addAll(VietnameseHolidayService.autoHolidayDatesBetween(checkIn, checkOut));
 
-        BigDecimal total = BigDecimal.ZERO;
-        LocalDate date = checkIn;
-        while (date.isBefore(checkOut)) {
-            total = total.add(priceForDate(room, date, holidays));
-            date = date.plusDays(1);
+        BigDecimal normal = BigDecimal.ZERO;
+        BigDecimal holiday = BigDecimal.ZERO;
+        int nights = 0;
+        for (LocalDate date = checkIn; date.isBefore(checkOut); date = date.plusDays(1)) {
+            nights++;
+            if (holidays.contains(date)) {
+                holiday = holiday.add(holidayUnitPrice(room));
+            } else {
+                normal = normal.add(regularUnitPrice(room, date));
+            }
         }
-        return total;
+        return new PriceBreakdown(normal, holiday, nights);
     }
 
-    private BigDecimal priceForDate(Room room, LocalDate date, Set<LocalDate> holidays) {
-        if (holidays.contains(date) && room.getHolidayPrice() != null) {
+    public BigDecimal calculateTotalPrice(Room room, LocalDate checkIn, LocalDate checkOut) {
+        PriceBreakdown b = calculate(room, checkIn, checkOut);
+        return b.basePrice().add(b.holidayPrice());
+    }
+
+    private BigDecimal holidayUnitPrice(Room room) {
+        if (room.getHolidayPrice() != null && room.getHolidayPrice().compareTo(BigDecimal.ZERO) > 0) {
             return room.getHolidayPrice();
         }
+        return room.getPricePerNight().multiply(BigDecimal.valueOf(2));
+    }
+
+    private BigDecimal regularUnitPrice(Room room, LocalDate date) {
         DayOfWeek dow = date.getDayOfWeek();
-        boolean isWeekend = dow == DayOfWeek.FRIDAY || dow == DayOfWeek.SATURDAY;
-        if (isWeekend && room.getWeekendPrice() != null) {
+        boolean weekend = dow == DayOfWeek.FRIDAY || dow == DayOfWeek.SATURDAY;
+        if (weekend && room.getWeekendPrice() != null && room.getWeekendPrice().compareTo(BigDecimal.ZERO) > 0) {
             return room.getWeekendPrice();
         }
         return room.getPricePerNight();

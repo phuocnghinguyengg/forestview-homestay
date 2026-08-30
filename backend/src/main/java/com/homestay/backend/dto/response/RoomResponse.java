@@ -17,6 +17,8 @@ public class RoomResponse {
     private String address;
     private BigDecimal pricePerNight;
     private Integer maxGuests;
+    private Integer recommendedGuests;
+    private BigDecimal extraGuestFee;
     private List<String> images;
     private List<String> amenities;
     private Boolean active;

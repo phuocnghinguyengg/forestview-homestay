@@ -22,6 +22,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
         SELECT b FROM Booking b
         WHERE b.room.id = :roomId
         AND b.status IN ('PENDING', 'CONFIRMED')
+        AND (b.paymentHoldExpiresAt IS NULL OR b.paymentHoldExpiresAt > CURRENT_TIMESTAMP)
         AND b.checkInDate < :checkOutDate
         AND b.checkOutDate > :checkInDate
         """)
@@ -32,6 +33,14 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     );
 
     long countByStatus(BookingStatus status);
+
+    long countByUserAndStatusIn(User user, List<BookingStatus> statuses);
+
+    @Query("""
+            SELECT COALESCE(SUM(b.totalPrice), 0) FROM Booking b
+            WHERE b.user = :user AND b.status IN ('CONFIRMED', 'COMPLETED')
+            """)
+    BigDecimal sumSpentByUser(@Param("user") User user);
 
     @Query("""
             SELECT COALESCE(SUM(b.totalPrice), 0) FROM Booking b

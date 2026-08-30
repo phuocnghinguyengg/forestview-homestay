@@ -1,6 +1,8 @@
 package com.homestay.backend.dto.response;
 
 import com.homestay.backend.entity.enums.BookingStatus;
+import com.homestay.backend.entity.enums.PaymentMethod;
+import com.homestay.backend.entity.enums.PaymentStatus;
 import lombok.Builder;
 import lombok.Data;
 
@@ -19,9 +21,19 @@ public class BookingResponse {
     private String userEmail;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
+    private Integer nights;
     private Integer guestCount;
+    private BigDecimal basePrice;
+    private BigDecimal holidayPrice;
+    private BigDecimal extraGuestFee;
+    private Integer membershipDiscountPercent;
+    private BigDecimal membershipDiscountAmount;
     private BigDecimal totalPrice;
     private BookingStatus status;
+    private PaymentMethod paymentMethod;
+    private PaymentStatus paymentStatus;
+    private LocalDateTime paymentHoldExpiresAt;
+    private String rejectionReason;
     private String note;
     private LocalDateTime createdAt;
     private String bookingCode;

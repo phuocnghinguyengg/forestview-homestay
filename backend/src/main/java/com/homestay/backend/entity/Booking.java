@@ -1,6 +1,8 @@
 package com.homestay.backend.entity;
 
 import com.homestay.backend.entity.enums.BookingStatus;
+import com.homestay.backend.entity.enums.PaymentMethod;
+import com.homestay.backend.entity.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,6 +40,29 @@ public class Booking {
 
     @Column(nullable = false)
     private BigDecimal totalPrice;
+
+    @Column
+    @Builder.Default
+    private Integer nights = 1;
+
+    private BigDecimal basePrice;
+    private BigDecimal holidayPrice;
+    private BigDecimal extraGuestFee;
+    private Integer membershipDiscountPercent;
+    private BigDecimal membershipDiscountAmount;
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    @Builder.Default
+    private PaymentMethod paymentMethod = PaymentMethod.HOLD;
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    @Builder.Default
+    private PaymentStatus paymentStatus = PaymentStatus.HOLD;
+
+    private LocalDateTime paymentHoldExpiresAt;
+    private String rejectionReason;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
