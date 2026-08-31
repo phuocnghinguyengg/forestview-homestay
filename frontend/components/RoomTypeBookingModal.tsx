@@ -484,34 +484,6 @@ export default function RoomTypeBookingModal({
                         {detailRoom.maxGuests} khách
                       </p>
                     </div>
-
-                    <div className="rounded-xl bg-base p-3">
-                      <p className="text-neutral-400">
-                        Cuối tuần
-                      </p>
-
-                      <p className="mt-1 font-semibold text-ink">
-                        {detailRoom.weekendPrice
-                          ? formatPrice(
-                              detailRoom.weekendPrice
-                            )
-                          : "Giá thường"}
-                      </p>
-                    </div>
-
-                    <div className="rounded-xl bg-base p-3">
-                      <p className="text-neutral-400">
-                        Ngày lễ
-                      </p>
-
-                      <p className="mt-1 font-semibold text-ink">
-                        {detailRoom.holidayPrice
-                          ? formatPrice(
-                              detailRoom.holidayPrice
-                            )
-                          : "Tự động ×2"}
-                      </p>
-                    </div>
                   </div>
 
                   {detailRoom.amenities?.length >
@@ -896,9 +868,8 @@ export default function RoomTypeBookingModal({
                       </div>
 
                       <p className="mt-2 text-xs text-neutral-400">
-                        Máy chủ sẽ tính chính xác giá
-                        cuối tuần/ngày lễ và
-                        membership khi tạo đơn.
+                        Giá cuối cùng sẽ được xác nhận
+                        khi tạo đơn.
                       </p>
                     </div>
 

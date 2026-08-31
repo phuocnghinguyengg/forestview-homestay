@@ -26,8 +26,12 @@ export function getErrorMessage(
       return "Máy chủ phản hồi quá lâu. Vui lòng thử lại.";
     }
 
+    if (err.response?.status === 401) {
+      return "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.";
+    }
+
     if (err.response?.status === 403) {
-      return "Bạn không có quyền thực hiện thao tác này. Hãy đăng nhập lại bằng tài khoản ADMIN.";
+      return "Tài khoản của bạn không có quyền thực hiện thao tác này.";
     }
 
     if (err.response?.status === 400) {

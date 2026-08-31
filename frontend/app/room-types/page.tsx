@@ -33,6 +33,7 @@ export default function RoomTypesPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [sort, setSort] = useState<SortOption>("none");
+  const [calendarOpen, setCalendarOpen] = useState(true);
 
   const [activeModal, setActiveModal] = useState<{ type: RoomTypeCode; label: string } | null>(null);
 
@@ -53,6 +54,7 @@ export default function RoomTypesPage() {
       const data = await roomTypeService.getAvailability(checkIn, checkOut);
       const filtered = typeFilter === "ALL" ? data : data.filter((rt) => rt.type === typeFilter);
       setResults(filtered);
+      setCalendarOpen(false);
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
@@ -77,30 +79,54 @@ export default function RoomTypesPage() {
       </p>
 
       <div className="mt-8 rounded-2xl border border-line bg-surface p-5">
-        <DateRangeCalendar checkIn={checkIn} checkOut={checkOut} minDate={todayISO()} onChange={(a,b)=>{setCheckIn(a);setCheckOut(b)}} />
-        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
-        <div className="flex-1">
-          <label className="text-sm text-neutral-600">Loại phòng</label>
-          <select
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value as RoomTypeCode | "ALL")}
-            className="mt-1 w-full rounded-lg border border-line px-3 py-2.5 text-sm focus:border-primary focus:outline-none"
-          >
-            {TYPE_FILTER_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-        </div>
-        <button
-          onClick={handleSearch}
-          disabled={loading}
-          className="rounded-full bg-primary px-8 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:opacity-50"
-        >
-          {loading ? "Đang tìm..." : "Kiểm tra phòng trống"}
-        </button>
-        </div>
+        {calendarOpen ? (
+          <>
+            <DateRangeCalendar checkIn={checkIn} checkOut={checkOut} minDate={todayISO()} onChange={(a,b)=>{setCheckIn(a);setCheckOut(b)}} />
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
+            <div className="flex-1">
+              <label className="text-sm text-neutral-600">Loại phòng</label>
+              <select
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value as RoomTypeCode | "ALL")}
+                className="mt-1 w-full rounded-lg border border-line px-3 py-2.5 text-sm focus:border-primary focus:outline-none"
+              >
+                {TYPE_FILTER_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button
+              onClick={handleSearch}
+              disabled={loading}
+              className="rounded-full bg-primary px-8 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:opacity-50"
+            >
+              {loading ? "Đang tìm..." : "Kiểm tra phòng trống"}
+            </button>
+            </div>
+          </>
+        ) : (
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-wrap items-center gap-2 text-sm">
+              <span className="rounded-lg border border-line px-3 py-2">
+                Nhận: <b>{checkIn}</b>
+              </span>
+              <span className="rounded-lg border border-line px-3 py-2">
+                Trả: <b>{checkOut}</b>
+              </span>
+              <span className="rounded-lg border border-line px-3 py-2 text-neutral-600">
+                {TYPE_FILTER_OPTIONS.find((o) => o.value === typeFilter)?.label}
+              </span>
+            </div>
+            <button
+              onClick={() => setCalendarOpen(true)}
+              className="self-start rounded-full border border-line px-4 py-2 text-sm font-medium transition hover:bg-neutral-50 sm:self-auto"
+            >
+              Sửa ngày / loại phòng
+            </button>
+          </div>
+        )}
       </div>
 
       {error && <p className="mt-3 text-sm text-red-600">{error}</p>}

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -51,12 +52,17 @@ public class PricingService {
         return room.getPricePerNight().multiply(BigDecimal.valueOf(2));
     }
 
+    private static final BigDecimal WEEKEND_SURCHARGE = BigDecimal.valueOf(100_000);
+
     private BigDecimal regularUnitPrice(Room room, LocalDate date) {
         DayOfWeek dow = date.getDayOfWeek();
-        boolean weekend = dow == DayOfWeek.FRIDAY || dow == DayOfWeek.SATURDAY;
-        if (weekend && room.getWeekendPrice() != null && room.getWeekendPrice().compareTo(BigDecimal.ZERO) > 0) {
+        boolean weekend = dow == DayOfWeek.SATURDAY || dow == DayOfWeek.SUNDAY;
+        if (!weekend) {
+            return room.getPricePerNight();
+        }
+        if (room.getWeekendPrice() != null && room.getWeekendPrice().compareTo(BigDecimal.ZERO) > 0) {
             return room.getWeekendPrice();
         }
-        return room.getPricePerNight();
+        return room.getPricePerNight().add(WEEKEND_SURCHARGE);
     }
 }

@@ -91,16 +91,16 @@ export default function AdminUsersPage() {
       {error && <p className="mt-6 text-red-600">{error}</p>}
 
       <div className="mt-6 overflow-x-auto rounded-2xl border border-line">
-        <table className="w-full text-left text-sm">
+        <table className="w-full min-w-[960px] text-left text-sm">
           <thead className="bg-neutral-50 text-neutral-500">
             <tr>
-              <th className="px-4 py-3">Họ tên</th>
-              <th className="px-4 py-3">Email</th>
-              <th className="px-4 py-3">Xác thực</th>
-              <th className="px-4 py-3">Membership</th>
-              <th className="px-4 py-3">Vai trò</th>
-              <th className="px-4 py-3">Ngày tham gia</th>
-              <th className="px-4 py-3 text-right">Hành động</th>
+              <th className="whitespace-nowrap px-4 py-3">Họ tên</th>
+              <th className="whitespace-nowrap px-4 py-3">Email</th>
+              <th className="whitespace-nowrap px-4 py-3">Xác thực</th>
+              <th className="whitespace-nowrap px-4 py-3">Membership</th>
+              <th className="whitespace-nowrap px-4 py-3">Vai trò</th>
+              <th className="whitespace-nowrap px-4 py-3">Ngày tham gia</th>
+              <th className="whitespace-nowrap px-4 py-3 text-right">Hành động</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-line">
@@ -108,23 +108,23 @@ export default function AdminUsersPage() {
               const isSelf = u.email === currentUser?.email;
               return (
                 <tr key={u.id}>
-                  <td className="px-4 py-3 font-medium text-ink">{u.fullName}</td>
+                  <td className="whitespace-nowrap px-4 py-3 font-medium text-ink">{u.fullName}</td>
                   <td className="px-4 py-3">{u.email}</td>
-                  <td className="px-4 py-3">
+                  <td className="whitespace-nowrap px-4 py-3">
                     <span
-                      className={`rounded-full px-2.5 py-1 text-xs font-medium ${
+                      className={`inline-block whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-medium ${
                         u.emailVerified ? "bg-primary/10 text-primary" : "bg-accent/10 text-accent"
                       }`}
                     >
                       {u.emailVerified ? "Đã xác thực" : "Chưa xác thực"}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="whitespace-nowrap px-4 py-3">
                     <select value={u.membershipTier} disabled={busyId===u.id} onChange={async (e)=>{setBusyId(u.id);try{await userService.grantMembership(u.id,e.target.value as MembershipTier);loadUsers()}catch(err){alert(getErrorMessage(err))}finally{setBusyId(null)}}} className="rounded-lg border border-line px-2 py-1 text-sm focus:border-primary focus:outline-none disabled:opacity-50">
                       <option value="NONE">Chưa có</option><option value="BRONZE">Đồng - 5%</option><option value="SILVER">Bạc - 10%</option><option value="GOLD">Vàng - 15%</option><option value="DIAMOND">Kim cương - 20%</option>
                     </select>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="whitespace-nowrap px-4 py-3">
                     <select
                       value={u.role}
                       disabled={isSelf || busyId === u.id}
@@ -135,8 +135,8 @@ export default function AdminUsersPage() {
                       <option value="ADMIN">ADMIN</option>
                     </select>
                   </td>
-                  <td className="px-4 py-3 text-neutral-500">{formatDate(u.createdAt)}</td>
-                  <td className="px-4 py-3 text-right">
+                  <td className="whitespace-nowrap px-4 py-3 text-neutral-500">{formatDate(u.createdAt)}</td>
+                  <td className="whitespace-nowrap px-4 py-3 text-right">
                     <button
                       onClick={() => setEditingUser(u)}
                       className="mr-3 text-neutral-600 transition hover:text-primary"
@@ -146,7 +146,7 @@ export default function AdminUsersPage() {
                     <button
                       onClick={() => handleToggleEnabled(u.id)}
                       disabled={isSelf || busyId === u.id}
-                      className={`mr-3 rounded-full px-3 py-1 text-xs font-medium disabled:opacity-50 ${
+                      className={`mr-3 inline-block whitespace-nowrap rounded-full px-3 py-1 text-xs font-medium disabled:opacity-50 ${
                         u.enabled ? "bg-primary/10 text-primary" : "bg-neutral-100 text-neutral-500"
                       }`}
                     >
