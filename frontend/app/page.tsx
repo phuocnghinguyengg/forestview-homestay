@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { roomTypeService } from "@/lib/services/roomTypeService";
 import { RoomTypeAvailability, RoomTypeCode } from "@/types";
@@ -172,11 +172,48 @@ export default function Home() {
 
   const nights = useMemo(() => getNights(checkIn, checkOut), [checkIn, checkOut]);
 
+  // Ref to the scroll container
+  const scrollContainerRef = useRef<HTMLElement | null>(null);
+
+  // IntersectionObserver: sync dots with actual scroll position
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const observers: IntersectionObserver[] = [];
+
+    SECTIONS.forEach((sec, idx) => {
+      const el = document.getElementById(sec.id);
+      if (!el) return;
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setActiveSectionIndex(idx);
+            }
+          });
+        },
+        {
+          root: container,
+          threshold: 0.5, // section is considered active when 50%+ is visible
+        }
+      );
+
+      observer.observe(el);
+      observers.push(observer);
+    });
+
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
+
+  // Scroll to section: scroll inside the snap container by section index
   const scrollToSection = (id: string, index: number) => {
-    setActiveSectionIndex(index);
+    const container = scrollContainerRef.current;
     const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+    if (container && element) {
+      // Use scrollTo relative to container so snap works correctly
+      container.scrollTo({ top: element.offsetTop, behavior: "smooth" });
     }
   };
 
@@ -238,7 +275,10 @@ export default function Home() {
       </div>
 
       {/* Snap Scrollable Container (Mỗi scroll là 1 khấc) */}
-      <main className="h-[calc(100vh-69px)] w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth">
+      <main
+        ref={scrollContainerRef}
+        className="h-[calc(100vh-69px)] w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth"
+      >
         
         {/* ================= KHẤC 1: TÌM PHÒNG & HERO BANNER ================= */}
         <section
