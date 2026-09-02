@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 function iso(d: Date) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
 function parse(value: string) { const [y,m,d]=value.split("-").map(Number); return new Date(y,m-1,d); }
@@ -28,11 +29,11 @@ export default function DateRangeCalendar({ checkIn, checkOut, onChange, minDate
           const disabled=minDate ? value<minDate : false;
           const inRange=selectedStart&&selectedEnd&&date>selectedStart&&date<selectedEnd;
           const start=checkIn===value; const end=checkOut===value;
-          return <button key={value} type="button" disabled={disabled} onClick={()=>{
+          return <button aria-label={value} key={value} type="button" disabled={disabled} onClick={()=>{
             if(!checkIn || (checkIn && checkOut)){ onChange(value,""); }
             else if(value>checkIn){ onChange(checkIn,value); }
             else { onChange(value,checkOut); }
-          }} className={`mx-auto flex h-9 w-9 items-center justify-center rounded-full transition ${disabled?"cursor-not-allowed text-neutral-200":"hover:bg-primary/10"} ${inRange?"rounded-none bg-primary/10 text-primary":""} ${start||end?"bg-primary font-semibold text-white hover:bg-primary-dark":""}`}>
+          }} className={`mx-auto flex h-9 w-9 items-center justify-center rounded-full transition ${disabled?"cursor-not-allowed text-neutral-200":"hover:bg-primary/10"} ${inRange?"rounded-none bg-primary/10 text-primary":""} ${start||end?"bg-primary font-semibold text-white shadow-sm hover:bg-primary-dark":""}`}>
             {day}
           </button>;
         })}
@@ -41,9 +42,9 @@ export default function DateRangeCalendar({ checkIn, checkOut, onChange, minDate
   };
   return <div className="rounded-2xl border border-line bg-surface p-4 shadow-sm">
     <div className="mb-4 flex items-center justify-between">
-      <button type="button" onClick={()=>setCursor(new Date(cursor.getFullYear(),cursor.getMonth()-1,1))} className="rounded-full px-3 py-1 hover:bg-neutral-100">‹</button>
-      <div className="text-sm text-neutral-500">Chọn ngày nhận và trả phòng</div>
-      <button type="button" onClick={()=>setCursor(new Date(cursor.getFullYear(),cursor.getMonth()+1,1))} className="rounded-full px-3 py-1 hover:bg-neutral-100">›</button>
+      <button aria-label="Tháng trước" type="button" onClick={()=>setCursor(new Date(cursor.getFullYear(),cursor.getMonth()-1,1))} className="rounded-full p-2 text-primary hover:bg-primary/10"><ChevronLeft size={18}/></button>
+      <div className="text-sm font-medium text-neutral-600">Chọn ngày nhận và trả phòng</div>
+      <button aria-label="Tháng sau" type="button" onClick={()=>setCursor(new Date(cursor.getFullYear(),cursor.getMonth()+1,1))} className="rounded-full p-2 text-primary hover:bg-primary/10"><ChevronRight size={18}/></button>
     </div>
     <div className="flex flex-col gap-6 md:flex-row">{renderMonth(cursor)}{renderMonth(second)}</div>
     <div className="mt-4 flex flex-wrap gap-2 text-sm">

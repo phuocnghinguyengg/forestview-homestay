@@ -1,10 +1,10 @@
 package com.homestay.backend.entity.enums;
 
 public enum RoomType {
-    SINGLE("Phòng đơn"),
-    DOUBLE("Phòng đôi"),
-    FAMILY("Phòng gia đình"),
-    DELUXE("Phòng cao cấp");
+    STANDARD("Standard Room"),
+    SUPERIOR("Superior Room"),
+    DELUXE("Deluxe Room"),
+    SUITE("Suite Room");
 
     private final String label;
 

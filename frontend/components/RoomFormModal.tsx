@@ -17,13 +17,21 @@ export interface RoomFormValues {
   images: string[];
   amenities: string[];
   type: RoomTypeCode;
+  roomSize?: number;
+  bedConfiguration?: string;
+  viewDescription?: string;
+  bathroomDescription?: string;
+  floor?: string;
+  checkInTime?: string;
+  checkOutTime?: string;
+  houseRules?: string;
 }
 
 const ROOM_TYPE_OPTIONS: { value: RoomTypeCode; label: string }[] = [
-  { value: "SINGLE", label: "Phòng đơn" },
-  { value: "DOUBLE", label: "Phòng đôi" },
-  { value: "FAMILY", label: "Phòng gia đình" },
-  { value: "DELUXE", label: "Phòng cao cấp" },
+  { value: "STANDARD", label: "Standard Room" },
+  { value: "SUPERIOR", label: "Superior Room" },
+  { value: "DELUXE", label: "Deluxe Room" },
+  { value: "SUITE", label: "Suite Room" },
 ];
 
 export default function RoomFormModal({
@@ -49,7 +57,15 @@ export default function RoomFormModal({
     holidayPrice: initial?.holidayPrice ?? undefined,
     images: initial?.images ?? [],
     amenities: initial?.amenities ?? [],
-    type: initial?.type ?? "DOUBLE",
+    type: initial?.type ?? "STANDARD",
+    roomSize: initial?.roomSize ?? undefined,
+    bedConfiguration: initial?.bedConfiguration ?? "",
+    viewDescription: initial?.viewDescription ?? "",
+    bathroomDescription: initial?.bathroomDescription ?? "",
+    floor: initial?.floor ?? "",
+    checkInTime: initial?.checkInTime ?? "14:00",
+    checkOutTime: initial?.checkOutTime ?? "12:00",
+    houseRules: initial?.houseRules ?? "",
   });
   const [amenityInput, setAmenityInput] = useState("");
 
@@ -94,6 +110,20 @@ export default function RoomFormModal({
               ))}
             </select>
           </div>
+
+          <fieldset className="rounded-xl border border-line p-4">
+            <legend className="px-1 text-sm font-medium text-ink">Thông tin lưu trú chi tiết</legend>
+            <div className="mt-2 grid grid-cols-2 gap-3">
+              <div><label className="text-sm text-neutral-600">Diện tích (m²)</label><input type="number" min={1} value={form.roomSize ?? ""} onChange={(e) => setForm({ ...form, roomSize: e.target.value ? Number(e.target.value) : undefined })} className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm" /></div>
+              <div><label className="text-sm text-neutral-600">Tầng / vị trí</label><input value={form.floor ?? ""} onChange={(e) => setForm({ ...form, floor: e.target.value })} className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm" /></div>
+              <div><label className="text-sm text-neutral-600">Loại giường</label><input value={form.bedConfiguration ?? ""} onChange={(e) => setForm({ ...form, bedConfiguration: e.target.value })} placeholder="VD: 1 king bed" className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm" /></div>
+              <div><label className="text-sm text-neutral-600">Phòng tắm</label><input value={form.bathroomDescription ?? ""} onChange={(e) => setForm({ ...form, bathroomDescription: e.target.value })} placeholder="VD: Tắm đứng, nước nóng" className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm" /></div>
+              <div className="col-span-2"><label className="text-sm text-neutral-600">Hướng nhìn</label><input value={form.viewDescription ?? ""} onChange={(e) => setForm({ ...form, viewDescription: e.target.value })} placeholder="VD: Đồi thông và thung lũng" className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm" /></div>
+              <div><label className="text-sm text-neutral-600">Giờ nhận phòng</label><input type="time" value={form.checkInTime ?? ""} onChange={(e) => setForm({ ...form, checkInTime: e.target.value })} className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm" /></div>
+              <div><label className="text-sm text-neutral-600">Giờ trả phòng</label><input type="time" value={form.checkOutTime ?? ""} onChange={(e) => setForm({ ...form, checkOutTime: e.target.value })} className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm" /></div>
+            </div>
+            <label className="mt-3 block text-sm text-neutral-600">Quy định phòng</label><textarea rows={2} value={form.houseRules ?? ""} onChange={(e) => setForm({ ...form, houseRules: e.target.value })} placeholder="VD: Không hút thuốc, không tổ chức tiệc..." className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm" />
+          </fieldset>
 
           <div>
             <label className="text-sm text-neutral-600">Tên phòng</label>

@@ -1,9 +1,11 @@
 import api from "@/lib/api";
-import { Room, RoomTypeCode } from "@/types";
+import { PricePreview, Room, RoomTypeCode } from "@/types";
 
 export const roomService = {
   getAll: () => api.get<Room[]>("/rooms").then((res) => res.data),
   getById: (id: number) => api.get<Room>(`/rooms/${id}`).then((res) => res.data),
+  getPricePreview: (id: number, checkIn: string, checkOut: string, guestCount: number) =>
+    api.get<PricePreview>(`/rooms/${id}/price-preview`, { params: { checkIn, checkOut, guestCount } }).then((res) => res.data),
 
   // Admin
   getAllAdmin: () => api.get<Room[]>("/admin/rooms").then((res) => res.data),
@@ -17,6 +19,14 @@ export const roomService = {
     extraGuestFee: number;
     weekendPrice?: number;
     holidayPrice?: number;
+    roomSize?: number;
+    bedConfiguration?: string;
+    viewDescription?: string;
+    bathroomDescription?: string;
+    floor?: string;
+    checkInTime?: string;
+    checkOutTime?: string;
+    houseRules?: string;
     images: string[];
     amenities: string[];
     type: RoomTypeCode;
@@ -31,6 +41,14 @@ export const roomService = {
     extraGuestFee: number;
     weekendPrice?: number;
     holidayPrice?: number;
+    roomSize?: number;
+    bedConfiguration?: string;
+    viewDescription?: string;
+    bathroomDescription?: string;
+    floor?: string;
+    checkInTime?: string;
+    checkOutTime?: string;
+    houseRules?: string;
     images: string[];
     amenities: string[];
     type: RoomTypeCode;

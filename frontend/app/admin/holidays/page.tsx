@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import api from "@/lib/api";
 import { getErrorMessage } from "@/lib/getErrorMessage";
+import CalendarDatePicker from "@/components/CalendarDatePicker";
 
 interface Holiday {
   id: number;
@@ -70,13 +71,7 @@ export default function AdminHolidaysPage() {
         onSubmit={add}
         className="mt-6 grid gap-3 rounded-2xl border border-line bg-surface p-5 sm:grid-cols-[1fr_1.5fr_auto]"
       >
-        <input
-          type="date"
-          required
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          className="rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none"
-        />
+        <CalendarDatePicker value={date} onChange={setDate} label="Chọn ngày lễ" />
         <input
           required
           placeholder="Tên ngày lễ"

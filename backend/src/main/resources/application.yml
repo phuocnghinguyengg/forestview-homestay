@@ -34,6 +34,9 @@ resend:
   api-key: ${RESEND_API_KEY}
 
 app:
+  sample-data:
+    # Set APP_SAMPLE_DATA_RESET_ON_START=true once to clear business data, retain ADMIN accounts, and load demo data.
+    reset-on-start: ${APP_SAMPLE_DATA_RESET_ON_START:false}
   mail:
     from: ${MAIL_FROM:onboarding@resend.dev}
     frontend-url: ${FRONTEND_URL:http://localhost:3000}

@@ -8,10 +8,10 @@ import RoomCard from "@/components/RoomCard";
 import { getErrorMessage } from "@/lib/getErrorMessage";
 
 const TYPE_LABELS: Record<string, string> = {
-  SINGLE: "Phòng đơn",
-  DOUBLE: "Phòng đôi",
-  FAMILY: "Phòng gia đình",
-  DELUXE: "Phòng cao cấp",
+  STANDARD: "Standard Room",
+  SUPERIOR: "Superior Room",
+  DELUXE: "Deluxe Room",
+  SUITE: "Suite Room",
 };
 
 export default function RoomsByTypePage() {

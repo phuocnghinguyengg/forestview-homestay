@@ -1,5 +1,6 @@
 import Link from "next/link";
 import TrustBadges from "@/components/TrustBadges";
+import ReviewShowcase from "@/components/ReviewShowcase";
 
 export default function Home() {
   return (
@@ -39,6 +40,7 @@ export default function Home() {
       </main>
 
       <TrustBadges />
+      <ReviewShowcase />
     </>
   );
 }

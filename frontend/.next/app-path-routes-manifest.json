@@ -7,6 +7,7 @@
   "/admin/discount-codes/page": "/admin/discount-codes",
   "/admin/holidays/page": "/admin/holidays",
   "/admin/page": "/admin",
+  "/admin/reviews/page": "/admin/reviews",
   "/admin/rooms/page": "/admin/rooms",
   "/admin/users/page": "/admin/users",
   "/contact/page": "/contact",

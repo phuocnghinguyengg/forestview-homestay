@@ -36,4 +36,10 @@ public class ReviewController {
     public ResponseEntity<ReviewSummaryResponse> getSummary() {
         return ResponseEntity.ok(reviewService.getSummary());
     }
+
+    @GetMapping("/room/{roomId}")
+    public ResponseEntity<List<ReviewResponse>> getForRoom(@PathVariable Long roomId) {
+        return ResponseEntity.ok(reviewService.getReviewsForRoom(roomId));
+    }
+
 }

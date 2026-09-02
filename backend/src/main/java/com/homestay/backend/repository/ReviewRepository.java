@@ -9,6 +9,7 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     boolean existsByBookingId(Long bookingId);
     List<Review> findAllByOrderByCreatedAtDesc();
+    List<Review> findByRoomIdOrderByCreatedAtDesc(Long roomId);
 
     @Query("SELECT COALESCE(AVG(r.rating), 0) FROM Review r")
     Double findAverageRating();

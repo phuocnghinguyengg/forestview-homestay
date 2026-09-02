@@ -54,6 +54,15 @@ public class ReviewService {
                 .toList();
     }
 
+    public List<ReviewResponse> getReviewsForRoom(Long roomId) {
+        return reviewRepository.findByRoomIdOrderByCreatedAtDesc(roomId).stream().map(this::toResponse).toList();
+    }
+
+    public void deleteReview(Long reviewId) {
+        if (!reviewRepository.existsById(reviewId)) throw new ResourceNotFoundException("Review not found");
+        reviewRepository.deleteById(reviewId);
+    }
+
     public ReviewSummaryResponse getSummary() {
         Double avg = reviewRepository.findAverageRating();
         long count = reviewRepository.count();

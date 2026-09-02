@@ -32,6 +32,15 @@ export interface Room {
   extraGuestFee: number;
   weekendPrice?: number | null;
   holidayPrice?: number | null;
+  roomSize?: number | null;
+  bedConfiguration?: string | null;
+  viewDescription?: string | null;
+  bathroomDescription?: string | null;
+  floor?: string | null;
+  checkInTime?: string | null;
+  checkOutTime?: string | null;
+  houseRules?: string | null;
+  quotedStayPrice?: number | null;
   images: string[];
   amenities: string[];
   active: boolean;
@@ -83,7 +92,7 @@ export interface DashboardStats {
   revenueThisMonth: number;
 }
 
-export type RoomTypeCode = "SINGLE" | "DOUBLE" | "FAMILY" | "DELUXE";
+export type RoomTypeCode = "STANDARD" | "SUPERIOR" | "DELUXE" | "SUITE";
 
 export interface RoomTypeAvailability {
   type: RoomTypeCode;
@@ -92,6 +101,35 @@ export interface RoomTypeAvailability {
   availableRooms: number;
   minPrice: number | null;
   coverImage: string | null;
+}
+
+export interface PricePreview {
+  checkIn: string;
+  checkOut: string;
+  nights: number;
+  weekdaySubtotal: number;
+  weekendSubtotal: number;
+  holidaySubtotal: number;
+  weekdayNights: number;
+  weekendNights: number;
+  holidayNights: number;
+  extraGuestSubtotal: number;
+  totalBeforeDiscount: number;
+}
+
+export interface Review {
+  id: number;
+  userFullName: string;
+  roomName: string;
+  roomTypeLabel: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
+
+export interface ReviewSummary {
+  averageRating: number;
+  totalReviews: number;
 }
 
 export interface RegisterResponse {

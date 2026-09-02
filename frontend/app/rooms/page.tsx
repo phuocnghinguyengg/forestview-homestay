@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { roomTypeService } from "@/lib/services/roomTypeService";
 import { RoomTypeAvailability } from "@/types";
 import { getErrorMessage } from "@/lib/getErrorMessage";
+import DateRangeCalendar from "@/components/DateRangeCalendar";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("vi-VN", {
@@ -193,7 +194,11 @@ export default function RoomTypesPage() {
           </div>
         </div>
 
-        <div className="grid gap-4 p-5 sm:grid-cols-[1fr_auto_1fr_auto] sm:items-end sm:p-7">
+        <div className="grid gap-4 p-5 sm:p-7">
+
+          <DateRangeCalendar checkIn={checkIn} checkOut={checkOut} minDate={todayISO()} onChange={(start, end) => { handleCheckInChange(start); if (end) handleCheckOutChange(end); }} />
+
+          <div className="hidden">
 
           <label className="block">
             <span className="text-xs font-semibold uppercase tracking-wide text-neutral-500">
@@ -281,11 +286,13 @@ export default function RoomTypesPage() {
           </label>
 
 
+          </div>
+
           <button
             type="button"
             onClick={handleSearch}
             disabled={loading}
-            className="h-[66px] rounded-2xl bg-primary px-7 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
+            className="h-[52px] rounded-2xl bg-primary px-7 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? "Đang tìm..." : "Tìm phòng"}
           </button>
@@ -447,7 +454,7 @@ export default function RoomTypesPage() {
                         {formatPrice(rt.minPrice)}
 
                         <span className="ml-1 text-xs font-normal text-neutral-400">
-                          / đêm
+                          / {nights} đêm
                         </span>
                       </p>
                     </div>

@@ -24,8 +24,8 @@ export default function RoomCard({ room }: { room: Room }) {
         <p className="mt-1 text-sm text-neutral-500">{room.address}</p>
         <div className="mt-3 flex items-center justify-between">
           <span className="text-base font-semibold text-accent">
-            {formatPrice(room.pricePerNight)}
-            <span className="text-xs font-normal text-neutral-400"> /đêm</span>
+            {formatPrice(room.quotedStayPrice ?? room.pricePerNight)}
+            <span className="text-xs font-normal text-neutral-400">{room.quotedStayPrice ? " / kỳ lưu trú" : " /đêm"}</span>
           </span>
           <span className="text-xs text-neutral-500">Tối đa {room.maxGuests} khách</span>
         </div>

@@ -9,6 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.time.LocalDate;
+import org.springframework.format.annotation.DateTimeFormat;
+import com.homestay.backend.dto.response.PricePreviewResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +29,15 @@ public class RoomController {
     @GetMapping("/api/rooms/{id}")
     public ResponseEntity<RoomResponse> getRoomById(@PathVariable Long id) {
         return ResponseEntity.ok(roomService.getRoomById(id));
+    }
+
+    @GetMapping("/api/rooms/{id}/price-preview")
+    public ResponseEntity<PricePreviewResponse> getPricePreview(
+            @PathVariable Long id,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkIn,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOut,
+            @RequestParam(defaultValue = "1") int guestCount) {
+        return ResponseEntity.ok(roomService.getPricePreview(id, checkIn, checkOut, guestCount));
     }
 
     // ---- Admin ----

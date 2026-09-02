@@ -5,12 +5,13 @@ import { useParams, useRouter } from "next/navigation";
 import { roomService } from "@/lib/services/roomService";
 import { bookingService } from "@/lib/services/bookingService";
 import { discountService } from "@/lib/services/discountService";
-import { Room, PaymentMethod } from "@/types";
+import { PricePreview, Review, Room, PaymentMethod } from "@/types";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { getErrorMessage } from "@/lib/getErrorMessage";
 import { membershipDiscountPercent } from "@/lib/membership";
 import DateRangeCalendar from "@/components/DateRangeCalendar";
 import PaymentModal from "@/components/PaymentModal";
+import { reviewService } from "@/lib/services/reviewService";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);
@@ -37,6 +38,9 @@ export default function RoomDetailPage() {
   const [submitting, setSubmitting] = useState(false);
   const [paymentOpen, setPaymentOpen] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
+  const [pricing, setPricing] = useState<PricePreview | null>(null);
+  const [pricingLoading, setPricingLoading] = useState(false);
+  const [reviews, setReviews] = useState<Review[]>([]);
 
   const [couponInput, setCouponInput] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; percent: number } | null>(null);
@@ -50,12 +54,29 @@ export default function RoomDetailPage() {
       .catch((err) => setError(getErrorMessage(err, "Không thể tải phòng")));
   }, [id]);
 
+  useEffect(() => {
+    if (!room) return;
+    reviewService.getForRoom(room.id).then(setReviews).catch(() => undefined);
+  }, [room]);
+
+  useEffect(() => {
+    if (!room || !checkIn || !checkOut || checkOut <= checkIn) {
+      setPricing(null);
+      return;
+    }
+    let active = true;
+    setPricingLoading(true);
+    roomService.getPricePreview(room.id, checkIn, checkOut, guests)
+      .then((quote) => active && setPricing(quote))
+      .catch((err) => active && setError(getErrorMessage(err, "Không thể cập nhật báo giá")))
+      .finally(() => active && setPricingLoading(false));
+    return () => { active = false; };
+  }, [room, checkIn, checkOut, guests]);
+
   const nights = nightsBetween(checkIn, checkOut);
   const extraGuests = Math.max(0, guests - (room?.recommendedGuests ?? 0));
 
-  const beforeDiscount = room && nights
-    ? room.pricePerNight * nights + (room.extraGuestFee ?? 0) * extraGuests * nights
-    : 0;
+  const beforeDiscount = pricing?.totalBeforeDiscount ?? 0;
 
   const couponAmount = appliedCoupon ? (beforeDiscount * appliedCoupon.percent) / 100 : 0;
   const afterCoupon = beforeDiscount - couponAmount;
@@ -162,6 +183,22 @@ export default function RoomDetailPage() {
               </li>
             ))}
           </ul>
+
+          <h2 className="mt-8 font-display text-xl text-ink">Thông tin phòng</h2>
+          <dl className="mt-3 grid grid-cols-2 gap-3 text-sm sm:grid-cols-3">
+            {room.roomSize && <div className="rounded-xl bg-base p-3"><dt className="text-neutral-500">Diện tích</dt><dd className="mt-1 font-medium text-ink">{room.roomSize} m²</dd></div>}
+            {room.bedConfiguration && <div className="rounded-xl bg-base p-3"><dt className="text-neutral-500">Giường</dt><dd className="mt-1 font-medium text-ink">{room.bedConfiguration}</dd></div>}
+            {room.bathroomDescription && <div className="rounded-xl bg-base p-3"><dt className="text-neutral-500">Phòng tắm</dt><dd className="mt-1 font-medium text-ink">{room.bathroomDescription}</dd></div>}
+            {room.viewDescription && <div className="rounded-xl bg-base p-3"><dt className="text-neutral-500">Hướng nhìn</dt><dd className="mt-1 font-medium text-ink">{room.viewDescription}</dd></div>}
+            {room.floor && <div className="rounded-xl bg-base p-3"><dt className="text-neutral-500">Vị trí</dt><dd className="mt-1 font-medium text-ink">{room.floor}</dd></div>}
+            <div className="rounded-xl bg-base p-3"><dt className="text-neutral-500">Giờ lưu trú</dt><dd className="mt-1 font-medium text-ink">{room.checkInTime ?? "14:00"} – {room.checkOutTime ?? "12:00"}</dd></div>
+          </dl>
+          {room.houseRules && <div className="mt-4 rounded-xl border border-line p-4 text-sm"><p className="font-medium text-ink">Quy định phòng</p><p className="mt-1 whitespace-pre-line text-neutral-600">{room.houseRules}</p></div>}
+
+          <section className="mt-10 border-t border-line pt-8">
+            <div className="flex items-end justify-between"><div><p className="text-sm font-semibold uppercase tracking-wide text-primary">Khách đã lưu trú</p><h2 className="mt-1 font-display text-xl text-ink">Đánh giá về phòng này</h2></div><span className="text-sm text-neutral-500">{reviews.length} đánh giá</span></div>
+            <div className="mt-4 space-y-3">{reviews.length ? reviews.slice(0, 5).map((review) => <article key={review.id} className="rounded-xl border border-line p-4"><div className="flex items-center justify-between"><p className="font-medium text-ink">{review.userFullName}</p><span className="text-amber-500">{"★".repeat(review.rating)}<span className="text-neutral-200">{"★".repeat(5 - review.rating)}</span></span></div><p className="mt-2 text-sm leading-6 text-neutral-600">{review.comment}</p></article>) : <p className="text-sm text-neutral-500">Phòng này chưa có đánh giá. Hãy là người đầu tiên chia sẻ trải nghiệm.</p>}</div>
+          </section>
         </div>
 
         <div className="h-fit rounded-2xl border border-line bg-surface p-5">
@@ -203,9 +240,9 @@ export default function RoomDetailPage() {
             </div>
           </div>
 
-          {extraGuests > 0 && (
+          {extraGuests > 0 && pricing && (
             <div className="mt-3 rounded-lg bg-accent/10 p-3 text-sm text-accent">
-              Phụ thu {extraGuests} khách × {nights} đêm: {formatPrice((room.extraGuestFee ?? 0) * extraGuests * nights)}
+              Phụ thu {extraGuests} khách × {nights} đêm: {formatPrice(pricing.extraGuestSubtotal)}
             </div>
           )}
 
@@ -253,8 +290,14 @@ export default function RoomDetailPage() {
 
           {nights > 0 && (
             <div className="mt-4 space-y-1.5 rounded-xl border border-line p-3 text-sm">
+              {pricingLoading && <p className="text-xs text-neutral-400">Đang cập nhật giá theo lịch...</p>}
+              {pricing && <>
+                {pricing.weekdayNights > 0 && <div className="flex justify-between text-neutral-500"><span>Ngày thường ({pricing.weekdayNights} đêm)</span><span>{formatPrice(pricing.weekdaySubtotal)}</span></div>}
+                {pricing.weekendNights > 0 && <div className="flex justify-between text-primary"><span>Cuối tuần +100.000đ ({pricing.weekendNights} đêm)</span><span>{formatPrice(pricing.weekendSubtotal)}</span></div>}
+                {pricing.holidayNights > 0 && <div className="flex justify-between text-accent"><span>Ngày lễ ×2 ({pricing.holidayNights} đêm)</span><span>{formatPrice(pricing.holidaySubtotal)}</span></div>}
+              </>}
               <div className="flex justify-between text-neutral-500">
-                <span>Giá gốc ({nights} đêm)</span>
+                <span>Tạm tính ({nights} đêm)</span>
                 <span>{formatPrice(beforeDiscount)}</span>
               </div>
               {appliedCoupon && (
@@ -284,7 +327,7 @@ export default function RoomDetailPage() {
           )}
 
           <button
-            disabled={!checkIn || !checkOut || submitting}
+            disabled={!checkIn || !checkOut || submitting || pricingLoading || !pricing}
             onClick={handleConfirmClick}
             className="mt-4 w-full rounded-full bg-primary py-2.5 font-medium text-white hover:bg-primary-dark disabled:opacity-50"
           >

@@ -23,6 +23,14 @@ public class RoomMapper {
                 .typeLabel(room.getType().getLabel())
                 .weekendPrice(room.getWeekendPrice())
                 .holidayPrice(room.getHolidayPrice())
+                .roomSize(room.getRoomSize())
+                .bedConfiguration(room.getBedConfiguration())
+                .viewDescription(room.getViewDescription())
+                .bathroomDescription(room.getBathroomDescription())
+                .floor(room.getFloor())
+                .checkInTime(room.getCheckInTime())
+                .checkOutTime(room.getCheckOutTime())
+                .houseRules(room.getHouseRules())
                 .build();
     }
 }

@@ -95,6 +95,12 @@
       "namedRegex": "^/admin/holidays(?:/)?$"
     },
     {
+      "page": "/admin/reviews",
+      "regex": "^/admin/reviews(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/reviews(?:/)?$"
+    },
+    {
       "page": "/admin/rooms",
       "regex": "^/admin/rooms(?:/)?$",
       "routeKeys": {},

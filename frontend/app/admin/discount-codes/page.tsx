@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { discountService } from "@/lib/services/discountService";
 import { DiscountCode } from "@/types";
 import { getErrorMessage } from "@/lib/getErrorMessage";
+import CalendarDatePicker from "@/components/CalendarDatePicker";
 
 function formatDateTime(value: string) {
   return new Date(value).toLocaleString("vi-VN");
@@ -145,24 +146,12 @@ export default function AdminDiscountCodesPage() {
 
         <div>
           <label className="text-sm text-neutral-600">Bắt đầu sử dụng</label>
-          <input
-            required
-            type="datetime-local"
-            value={startAt}
-            onChange={(e) => setStartAt(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none"
-          />
+          <div className="mt-1 grid grid-cols-[1fr_110px] gap-2"><CalendarDatePicker value={startAt.split("T")[0] ?? ""} onChange={(date) => setStartAt(`${date}T${startAt.split("T")[1] || "00:00"}`)} /><input required type="time" value={startAt.split("T")[1] ?? ""} onChange={(e) => setStartAt(`${startAt.split("T")[0] || new Date().toISOString().slice(0, 10)}T${e.target.value}`)} className="rounded-xl border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none" /></div>
         </div>
 
         <div>
           <label className="text-sm text-neutral-600">Hết hạn</label>
-          <input
-            required
-            type="datetime-local"
-            value={endAt}
-            onChange={(e) => setEndAt(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none"
-          />
+          <div className="mt-1 grid grid-cols-[1fr_110px] gap-2"><CalendarDatePicker value={endAt.split("T")[0] ?? ""} onChange={(date) => setEndAt(`${date}T${endAt.split("T")[1] || "23:59"}`)} /><input required type="time" value={endAt.split("T")[1] ?? ""} onChange={(e) => setEndAt(`${endAt.split("T")[0] || new Date().toISOString().slice(0, 10)}T${e.target.value}`)} className="rounded-xl border border-line px-3 py-2 text-sm focus:border-primary focus:outline-none" /></div>
         </div>
 
         <div className="sm:col-span-2">

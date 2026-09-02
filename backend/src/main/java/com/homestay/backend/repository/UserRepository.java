@@ -4,6 +4,7 @@ import com.homestay.backend.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
+import com.homestay.backend.entity.enums.Role;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
@@ -14,4 +15,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
 
     boolean existsByEmailIgnoreCase(String email);
+
+    void deleteByRoleNot(Role role);
 }

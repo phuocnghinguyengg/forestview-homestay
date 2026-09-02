@@ -19,10 +19,10 @@ type SortOption = "none" | "price-asc" | "price-desc";
 
 const TYPE_FILTER_OPTIONS: { value: RoomTypeCode | "ALL"; label: string }[] = [
   { value: "ALL", label: "Tất cả loại phòng" },
-  { value: "SINGLE", label: "Phòng đơn" },
-  { value: "DOUBLE", label: "Phòng đôi" },
-  { value: "FAMILY", label: "Phòng gia đình" },
-  { value: "DELUXE", label: "Phòng cao cấp" },
+  { value: "STANDARD", label: "Standard Room" },
+  { value: "SUPERIOR", label: "Superior Room" },
+  { value: "DELUXE", label: "Deluxe Room" },
+  { value: "SUITE", label: "Suite Room" },
 ];
 
 export default function RoomTypesPage() {
@@ -175,7 +175,7 @@ export default function RoomTypesPage() {
                     {rt.minPrice && (
                       <p className="text-sm font-medium text-accent">
                         Từ {formatPrice(rt.minPrice)}
-                        <span className="text-xs font-normal text-neutral-400"> /đêm</span>
+                        <span className="text-xs font-normal text-neutral-400"> / {Math.max(1, Math.round((new Date(`${checkOut}T00:00:00`).getTime() - new Date(`${checkIn}T00:00:00`).getTime()) / 86400000))} đêm</span>
                       </p>
                     )}
                     <p className="mt-1 text-sm text-neutral-500">

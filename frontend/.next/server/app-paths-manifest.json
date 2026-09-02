@@ -7,6 +7,7 @@
   "/admin/discount-codes/page": "app/admin/discount-codes/page.js",
   "/admin/holidays/page": "app/admin/holidays/page.js",
   "/admin/page": "app/admin/page.js",
+  "/admin/reviews/page": "app/admin/reviews/page.js",
   "/admin/rooms/page": "app/admin/rooms/page.js",
   "/admin/users/page": "app/admin/users/page.js",
   "/contact/page": "app/contact/page.js",

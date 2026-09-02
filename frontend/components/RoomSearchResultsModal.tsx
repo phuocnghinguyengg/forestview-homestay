@@ -109,7 +109,7 @@ export default function RoomSearchResultsModal({
 
                     {rt.minPrice != null && (
                       <span className="ml-1 text-xs font-normal text-neutral-400">
-                        / đêm
+                        / {nights} đêm
                       </span>
                     )}
                   </p>

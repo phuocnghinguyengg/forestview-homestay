@@ -58,6 +58,18 @@ public class Room {
     private BigDecimal weekendPrice;
     private BigDecimal holidayPrice;
 
+    /** Rich room information shown to guests before booking. */
+    private Integer roomSize;
+    private String bedConfiguration;
+    private String viewDescription;
+    private String bathroomDescription;
+    private String floor;
+    private String checkInTime;
+    private String checkOutTime;
+
+    @Column(columnDefinition = "TEXT")
+    private String houseRules;
+
     @Column(nullable = false)
     @Builder.Default
     private Boolean active = true;

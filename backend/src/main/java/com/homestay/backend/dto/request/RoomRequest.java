@@ -37,4 +37,14 @@ public class RoomRequest {
 
     private java.math.BigDecimal weekendPrice;
     private java.math.BigDecimal holidayPrice;
+
+    @Min(1)
+    private Integer roomSize;
+    private String bedConfiguration;
+    private String viewDescription;
+    private String bathroomDescription;
+    private String floor;
+    private String checkInTime;
+    private String checkOutTime;
+    private String houseRules;
 }

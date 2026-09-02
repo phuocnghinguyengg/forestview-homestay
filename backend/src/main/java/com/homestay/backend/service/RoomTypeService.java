@@ -22,6 +22,7 @@ public class RoomTypeService {
 
     private final RoomRepository roomRepository;
     private final BookingRepository bookingRepository;
+    private final PricingService pricingService;
 
     public List<RoomTypeAvailabilityResponse> getAvailability(LocalDate checkIn, LocalDate checkOut) {
         List<RoomTypeAvailabilityResponse> result = new ArrayList<>();
@@ -34,7 +35,8 @@ public class RoomTypeService {
                     .count();
 
             BigDecimal minPrice = rooms.stream()
-                    .map(Room::getPricePerNight)
+                    .filter(r -> bookingRepository.findOverlappingBookings(r.getId(), checkIn, checkOut).isEmpty())
+                    .map(r -> pricingService.calculateTotalPrice(r, checkIn, checkOut))
                     .min(Comparator.naturalOrder())
                     .orElse(null);
 
@@ -60,7 +62,11 @@ public class RoomTypeService {
     public List<RoomResponse> getAvailableRoomsByType(RoomType type, LocalDate checkIn, LocalDate checkOut) {
         return roomRepository.findByTypeAndActiveTrue(type).stream()
                 .filter(r -> bookingRepository.findOverlappingBookings(r.getId(), checkIn, checkOut).isEmpty())
-                .map(RoomMapper::toResponse)
+                .map(r -> {
+                    RoomResponse response = RoomMapper.toResponse(r);
+                    response.setQuotedStayPrice(pricingService.calculateTotalPrice(r, checkIn, checkOut));
+                    return response;
+                })
                 .toList();
     }
 }

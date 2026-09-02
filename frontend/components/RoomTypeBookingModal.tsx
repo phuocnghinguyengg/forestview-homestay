@@ -217,7 +217,7 @@ export default function RoomTypeBookingModal({
     : 0;
 
   const roomSubtotal = selectedRoom
-    ? selectedRoom.pricePerNight * nights
+    ? (selectedRoom.quotedStayPrice ?? selectedRoom.pricePerNight * nights)
     : 0;
 
   const beforeDiscountTotal = roomSubtotal + extraFee;
@@ -449,12 +449,12 @@ export default function RoomTypeBookingModal({
 
                   <p className="mt-4 text-lg font-semibold text-primary">
                     {formatPrice(
-                      detailRoom.pricePerNight
+                      detailRoom.quotedStayPrice ?? detailRoom.pricePerNight * nights
                     )}
 
                     <span className="text-xs font-normal text-neutral-400">
                       {" "}
-                      / đêm
+                      / {nights} đêm
                     </span>
                   </p>
 
@@ -625,12 +625,12 @@ export default function RoomTypeBookingModal({
 
                             <p className="mt-3 font-semibold text-primary">
                               {formatPrice(
-                                room.pricePerNight
+                                room.quotedStayPrice ?? room.pricePerNight * nights
                               )}
 
                               <span className="text-xs font-normal text-neutral-400">
                                 {" "}
-                                / đêm
+                                / {nights} đêm
                               </span>
                             </p>
 
