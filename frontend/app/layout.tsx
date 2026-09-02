@@ -39,7 +39,7 @@ export default function RootLayout({
         <Navbar />
         <UnverifiedBanner />
 
-        <div className="min-h-[calc(100vh+180px)] flex-1">
+        <div className="flex-1 flex flex-col">
           {children}
         </div>
 
