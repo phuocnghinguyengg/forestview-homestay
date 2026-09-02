@@ -1,2 +1,40 @@
+# Next.js build output
+.next/
+out/
+build/
+dist/
+
+# Node dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment files
+.env
+.env*.local
+.env.development
+.env.test
+.env.production
+
+# Vercel
 .vercel
-.env*
+
+# Turbo
+.turbo
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Java / Maven (Backend)
+target/
+*.class
+*.jar
+*.war
+*.ear
+.mvn/wrapper/maven-wrapper.jar
+.idea/
+*.iml
+.vscode/
