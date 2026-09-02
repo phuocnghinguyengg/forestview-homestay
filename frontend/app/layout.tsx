@@ -5,6 +5,7 @@ import AuthInitializer from "@/components/AuthInitializer";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import UnverifiedBanner from "@/components/UnverifiedBanner";
+import GeminiAIChatbot from "@/components/GeminiAIChatbot";
 
 const fraunces = Fraunces({
   variable: "--font-display",
@@ -43,6 +44,7 @@ export default function RootLayout({
         </div>
 
         <Footer />
+        <GeminiAIChatbot />
       </body>
     </html>
   );

@@ -9,6 +9,15 @@ function formatPrice(price: number) {
   }).format(price);
 }
 
+function formatDate(date: string) {
+  if (!date) return "";
+  return new Date(`${date}T00:00:00`).toLocaleDateString("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+}
+
 export default function RoomSearchResultsModal({
   results,
   checkIn,
@@ -25,20 +34,20 @@ export default function RoomSearchResultsModal({
   onClose: () => void;
 }) {
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/45 p-4 backdrop-blur-[2px]">
-      <div className="max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-[2rem] bg-surface shadow-2xl">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
+      <div className="max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-3xl bg-surface shadow-2xl">
         <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-line bg-surface/95 px-6 py-5 backdrop-blur sm:px-8">
           <div>
             <p className="font-display text-sm italic text-accent">
-              ForestView Homestay
+              ForestView Homestay · Đà Lạt
             </p>
 
             <h2 className="mt-1 font-display text-2xl text-ink sm:text-3xl">
-              Phòng còn trống
+              Phòng còn trống ({nights} đêm)
             </h2>
 
             <p className="mt-1 text-sm text-neutral-500">
-              {checkIn} → {checkOut} · {nights} đêm
+              {formatDate(checkIn)} → {formatDate(checkOut)} · <b>{nights} đêm lưu trú</b>
             </p>
           </div>
 
@@ -46,13 +55,13 @@ export default function RoomSearchResultsModal({
             type="button"
             onClick={onClose}
             aria-label="Đóng"
-            className="rounded-full border border-line px-3 py-2 text-neutral-500 hover:bg-base hover:text-ink"
+            className="rounded-full border border-line p-2.5 text-neutral-500 transition hover:bg-neutral-100 hover:text-ink"
           >
             ✕
           </button>
         </div>
 
-        <div className="grid gap-4 p-6 sm:grid-cols-2 lg:grid-cols-3 sm:p-8">
+        <div className="grid gap-5 p-6 sm:grid-cols-2 lg:grid-cols-3 sm:p-8">
           {results.map((rt) => {
             const soldOut = rt.availableRooms <= 0;
 
@@ -62,10 +71,10 @@ export default function RoomSearchResultsModal({
                 type="button"
                 disabled={soldOut}
                 onClick={() => onSelectType(rt.type)}
-                className={`overflow-hidden rounded-2xl border border-line bg-white text-left transition ${
+                className={`group overflow-hidden rounded-3xl border border-line bg-surface text-left transition ${
                   soldOut
                     ? "cursor-not-allowed opacity-50"
-                    : "hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-lg"
+                    : "hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg"
                 }`}
               >
                 <div className="relative h-44 overflow-hidden bg-neutral-100">
@@ -74,7 +83,7 @@ export default function RoomSearchResultsModal({
                     <img
                       src={rt.coverImage}
                       alt={rt.label}
-                      className="h-full w-full object-cover"
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center text-sm text-neutral-400">
@@ -82,10 +91,12 @@ export default function RoomSearchResultsModal({
                     </div>
                   )}
 
-                  <span className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-primary shadow-sm">
-                    {soldOut
-                      ? "Hết phòng"
-                      : `Còn ${rt.availableRooms} phòng`}
+                  <span
+                    className={`absolute top-3 left-3 rounded-full px-3 py-1 text-xs font-semibold shadow-xs ${
+                      soldOut ? "bg-neutral-200 text-neutral-600" : "bg-primary text-white"
+                    }`}
+                  >
+                    {soldOut ? "Hết phòng" : `Còn ${rt.availableRooms} phòng`}
                   </span>
                 </div>
 
@@ -98,24 +109,28 @@ export default function RoomSearchResultsModal({
                     {rt.label}
                   </h3>
 
-                  <p className="mt-2 text-sm text-neutral-500">
-                    Tổng {rt.totalRooms} phòng
+                  <p className="mt-1.5 text-xs text-neutral-500">
+                    Tổng {rt.totalRooms} phòng trong hệ thống
                   </p>
 
-                  <p className="mt-4 text-lg font-semibold text-primary">
-                    {rt.minPrice == null
-                      ? "Liên hệ"
-                      : formatPrice(rt.minPrice)}
+                  <div className="mt-4 border-t border-line/60 pt-3">
+                    <span className="text-xs text-neutral-400">Giá trọn gói</span>
+                    <p className="text-lg font-bold text-accent">
+                      {rt.minPrice == null ? "Liên hệ" : formatPrice(rt.minPrice)}
+                      {rt.minPrice != null && (
+                        <span className="ml-1 text-xs font-normal text-neutral-500">
+                          / {nights} đêm
+                        </span>
+                      )}
+                    </p>
+                  </div>
 
-                    {rt.minPrice != null && (
-                      <span className="ml-1 text-xs font-normal text-neutral-400">
-                        / {nights} đêm
-                      </span>
-                    )}
-                  </p>
-
-                  <span className="mt-4 inline-flex rounded-full bg-primary px-4 py-2 text-xs font-semibold text-white">
-                    {soldOut ? "Không khả dụng" : "Xem phòng"}
+                  <span
+                    className={`mt-4 inline-flex w-full items-center justify-center rounded-full py-2.5 text-xs font-semibold text-white shadow-xs transition ${
+                      soldOut ? "bg-neutral-300 text-neutral-500" : "bg-primary group-hover:bg-primary-dark"
+                    }`}
+                  >
+                    {soldOut ? "Không khả dụng" : "Xem & chọn phòng →"}
                   </span>
                 </div>
               </button>
@@ -124,11 +139,12 @@ export default function RoomSearchResultsModal({
         </div>
 
         {results.length === 0 && (
-          <div className="px-6 pb-8 text-center text-sm text-neutral-500">
-            Không có loại phòng phù hợp.
+          <div className="px-6 pb-12 text-center text-sm text-neutral-500">
+            Không có loại phòng nào phù hợp trong khoảng {nights} đêm đã chọn.
           </div>
         )}
       </div>
     </div>
   );
 }
+
