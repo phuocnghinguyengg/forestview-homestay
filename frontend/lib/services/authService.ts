@@ -38,6 +38,11 @@ export const authService = {
       .post<AuthResponse>("/auth/login", data)
       .then((res) => res.data),
 
+  refresh: (refreshToken: string) =>
+    api
+      .post<AuthResponse>("/auth/refresh", { refreshToken })
+      .then((res) => res.data),
+
   requestPasswordReset: (data: { email: string }) =>
     api
       .post("/auth/forgot-password", data)

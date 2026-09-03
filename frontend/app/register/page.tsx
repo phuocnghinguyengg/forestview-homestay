@@ -7,6 +7,7 @@ import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 
 import { authService } from "@/lib/services/authService";
+import { useGuestOnly } from "@/hooks/useGuestOnly";
 import { getErrorMessage } from "@/lib/getErrorMessage";
 import {
   AlertCircle,
@@ -23,6 +24,7 @@ import {
 
 export default function RegisterPage() {
   const router = useRouter();
+  useGuestOnly();
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");

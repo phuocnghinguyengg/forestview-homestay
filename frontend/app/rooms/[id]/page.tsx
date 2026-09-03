@@ -102,6 +102,7 @@ export default function RoomDetailPage() {
 
   useEffect(() => {
     if (!room || !checkIn || !checkOut || checkOut <= checkIn) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- clearing a stale async price quote when the date range becomes invalid is intentional
       setPricing(null);
       return;
     }

@@ -108,9 +108,11 @@ public class AuthService {
     public AuthResponse verifyOtp(
             OtpVerifyRequest request
     ) {
+        String email = normalizeEmail(request.getEmail());
+
         User user =
                 userRepository
-                        .findByEmail(request.getEmail())
+                        .findByEmail(email)
                         .orElseThrow(
                                 () -> new IllegalArgumentException(
                                         "Tài khoản không tồn tại"
@@ -160,9 +162,11 @@ public class AuthService {
     public AuthResponse skipVerification(
             ResendOtpRequest request
     ) {
+        String email = normalizeEmail(request.getEmail());
+
         User user =
                 userRepository
-                        .findByEmail(request.getEmail())
+                        .findByEmail(email)
                         .orElseThrow(
                                 () -> new IllegalArgumentException(
                                         "Tài khoản không tồn tại"
@@ -183,9 +187,11 @@ public class AuthService {
     public void resendOtp(
             ResendOtpRequest request
     ) {
+        String email = normalizeEmail(request.getEmail());
+
         User user =
                 userRepository
-                        .findByEmail(request.getEmail())
+                        .findByEmail(email)
                         .orElseThrow(
                                 () -> new IllegalArgumentException(
                                         "Tài khoản không tồn tại"
@@ -221,23 +227,70 @@ public class AuthService {
     public AuthResponse login(
             LoginRequest request
     ) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
+        String email = normalizeEmail(request.getEmail());
+
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            email,
+                            request.getPassword()
+                    )
+            );
+        } catch (org.springframework.security.core.AuthenticationException ex) {
+            throw new IllegalArgumentException(
+                    "Email hoặc mật khẩu không đúng"
+            );
+        }
 
         User user =
                 userRepository
-                        .findByEmail(request.getEmail())
+                        .findByEmail(email)
                         .orElseThrow(
                                 () -> new IllegalArgumentException(
-                                        "Invalid credentials"
+                                        "Email hoặc mật khẩu không đúng"
                                 )
                         );
 
         return buildAuthResponse(user);
+    }
+
+    /**
+     * Exchanges a still-valid refresh token for a fresh access token
+     * (and a rotated refresh token). Rejects access tokens and expired
+     * or tampered refresh tokens alike.
+     */
+    public AuthResponse refresh(
+            String refreshToken
+    ) {
+        String email =
+                jwtService.extractEmailIfValidRefreshToken(refreshToken);
+
+        if (email == null) {
+            throw new IllegalArgumentException(
+                    "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại"
+            );
+        }
+
+        User user =
+                userRepository
+                        .findByEmail(email)
+                        .orElseThrow(
+                                () -> new IllegalArgumentException(
+                                        "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại"
+                                )
+                        );
+
+        if (!Boolean.TRUE.equals(user.getEnabled())) {
+            throw new IllegalArgumentException(
+                    "Tài khoản đã bị vô hiệu hóa"
+            );
+        }
+
+        return buildAuthResponse(user);
+    }
+
+    private String normalizeEmail(String email) {
+        return email == null ? "" : email.trim().toLowerCase();
     }
 
     private AuthResponse buildAuthResponse(
@@ -263,8 +316,10 @@ public class AuthService {
         return AuthResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .id(user.getId())
                 .fullName(user.getFullName())
                 .email(user.getEmail())
+                .phone(user.getPhone())
                 .role(user.getRole().name())
                 .emailVerified(user.getEmailVerified())
                 .membershipTier(user.getMembershipTier())

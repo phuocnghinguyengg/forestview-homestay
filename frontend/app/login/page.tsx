@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { authService } from "@/lib/services/authService";
 import { useAuthStore } from "@/hooks/useAuthStore";
+import { useGuestOnly } from "@/hooks/useGuestOnly";
 import { getErrorMessage } from "@/lib/getErrorMessage";
 import {
   AlertCircle,
@@ -20,6 +21,7 @@ import {
 export default function LoginPage() {
   const router = useRouter();
   const login = useAuthStore((s) => s.login);
+  useGuestOnly();
 
   const [form, setForm] = useState({
     email: "",

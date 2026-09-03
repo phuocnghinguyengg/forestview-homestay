@@ -86,6 +86,7 @@ export default function GeminiAIChatbot() {
       process.env.NEXT_PUBLIC_GEMINI_API_KEY ||
       "";
     if (savedKey) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time hydration of a locally-stored API key on mount
       setApiKey(savedKey);
       setInputKey(savedKey);
     }
@@ -119,6 +120,7 @@ export default function GeminiAIChatbot() {
     if (!query || loading) return;
 
     const userMsg: Message = {
+      // eslint-disable-next-line react-hooks/purity -- id generated inside an async click/submit handler, not during render
       id: "user-" + Date.now(),
       sender: "user",
       text: query,

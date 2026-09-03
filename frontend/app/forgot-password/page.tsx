@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { authService } from "@/lib/services/authService";
+import { useGuestOnly } from "@/hooks/useGuestOnly";
 import { getErrorMessage } from "@/lib/getErrorMessage";
 import {
   AlertCircle,
@@ -20,6 +21,7 @@ import {
 type Step = "email" | "otp" | "done";
 
 export default function ForgotPasswordPage() {
+  useGuestOnly();
   const [step, setStep] = useState<Step>("email");
 
   const [email, setEmail] = useState("");
@@ -97,7 +99,7 @@ export default function ForgotPasswordPage() {
     setMessage("");
     setBusy(true);
     try {
-      await authService.requestPasswordReset({ email: email.trim() });
+      await authService.requestPasswordReset({ email: email.trim().toLowerCase() });
       setStep("otp");
       startResendCooldown();
     } catch (err) {
@@ -113,7 +115,7 @@ export default function ForgotPasswordPage() {
     setError("");
     setBusy(true);
     try {
-      await authService.requestPasswordReset({ email: email.trim() });
+      await authService.requestPasswordReset({ email: email.trim().toLowerCase() });
       setMessage("Đã gửi lại mã OTP mới.");
       startResendCooldown();
     } catch (err) {
@@ -145,7 +147,7 @@ export default function ForgotPasswordPage() {
     setBusy(true);
     try {
       await authService.resetPassword({
-        email: email.trim(),
+        email: email.trim().toLowerCase(),
         otp,
         newPassword: password,
       });

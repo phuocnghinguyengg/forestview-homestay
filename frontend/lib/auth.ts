@@ -15,6 +15,17 @@ export function getAccessToken(): string | null {
   return localStorage.getItem(ACCESS_TOKEN_KEY);
 }
 
+export function getRefreshToken(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem(REFRESH_TOKEN_KEY);
+}
+
+/** Updates only the token pair after a silent refresh, keeping the stored user untouched. */
+export function saveTokens(accessToken: string, refreshToken: string) {
+  localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
+  localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+}
+
 export function getStoredUser(): AuthUser | null {
   if (typeof window === "undefined") return null;
   const raw = localStorage.getItem(USER_KEY);

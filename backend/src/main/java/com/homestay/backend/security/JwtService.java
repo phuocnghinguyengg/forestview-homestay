@@ -30,11 +30,33 @@ public class JwtService {
     public String generateAccessToken(UserDetails userDetails, String role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role);
+        claims.put("type", "access");
         return buildToken(claims, userDetails.getUsername(), accessTokenExpiration);
     }
 
     public String generateRefreshToken(UserDetails userDetails) {
-        return buildToken(new HashMap<>(), userDetails.getUsername(), refreshTokenExpiration);
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("type", "refresh");
+        return buildToken(claims, userDetails.getUsername(), refreshTokenExpiration);
+    }
+
+    /**
+     * Validates a refresh token (correct type, signature, not expired) and
+     * returns the email it was issued for, or null if invalid.
+     */
+    public String extractEmailIfValidRefreshToken(String token) {
+        try {
+            Claims claims = extractAllClaims(token);
+            if (!"refresh".equals(claims.get("type"))) {
+                return null;
+            }
+            if (claims.getExpiration().before(new Date())) {
+                return null;
+            }
+            return claims.getSubject();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private String buildToken(Map<String, Object> claims, String subject, long expiration) {
@@ -52,12 +74,12 @@ public class JwtService {
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String email = extractEmail(token);
-        return email.equals(userDetails.getUsername()) && !isTokenExpired(token);
-    }
-
-    private boolean isTokenExpired(String token) {
-        return extractAllClaims(token).getExpiration().before(new Date());
+        final Claims claims = extractAllClaims(token);
+        final String email = claims.getSubject();
+        final boolean isAccessToken = "access".equals(claims.get("type"));
+        return isAccessToken
+                && email.equals(userDetails.getUsername())
+                && !claims.getExpiration().before(new Date());
     }
 
     private Claims extractAllClaims(String token) {

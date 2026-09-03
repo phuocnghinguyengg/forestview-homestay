@@ -2,6 +2,7 @@ package com.homestay.backend.controller;
 
 import com.homestay.backend.dto.request.LoginRequest;
 import com.homestay.backend.dto.request.OtpVerifyRequest;
+import com.homestay.backend.dto.request.RefreshTokenRequest;
 import com.homestay.backend.dto.request.RegisterRequest;
 import com.homestay.backend.dto.request.ResendOtpRequest;
 import com.homestay.backend.dto.response.AuthResponse;
@@ -43,5 +44,10 @@ public class AuthController {
     @PostMapping("/skip-otp")
     public ResponseEntity<AuthResponse> skipOtp(@Valid @RequestBody ResendOtpRequest request) {
         return ResponseEntity.ok(authService.skipVerification(request));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
+        return ResponseEntity.ok(authService.refresh(request.getRefreshToken()));
     }
 }

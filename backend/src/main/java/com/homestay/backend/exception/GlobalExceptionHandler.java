@@ -2,6 +2,7 @@ package com.homestay.backend.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,6 +41,16 @@ public class GlobalExceptionHandler {
         Map<String, String> body = new HashMap<>();
         body.put("error", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
+    /** Safety net: any Spring Security auth failure (bad credentials, disabled account, etc.)
+     *  that isn't already translated into an IllegalArgumentException still gets a clean,
+     *  friendly JSON body instead of a generic 500. */
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Map<String, String>> handleAuthentication(AuthenticationException ex) {
+        Map<String, String> body = new HashMap<>();
+        body.put("error", "Email hoặc mật khẩu không đúng");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
     }
 
 }
