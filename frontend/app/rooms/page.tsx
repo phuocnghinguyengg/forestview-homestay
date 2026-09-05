@@ -86,6 +86,11 @@ export default function RoomsPage() {
   const handleCheckOutChange = (value: string) => {
     setError("");
 
+    if (!value) {
+      setCheckOut("");
+      return;
+    }
+
     if (checkIn && value <= checkIn) {
       setError("Ngày trả phòng phải sau ngày nhận phòng.");
       return;
@@ -179,7 +184,7 @@ export default function RoomsPage() {
             minDate={todayISO()}
             onChange={(start, end) => {
               handleCheckInChange(start);
-              if (end) handleCheckOutChange(end);
+              handleCheckOutChange(end);
             }}
           />
 

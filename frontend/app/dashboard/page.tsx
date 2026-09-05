@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import BookingStatusBadge from "@/components/BookingStatusBadge";
+import ReviewFormModal from "@/components/ReviewFormModal";
 import { bookingService } from "@/lib/services/bookingService";
 import { Booking } from "@/types";
 import { useAuthStore } from "@/hooks/useAuthStore";
@@ -28,6 +29,7 @@ function DashboardContent() {
   const [error, setError] = useState("");
   const [cancellingId, setCancellingId] = useState<number | null>(null);
   const [profile, setProfile] = useState<AccountProfile | null>(null);
+  const [reviewTarget, setReviewTarget] = useState<Booking | null>(null);
 
   const loadBookings = async () => {
     const data = await bookingService.getMine();
@@ -182,10 +184,36 @@ function DashboardContent() {
                       : "Hủy đơn"}
                   </button>
                 )}
+
+                {b.status === "COMPLETED" &&
+                  (b.hasReview ? (
+                    <span className="text-xs font-medium text-primary">
+                      Đã đánh giá ✓
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => setReviewTarget(b)}
+                      className="rounded-full bg-primary/10 px-3 py-1.5 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
+                    >
+                      Đánh giá
+                    </button>
+                  ))}
               </div>
             </div>
           ))}
         </div>
+      )}
+
+      {reviewTarget && (
+        <ReviewFormModal
+          bookingId={reviewTarget.id}
+          roomName={reviewTarget.roomName}
+          onClose={() => setReviewTarget(null)}
+          onSubmitted={() => {
+            setReviewTarget(null);
+            loadBookings();
+          }}
+        />
       )}
     </main>
   );

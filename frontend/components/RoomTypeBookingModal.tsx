@@ -33,10 +33,12 @@ function formatDate(date: string) {
 }
 
 function getNights(checkIn: string, checkOut: string) {
+  if (!checkIn || !checkOut) return 1;
+
   const start = new Date(`${checkIn}T00:00:00`).getTime();
   const end = new Date(`${checkOut}T00:00:00`).getTime();
 
-  return Math.max(1, Math.round((end - start) / 86400000));
+  return Math.max(1, Math.round((end - start) / 86400000)) || 1;
 }
 
 type RoomRequestState = {
@@ -432,7 +434,7 @@ export default function RoomTypeBookingModal({
 
               <div className="grid gap-0 lg:grid-cols-[1.15fr_0.85fr]">
                 {/* Image Gallery */}
-                <div className="flex flex-col bg-neutral-900 p-4 sm:p-6">
+                <div className="flex flex-col bg-ink p-4 sm:p-6">
                   {(() => {
                     const gallery = detailRoom.images && detailRoom.images.length > 0
                       ? detailRoom.images
@@ -441,7 +443,7 @@ export default function RoomTypeBookingModal({
 
                     return (
                       <div className="space-y-3">
-                        <div className="relative h-72 w-full overflow-hidden rounded-2xl bg-black sm:h-96">
+                        <div className="relative h-72 w-full overflow-hidden rounded-2xl bg-ink sm:h-96">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={currentImg}

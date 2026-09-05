@@ -1,8 +1,8 @@
 import Link from "next/link";
 
-export default function Footer() {
+export default function Footer({ embedded = false }: { embedded?: boolean }) {
   return (
-    <footer className="mt-24 border-t border-line bg-surface">
+    <footer className={`${embedded ? "" : "mt-24"} border-t border-line bg-surface`}>
       <div className="mx-auto max-w-6xl px-5 py-12">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-4">
           <div className="sm:col-span-2">

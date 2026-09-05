@@ -3,7 +3,7 @@ import { Fraunces, Manrope } from "next/font/google";
 import "./globals.css";
 import AuthInitializer from "@/components/AuthInitializer";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import ConditionalFooter from "@/components/ConditionalFooter";
 import UnverifiedBanner from "@/components/UnverifiedBanner";
 import GeminiAIChatbot from "@/components/GeminiAIChatbot";
 
@@ -43,7 +43,7 @@ export default function RootLayout({
           {children}
         </div>
 
-        <Footer />
+        <ConditionalFooter />
         <GeminiAIChatbot />
       </body>
     </html>

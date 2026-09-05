@@ -78,10 +78,10 @@ export default function AdminBookingsPage() {
   const filtered = filter === "ALL" ? bookings : bookings.filter((b) => b.status === filter);
 
   return (
-    <div>
+    <div className="space-y-6">
       <h1 className="font-display text-2xl text-ink">Đơn đặt phòng</h1>
 
-      <div className="mt-4 flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2">
         <button
           onClick={() => setFilter("ALL")}
           className={`rounded-full px-3 py-1.5 text-sm font-medium transition ${
@@ -103,10 +103,10 @@ export default function AdminBookingsPage() {
         ))}
       </div>
 
-      {loading && <p className="mt-6 text-neutral-500">Đang tải...</p>}
-      {error && <p className="mt-6 text-red-600">{error}</p>}
+      {loading && <p className="text-neutral-500">Đang tải...</p>}
+      {error && <p className="text-red-600">{error}</p>}
 
-      <div className="mt-6 space-y-4">
+      <div className="space-y-4">
         {filtered.map((b) => (
           <div key={b.id} className="rounded-2xl border border-line bg-surface p-4">
             <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">

@@ -8,6 +8,8 @@ import { getErrorMessage } from "@/lib/getErrorMessage";
 import DateRangeCalendar from "@/components/DateRangeCalendar";
 import RoomSearchResultsModal from "@/components/RoomSearchResultsModal";
 import RoomTypeBookingModal from "@/components/RoomTypeBookingModal";
+import ReviewShowcase from "@/components/ReviewShowcase";
+import Footer from "@/components/Footer";
 import {
   CalendarDays,
   ChevronDown,
@@ -53,7 +55,7 @@ function getNights(a: string, b: string) {
   if (!a || !b) return 1;
   const start = new Date(`${a}T00:00:00`).getTime();
   const end = new Date(`${b}T00:00:00`).getTime();
-  return Math.max(1, Math.round((end - start) / 86400000));
+  return Math.max(1, Math.round((end - start) / 86400000)) || 1;
 }
 
 const FEATURED_ROOM_TYPES = [
@@ -123,27 +125,6 @@ const EXPERIENCES = [
     icon: <Heart size={20} className="text-rose-500" />,
     title: "Thân Thiện Thú Cưng",
     desc: "Sân vườn cỏ xanh rộng rãi đón chào các bé cún/mèo cưng đi cùng bạn.",
-  },
-];
-
-const REVIEWS = [
-  {
-    name: "Nguyễn Hà My",
-    from: "TP. Hồ Chí Minh",
-    rating: 5,
-    comment: "Không gian yên tĩnh tuyệt đối, sáng mở cửa ra là thấy mây luồn qua ngọn thông. Phòng ốc cực kỳ sạch sẽ và ấm áp.",
-  },
-  {
-    name: "Trần Minh Đức",
-    from: "Hà Nội",
-    rating: 5,
-    comment: "Đã ở đây 3 đêm liền, anh chị chủ homestay nhiệt tình, đồ nướng BBQ tươi ngon. Chắc chắn sẽ quay lại mỗi lần lên Đà Lạt.",
-  },
-  {
-    name: "Lê Hoàng Nam",
-    from: "Đà Nẵng",
-    rating: 5,
-    comment: "Bồn tắm ngắm thung lũng ở phòng Superior đỉnh thật sự. View hoàng hôn rất chill, giá cả lại vô cùng hợp lý!",
   },
 ];
 
@@ -396,7 +377,7 @@ export default function Home() {
                     minDate={todayISO()}
                     onChange={(start, end) => {
                       setCheckIn(start);
-                      if (end) setCheckOut(end);
+                      setCheckOut(end);
                     }}
                   />
                 </div>
@@ -623,25 +604,9 @@ export default function Home() {
               </h2>
             </div>
 
-            {/* Reviews 3 Columns */}
-            <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-              {REVIEWS.map((rev) => (
-                <div
-                  key={rev.name}
-                  className="flex flex-col rounded-2xl border border-line bg-surface p-5 shadow-2xs"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-semibold text-sm text-ink">{rev.name}</p>
-                      <p className="text-[11px] text-neutral-400">{rev.from}</p>
-                    </div>
-                    <span className="text-xs text-amber-500">{"★".repeat(rev.rating)}</span>
-                  </div>
-                  <p className="mt-3 flex-1 text-xs leading-5 text-neutral-600 italic">
-                    &ldquo;{rev.comment}&rdquo;
-                  </p>
-                </div>
-              ))}
+            {/* Đánh giá thực tế từ khách đã lưu trú (dữ liệu thật từ API) */}
+            <div className="mt-6">
+              <ReviewShowcase limit={3} />
             </div>
 
             {/* Trust Badges */}
@@ -686,6 +651,14 @@ export default function Home() {
               </div>
             </div>
           </div>
+        </section>
+
+        {/* ================= FOOTER (Cuối cùng của khung cuộn snap) ================= */}
+        <section
+          id="section-footer"
+          className="w-full snap-end"
+        >
+          <Footer embedded />
         </section>
 
       </main>

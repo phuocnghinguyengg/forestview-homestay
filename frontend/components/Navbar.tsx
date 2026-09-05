@@ -27,27 +27,6 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center gap-6 text-sm font-medium text-ink">
-          <Link
-            href="/room-types"
-            className="transition hover:text-primary"
-          >
-            Chọn phòng
-          </Link>
-
-          <Link
-            href="/about"
-            className="transition hover:text-primary"
-          >
-            Giới thiệu
-          </Link>
-
-          <Link
-            href="/contact"
-            className="transition hover:text-primary"
-          >
-            Liên hệ
-          </Link>
-
           {!isAuthenticated && (
             <>
               <Link

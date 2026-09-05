@@ -104,7 +104,7 @@ export default function RegisterPage() {
         {/* Header */}
         <div className="text-center">
           <div className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
-            <Sparkles size={13} /> ForestView Club
+            <Sparkles size={13} /> Chào mừng bạn mới
           </div>
           <h1 className="mt-3 font-display text-3xl font-semibold text-ink sm:text-4xl">
             Tạo tài khoản mới
@@ -117,7 +117,7 @@ export default function RegisterPage() {
         {/* Membership perk pill */}
         <div className="mt-5 flex items-center gap-2.5 rounded-2xl border border-primary/20 bg-primary/5 p-3 text-xs text-primary">
           <CheckCircle2 size={16} className="shrink-0" />
-          <span>Tự động kích hoạt hạng <b>Bronze</b> (Giảm 5% trọn đời) sau khi đăng ký.</span>
+          <span>Tích lũy đặt phòng để mở khóa các hạng thành viên và nhận ưu đãi giảm giá.</span>
         </div>
 
         {/* Error alert */}

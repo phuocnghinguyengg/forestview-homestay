@@ -8,14 +8,14 @@ export default function StatCard({
   accent?: boolean;
 }) {
   return (
-    <div className="rounded-2xl border border-neutral-200 p-5">
+    <div className="rounded-2xl border border-line bg-surface p-5">
       <p className="text-sm text-neutral-500">
         {label}
       </p>
 
       <p
-        className={`mt-2 text-2xl font-bold ${
-          accent ? "text-primary" : "text-neutral-900"
+        className={`mt-2 font-display text-2xl font-semibold ${
+          accent ? "text-primary" : "text-ink"
         }`}
       >
         {value}

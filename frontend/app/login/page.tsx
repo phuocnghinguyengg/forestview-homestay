@@ -83,7 +83,7 @@ export default function LoginPage() {
         {/* Header */}
         <div className="text-center">
           <div className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
-            <Sparkles size={13} /> ForestView Homestay
+            <Sparkles size={13} /> Chào mừng trở lại
           </div>
           <h1 className="mt-3 font-display text-3xl font-semibold text-ink sm:text-4xl">
             Đăng nhập

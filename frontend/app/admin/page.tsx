@@ -29,10 +29,10 @@ export default function AdminOverviewPage() {
   if (!stats) return <p className="text-neutral-500">Đang tải...</p>;
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-neutral-900">Tổng quan</h1>
+    <div className="space-y-6">
+      <h1 className="font-display text-2xl text-ink">Tổng quan</h1>
 
-      <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
         <StatCard label="Tổng người dùng" value={stats.totalUsers} />
         <StatCard label="Tổng số phòng" value={stats.totalRooms} />
         <StatCard label="Phòng đang hoạt động" value={stats.activeRooms} />
@@ -41,11 +41,13 @@ export default function AdminOverviewPage() {
         <StatCard label="Tổng doanh thu" value={formatPrice(stats.totalRevenue)} accent />
       </div>
 
-      <h2 className="mt-8 mb-4 text-lg font-semibold text-neutral-900">Đơn đặt phòng theo trạng thái</h2>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        {Object.entries(stats.bookingsByStatus).map(([status, count]) => (
-          <StatCard key={status} label={STATUS_LABELS[status] ?? status} value={count} />
-        ))}
+      <div>
+        <h2 className="mb-4 font-display text-lg text-ink">Đơn đặt phòng theo trạng thái</h2>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          {Object.entries(stats.bookingsByStatus).map(([status, count]) => (
+            <StatCard key={status} label={STATUS_LABELS[status] ?? status} value={count} />
+          ))}
+        </div>
       </div>
     </div>
   );

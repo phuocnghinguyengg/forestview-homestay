@@ -237,7 +237,7 @@ export default function RoomDetailPage() {
       {/* Interactive Multi-Image Gallery */}
       <div className="mt-6 space-y-3">
         {/* Main Hero Image */}
-        <div className="group relative h-80 w-full overflow-hidden rounded-3xl bg-neutral-900 sm:h-110">
+        <div className="group relative h-80 w-full overflow-hidden rounded-3xl bg-ink sm:h-110">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={currentImage}
