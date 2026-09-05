@@ -6,19 +6,11 @@ import { Role, MembershipTier } from "@/types";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { getErrorMessage } from "@/lib/getErrorMessage";
 import UserFormModal from "@/components/UserFormModal";
-import { CheckCircle2, Crown, Edit3, Lock, Search, Shield, Trash2, Unlock, UserCheck, XCircle } from "lucide-react";
+import { CheckCircle2, Edit3, Lock, Search, Trash2, Unlock, XCircle } from "lucide-react";
 
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString("vi-VN");
 }
-
-const TIER_COLORS: Record<MembershipTier, string> = {
-  NONE: "bg-neutral-100 text-neutral-600",
-  BRONZE: "bg-amber-700/10 text-amber-700 border-amber-700/20",
-  SILVER: "bg-slate-200 text-slate-700 border-slate-300",
-  GOLD: "bg-amber-400/15 text-amber-700 border-amber-400/30",
-  DIAMOND: "bg-sky-500/15 text-sky-700 border-sky-400/30",
-};
 
 export default function AdminUsersPage() {
   const currentUser = useAuthStore((s) => s.user);
@@ -182,67 +174,68 @@ export default function AdminUsersPage() {
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 
-      {/* Responsive User Cards - No horizontal scroll! */}
-      <div className="space-y-3">
-        {filteredUsers.map((u) => {
-          const isSelf = u.email === currentUser?.email;
-          const initial = u.fullName ? u.fullName.trim().charAt(0).toUpperCase() : "?";
+      {/* Danh sách khách hàng - bảng cột cố định, không co giãn theo nội dung */}
+      <div className="overflow-x-auto rounded-2xl border border-line">
+        <div className="min-w-[880px]">
+          {/* Header */}
+          <div className="grid grid-cols-[minmax(0,1fr)_170px_120px_130px_190px] gap-3 border-b border-line bg-base/60 px-4 py-3 text-xs font-semibold tracking-wide text-neutral-500 uppercase">
+            <div>Khách hàng</div>
+            <div>Hạng thành viên</div>
+            <div>Vai trò</div>
+            <div>Trạng thái</div>
+            <div className="text-right">Hành động</div>
+          </div>
 
-          return (
-            <div
-              key={u.id}
-              className={`flex flex-col gap-4 rounded-2xl border p-4 transition sm:flex-row sm:items-center sm:justify-between ${
-                u.enabled
-                  ? "border-line bg-surface hover:border-primary/40 hover:shadow-xs"
-                  : "border-dashed border-red-200 bg-red-50/40 opacity-75"
-              }`}
-            >
-              {/* User info */}
-              <div className="flex flex-1 items-start gap-3.5">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 font-display text-base font-bold text-primary">
-                  {initial}
-                </div>
+          {filteredUsers.map((u) => {
+            const isSelf = u.email === currentUser?.email;
+            const initial = u.fullName ? u.fullName.trim().charAt(0).toUpperCase() : "?";
 
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="font-semibold text-ink">{u.fullName}</h3>
-                    {isSelf && (
-                      <span className="rounded bg-accent/10 px-1.5 py-0.5 text-[10px] font-bold text-accent">
-                        Bạn
-                      </span>
-                    )}
+            return (
+              <div
+                key={u.id}
+                className={`grid grid-cols-[minmax(0,1fr)_170px_120px_130px_190px] items-center gap-3 border-b border-line/60 px-4 py-3.5 transition last:border-b-0 ${
+                  u.enabled ? "hover:bg-base/30" : "bg-red-50/40 opacity-75"
+                }`}
+              >
+                {/* Khách hàng */}
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 font-display text-sm font-bold text-primary">
+                    {initial}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <h3 className="truncate font-semibold text-ink">{u.fullName}</h3>
+                      {isSelf && (
+                        <span className="rounded bg-accent/10 px-1.5 py-0.5 text-[10px] font-bold text-accent">Bạn</span>
+                      )}
+                    </div>
+                    <p className="truncate text-xs text-neutral-500">{u.email}</p>
+                    <p className="text-[10px] text-neutral-400">Tham gia: {formatDate(u.createdAt)}</p>
                     <span
-                      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${
+                      className={`mt-0.5 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium ${
                         u.emailVerified ? "bg-primary/10 text-primary" : "bg-neutral-100 text-neutral-500"
                       }`}
                     >
                       {u.emailVerified ? (
                         <>
-                          <CheckCircle2 size={11} /> Đã xác thực
+                          <CheckCircle2 size={10} /> Đã xác thực
                         </>
                       ) : (
                         <>
-                          <XCircle size={11} /> Chưa xác thực
+                          <XCircle size={10} /> Chưa xác thực
                         </>
                       )}
                     </span>
                   </div>
-
-                  <p className="mt-0.5 truncate text-xs text-neutral-500">{u.email}</p>
-                  <p className="mt-1 text-[11px] text-neutral-400">Tham gia: {formatDate(u.createdAt)}</p>
                 </div>
-              </div>
 
-              {/* Roles & Membership & Actions in one compact row */}
-              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line/60 pt-3 sm:justify-end sm:border-t-0 sm:pt-0">
-                {/* Membership tier selector */}
-                <div className="flex items-center gap-1.5">
-                  <Crown size={14} className="text-amber-500" />
+                {/* Hạng thành viên */}
+                <div>
                   <select
                     value={u.membershipTier}
                     disabled={busyId === u.id}
                     onChange={(e) => handleMembershipChange(u.id, e.target.value as MembershipTier)}
-                    className="rounded-xl border border-line bg-base/50 px-2.5 py-1.5 text-xs font-medium text-ink focus:border-primary focus:outline-none disabled:opacity-50"
+                    className="w-full rounded-xl border border-line bg-base/50 px-2.5 py-1.5 text-xs font-medium text-ink focus:border-primary focus:outline-none disabled:opacity-50"
                   >
                     <option value="NONE">Chưa có hạng</option>
                     <option value="BRONZE">Đồng - 5%</option>
@@ -252,27 +245,26 @@ export default function AdminUsersPage() {
                   </select>
                 </div>
 
-                {/* Role selector */}
-                <div className="flex items-center gap-1.5">
-                  <Shield size={14} className="text-primary" />
+                {/* Vai trò */}
+                <div>
                   <select
                     value={u.role}
                     disabled={isSelf || busyId === u.id}
                     onChange={(e) => handleRoleChange(u.id, e.target.value as Role)}
-                    className="rounded-xl border border-line bg-base/50 px-2.5 py-1.5 text-xs font-medium text-ink focus:border-primary focus:outline-none disabled:opacity-50"
+                    className="w-full rounded-xl border border-line bg-base/50 px-2.5 py-1.5 text-xs font-medium text-ink focus:border-primary focus:outline-none disabled:opacity-50"
                   >
                     <option value="USER">USER</option>
                     <option value="ADMIN">ADMIN</option>
                   </select>
                 </div>
 
-                {/* Status Toggle & Edit/Delete */}
-                <div className="flex items-center gap-2">
+                {/* Trạng thái */}
+                <div>
                   <button
                     type="button"
                     onClick={() => handleToggleEnabled(u.id)}
                     disabled={isSelf || busyId === u.id}
-                    className={`inline-flex items-center gap-1 rounded-xl px-3 py-1.5 text-xs font-medium transition disabled:opacity-50 ${
+                    className={`inline-flex w-full items-center justify-center gap-1 rounded-xl px-2.5 py-1.5 text-xs font-medium transition disabled:opacity-50 ${
                       u.enabled
                         ? "bg-primary/10 text-primary hover:bg-primary/20"
                         : "bg-red-100 text-red-600 hover:bg-red-200"
@@ -288,7 +280,10 @@ export default function AdminUsersPage() {
                       </>
                     )}
                   </button>
+                </div>
 
+                {/* Hành động */}
+                <div className="flex items-center justify-end gap-2">
                   <button
                     type="button"
                     onClick={() => setEditingUser(u)}
@@ -308,15 +303,13 @@ export default function AdminUsersPage() {
                   </button>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
 
-        {!loading && filteredUsers.length === 0 && (
-          <div className="rounded-2xl border border-line bg-surface p-8 text-center text-sm text-neutral-500">
-            Không tìm thấy người dùng nào phù hợp.
-          </div>
-        )}
+          {!loading && filteredUsers.length === 0 && (
+            <div className="p-8 text-center text-sm text-neutral-500">Không tìm thấy người dùng nào phù hợp.</div>
+          )}
+        </div>
       </div>
 
       {editingUser && (

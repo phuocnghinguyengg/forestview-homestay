@@ -17,6 +17,7 @@ spring:
 server:
   port: ${PORT:8080}
 
+# JWT configuration is bound by a custom @ConfigurationProperties(prefix = "jwt") bean.
 jwt:
   secret: ${JWT_SECRET}
   access-token-expiration: 3600000

@@ -46,7 +46,7 @@ export default function DateRangeCalendar({ checkIn, checkOut, onChange, minDate
   const renderMonth = (month: Date) => {
     const first = startOfMonth(month); const offset = (first.getDay()+6)%7; const count=daysInMonth(month);
     const cells = Array.from({length: offset+count},(_,i)=>i<offset?null:i-offset+1);
-    return <div className="min-w-[280px] flex-1">
+    return <div className="min-w-[260px] flex-1">
       <div className="mb-3 text-center font-semibold text-ink">{months[month.getMonth()]} {month.getFullYear()}</div>
       <div className="grid grid-cols-7 text-center text-xs text-neutral-400">{weekdays.map(w=><div key={w} className="py-2">{w}</div>)}</div>
       <div className="grid grid-cols-7 gap-y-1 text-center text-sm">
@@ -56,22 +56,34 @@ export default function DateRangeCalendar({ checkIn, checkOut, onChange, minDate
           const disabled=minDate ? value<minDate : false;
           const inRange=Boolean(selectedStart&&selectedEnd&&date>selectedStart&&date<selectedEnd);
           const start=checkIn===value; const end=checkOut===value;
+          const isRangeDay = start || end || inRange;
           // Trong lúc đang chờ chọn ngày trả, làm mờ những ngày <= ngày nhận để dễ nhận biết ngày hợp lệ.
           const beforeCheckIn = pickingCheckOut && checkIn ? value <= checkIn : false;
-          return <button
-            aria-label={value}
-            key={value}
-            type="button"
-            disabled={disabled}
-            onClick={()=>handleSelect(value)}
-            className={`mx-auto flex h-9 w-9 items-center justify-center rounded-full transition ${
-              disabled?"cursor-not-allowed text-neutral-200"
-              : beforeCheckIn ? "text-neutral-300 hover:bg-primary/10"
-              : "hover:bg-primary/10"
-            } ${inRange?"rounded-none bg-primary/10 text-primary":""} ${start||end?"bg-primary font-semibold text-white shadow-sm hover:bg-primary-dark":""}`}
-          >
-            {day}
-          </button>;
+          return (
+            <div key={value} className="relative flex h-9 items-center justify-center">
+              {/* Dấu gạch nối liền giữa ngày nhận và ngày trả, thay vì từng ô vuông rời rạc */}
+              {isRangeDay && (
+                <span
+                  className={`absolute inset-y-1 bg-primary/15 ${
+                    start ? "left-1/2 right-0" : end ? "left-0 right-1/2" : "inset-x-0"
+                  }`}
+                />
+              )}
+              <button
+                aria-label={value}
+                type="button"
+                disabled={disabled}
+                onClick={()=>handleSelect(value)}
+                className={`relative z-10 flex h-9 w-9 items-center justify-center rounded-full transition ${
+                  disabled?"cursor-not-allowed text-neutral-200"
+                  : beforeCheckIn ? "text-neutral-300 hover:bg-primary/10"
+                  : "hover:bg-primary/10"
+                } ${start||end?"bg-primary font-semibold text-white shadow-sm hover:bg-primary-dark":inRange?"font-medium text-primary":""}`}
+              >
+                {day}
+              </button>
+            </div>
+          );
         })}
       </div>
     </div>;

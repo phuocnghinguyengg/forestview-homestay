@@ -110,7 +110,7 @@ export default function AdminBookingsPage() {
         {filtered.map((b) => (
           <div key={b.id} className="rounded-2xl border border-line bg-surface p-4">
             <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
-              <div>
+              <div className="min-w-0 flex-1">
                 {b.bookingCode && <p className="font-display text-xs italic text-accent">#{b.bookingCode}</p>}
                 <p className="mt-0.5 font-medium text-ink">{b.roomName}</p>
                 <p className="text-sm text-neutral-500">{b.roomAddress}</p>
@@ -127,13 +127,14 @@ export default function AdminBookingsPage() {
                 <p className="mt-1 text-sm font-medium text-accent">{formatPrice(b.totalPrice)}</p>
               </div>
 
-              <div className="flex flex-col items-end gap-2">
+              {/* Cột trạng thái/hành động có chiều rộng cố định, không co giãn theo nội dung bên trái */}
+              <div className="flex shrink-0 flex-col items-end gap-2 sm:w-48">
                 <BookingStatusBadge status={b.status} />
                 <select
                   value={b.status}
                   disabled={updatingId === b.id}
                   onChange={(e) => handleStatusChange(b.id, e.target.value as BookingStatus)}
-                  className="rounded-lg border border-line px-2 py-1 text-sm focus:border-primary focus:outline-none"
+                  className="w-full rounded-lg border border-line px-2 py-1 text-sm focus:border-primary focus:outline-none"
                 >
                   {STATUS_OPTIONS.map((s) => (
                     <option key={s} value={s}>

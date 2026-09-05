@@ -20,7 +20,6 @@ import {
   Navigation,
   Search,
   ShieldCheck,
-  Sparkles,
   Star,
   Users,
 } from "lucide-react";
@@ -137,6 +136,8 @@ const SECTIONS = [
 
 export default function Home() {
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
+  const [heroVisible, setHeroVisible] = useState(false);
+  const [revealed, setRevealed] = useState<Set<string>>(new Set());
 
   const [checkIn, setCheckIn] = useState(() => todayISO());
   const [checkOut, setCheckOut] = useState(() => tomorrowISO());
@@ -172,12 +173,13 @@ export default function Home() {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               setActiveSectionIndex(idx);
+              setRevealed((prev) => (prev.has(sec.id) ? prev : new Set(prev).add(sec.id)));
             }
           });
         },
         {
-          root: container,
-          threshold: 0.5, // section is considered active when 50%+ is visible
+          root: null, // dùng viewport thật để hoạt động đúng cả khi mobile cuộn trang bình thường
+          threshold: 0.35,
         }
       );
 
@@ -188,14 +190,23 @@ export default function Home() {
     return () => observers.forEach((o) => o.disconnect());
   }, []);
 
-  // Scroll to section: scroll inside the snap container by section index
-  const scrollToSection = (id: string, index: number) => {
-    const container = scrollContainerRef.current;
-    const element = document.getElementById(id);
-    if (container && element) {
-      // Use scrollTo relative to container so snap works correctly
-      container.scrollTo({ top: element.offsetTop, behavior: "smooth" });
-    }
+  // Section nào đã từng hiện ra trong khung nhìn -> dùng để tạo hiệu ứng
+  // xuất hiện mượt mà (fade + trượt lên) thay vì hiện đột ngột.
+  useEffect(() => {
+    const t = setTimeout(() => setHeroVisible(true), 50);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Hiệu ứng mờ dần + trượt nhẹ lên khi section xuất hiện trong khung nhìn.
+  const reveal = (id: string) =>
+    `transition-all duration-700 ease-out ${
+      revealed.has(id) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+    }`;
+
+  // Cuộn tới 1 section: dùng scrollIntoView để hoạt động đúng cả ở chế độ
+  // snap-scroll (desktop) lẫn cuộn trang bình thường (mobile).
+  const scrollToSection = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   const handleSearch = async () => {
@@ -237,7 +248,7 @@ export default function Home() {
           <button
             key={sec.id}
             type="button"
-            onClick={() => scrollToSection(sec.id, idx)}
+            onClick={() => scrollToSection(sec.id)}
             title={sec.label}
             className="group flex items-center justify-end gap-2 p-1"
           >
@@ -258,13 +269,13 @@ export default function Home() {
       {/* Snap Scrollable Container (Mỗi scroll là 1 khấc) */}
       <main
         ref={scrollContainerRef}
-        className="h-[calc(100vh-69px)] w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth"
+        className="w-full overflow-x-hidden scroll-smooth md:h-[calc(100vh-69px)] md:overflow-y-auto md:snap-y md:snap-mandatory"
       >
         
         {/* ================= KHẤC 1: TÌM PHÒNG & HERO BANNER ================= */}
         <section
           id="section-hero"
-          className="relative flex min-h-[calc(100vh-69px)] w-full snap-start snap-always flex-col items-center justify-center overflow-hidden px-5 py-6 text-center"
+          className={`relative flex w-full flex-col items-center justify-center overflow-hidden px-5 py-10 text-center md:min-h-[calc(100vh-69px)] md:snap-start md:snap-always md:py-6`}
         >
           {/* Subtle Pines Decorative SVG at Bottom */}
           <svg
@@ -281,7 +292,7 @@ export default function Home() {
             <path d="M1000 300 L1030 200 L1000 225 L1030 150 L1000 175 L1050 60 L1100 175 L1070 150 L1100 225 L1070 200 L1100 300 Z" />
           </svg>
 
-          <div className="relative z-10 mx-auto max-w-3xl">
+          <div className={`relative z-10 mx-auto max-w-3xl transition-all duration-700 ease-out ${heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
             <p className="font-display text-sm italic tracking-wide text-accent">
               Đà Lạt, Lâm Đồng
             </p>
@@ -289,11 +300,6 @@ export default function Home() {
             <h1 className="mx-auto mt-3 max-w-2xl font-display text-4xl leading-tight text-ink sm:text-6xl">
               Chốn dừng chân giữa rừng thông Đà Lạt
             </h1>
-
-            <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-neutral-600 sm:text-base">
-              Những homestay ẩn mình giữa thiên nhiên, không khí se lạnh, đặt phòng chỉ trong vài phút.
-            </p>
-
             {/* Quick Compact Search Bar */}
             <div className="mx-auto mt-8 max-w-3xl rounded-3xl border border-line bg-surface p-4 shadow-xl shadow-ink/5 backdrop-blur-md sm:p-5">
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1.4fr_1fr_auto]">
@@ -410,7 +416,7 @@ export default function Home() {
             <div className="mt-8">
               <button
                 type="button"
-                onClick={() => scrollToSection("section-rooms", 1)}
+                onClick={() => scrollToSection("section-rooms")}
                 className="group inline-flex items-center gap-1.5 rounded-full border border-line bg-surface/80 px-4 py-2 text-xs font-medium text-neutral-600 shadow-2xs transition hover:border-primary hover:text-primary"
               >
                 Khám phá không gian lưu trú <ChevronDown size={14} className="transition-transform group-hover:translate-y-0.5" />
@@ -422,7 +428,7 @@ export default function Home() {
         {/* ================= KHẤC 2: KHÔNG GIAN LƯU TRÚ (HẠNG PHÒNG) ================= */}
         <section
           id="section-rooms"
-          className="flex min-h-[calc(100vh-69px)] w-full snap-start snap-always flex-col justify-center border-t border-line/60 bg-base/30 px-5 py-8"
+          className={`flex w-full flex-col justify-center border-t border-line/60 bg-base/30 px-5 py-10 md:min-h-[calc(100vh-69px)] md:snap-start md:snap-always md:py-8 ${reveal("section-rooms")}`}
         >
           <div className="mx-auto w-full max-w-6xl">
             {/* Header */}
@@ -506,7 +512,7 @@ export default function Home() {
             <div className="mt-5 text-center">
               <button
                 type="button"
-                onClick={() => scrollToSection("section-experiences", 2)}
+                onClick={() => scrollToSection("section-experiences")}
                 className="text-xs text-neutral-400 transition hover:text-primary"
               >
                 Cuộn tiếp để xem Trải nghiệm &amp; Ưu đãi ↓
@@ -518,7 +524,7 @@ export default function Home() {
         {/* ================= KHẤC 3: TRẢI NGHIỆM & ƯU ĐÃI THÀNH VIÊN ================= */}
         <section
           id="section-experiences"
-          className="flex min-h-[calc(100vh-69px)] w-full snap-start snap-always flex-col justify-center border-t border-line/60 bg-surface px-5 py-8"
+          className={`flex w-full flex-col justify-center border-t border-line/60 bg-surface px-5 py-10 md:min-h-[calc(100vh-69px)] md:snap-start md:snap-always md:py-8 ${reveal("section-experiences")}`}
         >
           <div className="mx-auto w-full max-w-6xl">
             <div className="text-center">
@@ -582,7 +588,7 @@ export default function Home() {
             <div className="mt-5 text-center">
               <button
                 type="button"
-                onClick={() => scrollToSection("section-reviews", 3)}
+                onClick={() => scrollToSection("section-reviews")}
                 className="text-xs text-neutral-400 transition hover:text-primary"
               >
                 Cuộn tiếp để xem Đánh giá từ khách du lịch ↓
@@ -594,7 +600,7 @@ export default function Home() {
         {/* ================= KHẤC 4: ĐÁNH GIÁ & CAM KẾT CHẤT LƯỢNG ================= */}
         <section
           id="section-reviews"
-          className="flex min-h-[calc(100vh-69px)] w-full snap-start snap-always flex-col justify-center border-t border-line/60 bg-base/40 px-5 py-8"
+          className={`flex w-full flex-col justify-center border-t border-line/60 bg-base/40 px-5 py-10 md:min-h-[calc(100vh-69px)] md:snap-start md:snap-always md:py-8 ${reveal("section-reviews")}`}
         >
           <div className="mx-auto w-full max-w-6xl">
             <div className="text-center">
@@ -637,7 +643,7 @@ export default function Home() {
               <div className="flex items-center gap-3">
                 <button
                   type="button"
-                  onClick={() => scrollToSection("section-hero", 0)}
+                  onClick={() => scrollToSection("section-hero")}
                   className="text-xs font-semibold text-primary hover:underline"
                 >
                   ↑ Về lại đầu trang (Tìm phòng)
@@ -656,7 +662,7 @@ export default function Home() {
         {/* ================= FOOTER (Cuối cùng của khung cuộn snap) ================= */}
         <section
           id="section-footer"
-          className="w-full snap-end"
+          className="w-full md:snap-end"
         >
           <Footer embedded />
         </section>

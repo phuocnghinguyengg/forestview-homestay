@@ -6,7 +6,7 @@ import { RoomTypeAvailability, RoomTypeCode } from "@/types";
 import { getErrorMessage } from "@/lib/getErrorMessage";
 import RoomTypeBookingModal from "@/components/RoomTypeBookingModal";
 import DateRangeCalendar from "@/components/DateRangeCalendar";
-import { CalendarDays, ChevronRight, Sparkles } from "lucide-react";
+import { CalendarDays } from "lucide-react";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);

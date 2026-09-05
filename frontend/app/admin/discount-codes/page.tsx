@@ -5,7 +5,7 @@ import { discountService } from "@/lib/services/discountService";
 import { DiscountCode } from "@/types";
 import { getErrorMessage } from "@/lib/getErrorMessage";
 import CalendarDatePicker from "@/components/CalendarDatePicker";
-import { CheckCircle2, Clock, Percent, Plus, Tag, Trash2, XCircle } from "lucide-react";
+import { Plus, Tag, Trash2 } from "lucide-react";
 
 function formatDateTime(value: string) {
   return new Date(value).toLocaleString("vi-VN", {
@@ -249,7 +249,7 @@ export default function AdminDiscountCodesPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2 border-t border-line/60 pt-2 sm:border-t-0 sm:pt-0">
+            <div className="flex shrink-0 items-center justify-end gap-2 border-t border-line/60 pt-2 sm:w-44 sm:border-t-0 sm:pt-0">
               <button
                 type="button"
                 onClick={() => handleToggle(d.id)}

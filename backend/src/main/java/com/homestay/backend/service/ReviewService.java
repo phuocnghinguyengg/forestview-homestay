@@ -58,6 +58,12 @@ public class ReviewService {
         return reviewRepository.findByRoomIdOrderByCreatedAtDesc(roomId).stream().map(this::toResponse).toList();
     }
 
+    public List<ReviewResponse> getMyReviews(String userEmail) {
+        return reviewRepository.findByUserEmailOrderByCreatedAtDesc(userEmail).stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
     public void deleteReview(Long reviewId) {
         if (!reviewRepository.existsById(reviewId)) throw new ResourceNotFoundException("Review not found");
         reviewRepository.deleteById(reviewId);
@@ -75,6 +81,7 @@ public class ReviewService {
     private ReviewResponse toResponse(Review r) {
         return ReviewResponse.builder()
                 .id(r.getId())
+                .bookingId(r.getBooking().getId())
                 .userFullName(r.getUser().getFullName())
                 .roomName(r.getRoom().getName())
                 .roomTypeLabel(r.getRoom().getType().getLabel())

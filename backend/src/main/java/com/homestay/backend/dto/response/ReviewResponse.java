@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 public class ReviewResponse {
     private Long id;
+    private Long bookingId;
     private String userFullName;
     private String roomName;
     private String roomTypeLabel;

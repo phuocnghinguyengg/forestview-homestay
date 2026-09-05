@@ -10,7 +10,6 @@ import { getErrorMessage } from "@/lib/getErrorMessage";
 import {
   AlertCircle,
   ArrowLeft,
-  CheckCircle2,
   Eye,
   EyeOff,
   Lock,

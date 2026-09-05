@@ -42,4 +42,9 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.getReviewsForRoom(roomId));
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<List<ReviewResponse>> getMyReviews(@AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(reviewService.getMyReviews(userDetails.getUsername()));
+    }
+
 }

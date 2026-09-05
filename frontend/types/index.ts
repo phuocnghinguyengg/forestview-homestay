@@ -119,6 +119,7 @@ export interface PricePreview {
 
 export interface Review {
   id: number;
+  bookingId: number;
   userFullName: string;
   roomName: string;
   roomTypeLabel: string;

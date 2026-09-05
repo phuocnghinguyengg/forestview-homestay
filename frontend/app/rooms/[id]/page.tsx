@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { roomService } from "@/lib/services/roomService";
 import { bookingService } from "@/lib/services/bookingService";
@@ -15,19 +15,14 @@ import { reviewService } from "@/lib/services/reviewService";
 import {
   BedDouble,
   Building,
-  CalendarDays,
   CheckCircle,
   ChevronLeft,
   ChevronRight,
   Clock,
   Compass,
   FileText,
-  Image as ImageIcon,
   Maximize2,
-  ShieldCheck,
   Sparkles,
-  Star,
-  Users,
   X,
 } from "lucide-react";
 
@@ -40,15 +35,6 @@ function nightsBetween(a: string, b: string) {
   const start = new Date(`${a}T00:00:00`).getTime();
   const end = new Date(`${b}T00:00:00`).getTime();
   return Math.max(1, Math.round((end - start) / 86400000));
-}
-
-function formatDate(date: string) {
-  if (!date) return "";
-  return new Date(`${date}T00:00:00`).toLocaleDateString("vi-VN", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
 }
 
 export default function RoomDetailPage() {

@@ -6,7 +6,7 @@ import { roomTypeService } from "@/lib/services/roomTypeService";
 import { RoomTypeAvailability } from "@/types";
 import { getErrorMessage } from "@/lib/getErrorMessage";
 import DateRangeCalendar from "@/components/DateRangeCalendar";
-import { CalendarDays, ChevronRight, Sparkles, Star } from "lucide-react";
+import { CalendarDays, Star } from "lucide-react";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("vi-VN", {

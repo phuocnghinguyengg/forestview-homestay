@@ -1,4 +1,18 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { reviewService } from "@/lib/services/reviewService";
+
 export default function AboutPage() {
+  const [rating, setRating] = useState<string>("—");
+
+  useEffect(() => {
+    reviewService
+      .getSummary()
+      .then((s) => setRating(s.totalReviews > 0 ? `${s.averageRating.toFixed(1)}/5` : "Chưa có"))
+      .catch(() => {});
+  }, []);
+
   return (
     <main className="mx-auto max-w-3xl px-5 py-16">
       <p className="font-display text-sm italic text-accent">Câu chuyện của chúng tôi</p>
@@ -20,12 +34,11 @@ export default function AboutPage() {
         </p>
       </div>
 
-      <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-4">
+      <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
         {[
           { label: "Loại phòng", value: "4" },
-          { label: "Lượt khách đã đón", value: "1.000+" },
-          { label: "Đánh giá trung bình", value: "4.8/5" },
           { label: "Năm hoạt động", value: "3+" },
+          { label: "Đánh giá trung bình", value: rating },
         ].map((s) => (
           <div key={s.label} className="rounded-2xl border border-line bg-surface p-4 text-center">
             <p className="font-display text-2xl text-primary">{s.value}</p>

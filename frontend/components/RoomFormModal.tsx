@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Room, RoomTypeCode } from "@/types";
 import ImageUploader from "./ImageUploader";
-import { BedDouble, Building, DollarSign, FileText, Info } from "lucide-react";
+import { BedDouble, Building, DollarSign } from "lucide-react";
 
 export interface RoomFormValues {
   name: string;

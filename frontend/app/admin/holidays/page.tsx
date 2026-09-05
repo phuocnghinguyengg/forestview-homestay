@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import api from "@/lib/api";
 import { getErrorMessage } from "@/lib/getErrorMessage";
 import CalendarDatePicker from "@/components/CalendarDatePicker";
-import { Calendar, CalendarDays, Plus, Trash2 } from "lucide-react";
+import { CalendarDays, Plus, Trash2 } from "lucide-react";
 
 interface Holiday {
   id: number;

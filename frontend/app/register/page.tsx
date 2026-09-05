@@ -17,7 +17,6 @@ import {
   EyeOff,
   Lock,
   Mail,
-  Phone,
   Sparkles,
   User,
 } from "lucide-react";
