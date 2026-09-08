@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
 import { CalendarDays, LogOut, Settings2, ShieldCheck, UserRound, X } from "lucide-react";
@@ -45,7 +46,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
     try {
       setBookings(await bookingService.getMine());
     } catch (err) {
-      setBookingsError(getErrorMessage(err, "Không thể tải lịch sử đặt phòng"));
+      setBookingsError(getErrorMessage(err, "Không thể tải lịch sử"));
     } finally {
       setBookingsLoading(false);
     }
@@ -81,9 +82,9 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
               <button type="button" onClick={() => setOpen(false)} className="rounded-full p-1 text-white/60 hover:bg-white/10 hover:text-white" aria-label="Đóng"><X size={16} /></button>
             </div>
             <div className="space-y-1 p-3 sm:p-4">
-              <p className="px-3 pb-2 text-[11px] font-bold tracking-[0.16em] text-neutral-400 uppercase">Điều hướng nhanh</p>
-              <button type="button" onClick={() => { setOpen(false); setActiveModal("account"); }} className="flex w-full items-center gap-3 rounded-2xl px-3 py-3.5 text-left text-sm font-semibold text-ink transition hover:bg-canvas hover:text-primary"><Settings2 size={17} /> <span>Tài khoản của tôi<small className="mt-0.5 block text-xs font-normal text-neutral-500">Thông tin và bảo mật</small></span></button>
-              <button type="button" onClick={openBookings} className="flex w-full items-center gap-3 rounded-2xl px-3 py-3.5 text-left text-sm font-semibold text-ink transition hover:bg-canvas hover:text-primary"><UserRound size={17} /> <span>Lịch sử đặt phòng<small className="mt-0.5 block text-xs font-normal text-neutral-500">Theo dõi booking và đánh giá</small></span></button>
+              <p className="px-3 pb-2 text-[11px] font-bold tracking-[0.16em] text-neutral-400 uppercase">Về tôi</p>
+              <button type="button" onClick={() => { setOpen(false); setActiveModal("account"); }} className="flex w-full items-center gap-3 rounded-2xl px-3 py-3.5 text-left text-sm font-semibold text-ink transition hover:bg-canvas hover:text-primary"><Settings2 size={17} /> <span>Về tôi<small className="mt-0.5 block text-xs font-normal text-neutral-500">Thông tin và bảo mật</small></span></button>
+              <button type="button" onClick={openBookings} className="flex w-full items-center gap-3 rounded-2xl px-3 py-3.5 text-left text-sm font-semibold text-ink transition hover:bg-canvas hover:text-primary"><UserRound size={17} /> <span>Lịch sử<small className="mt-0.5 block text-xs font-normal text-neutral-500">Theo dõi booking và đánh giá</small></span></button>
               {user.role === "ADMIN" && <Link href="/admin" onClick={() => setOpen(false)} className="flex items-center gap-3 rounded-2xl px-3 py-3.5 text-sm font-semibold text-ink transition hover:bg-canvas hover:text-primary"><ShieldCheck size={17} /> <span>Không gian quản trị<small className="mt-0.5 block text-xs font-normal text-neutral-500">Vận hành ForestView</small></span></Link>}
               <div className="my-1 border-t border-line" />
               <button type="button" onClick={handleLogout} className="flex w-full items-center gap-3 rounded-2xl px-3 py-3.5 text-left text-sm font-semibold text-red-600 transition hover:bg-red-50"><LogOut size={17} /> Đăng xuất</button>
@@ -92,9 +93,9 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
         </>
       )}
 
-      {activeModal === "account" && <div className="fixed inset-0 z-80 flex items-center justify-center bg-ink/30 p-4 backdrop-blur-sm sm:p-6">
-        <div role="dialog" aria-modal="true" aria-label="Thông tin tài khoản" className="w-full max-w-md overflow-hidden rounded-3xl border border-line bg-surface shadow-2xl">
-          <div className="flex items-center justify-between bg-ink px-5 py-5 text-white sm:px-6"><div><p className="text-[11px] font-bold tracking-[0.16em] text-white/55 uppercase">Thông tin tài khoản</p><h2 className="mt-1 font-display text-2xl">Hồ sơ của bạn</h2></div><button type="button" onClick={() => setActiveModal(null)} className="rounded-full p-1 text-white/60 hover:bg-white/10 hover:text-white" aria-label="Đóng"><X size={17} /></button></div>
+      {activeModal === "account" && typeof document !== "undefined" && createPortal(<div className="fixed inset-0 z-80 flex items-center justify-center bg-ink/30 p-4 backdrop-blur-sm sm:p-6">
+        <div role="dialog" aria-modal="true" aria-label="Về tôi" className="w-full max-w-md overflow-hidden rounded-3xl border border-line bg-surface shadow-2xl">
+          <div className="flex items-center justify-between bg-ink px-5 py-5 text-white sm:px-6"><div><p className="text-[11px] font-bold tracking-[0.16em] text-white/55 uppercase">Về tôi</p><h2 className="mt-1 font-display text-2xl">Hồ sơ của bạn</h2></div><button type="button" onClick={() => setActiveModal(null)} className="rounded-full p-1 text-white/60 hover:bg-white/10 hover:text-white" aria-label="Đóng"><X size={17} /></button></div>
           <div className="space-y-4 p-5 sm:p-6">
               <div className="grid gap-3 sm:grid-cols-2">
                 <div className="rounded-2xl bg-canvas p-3"><p className="text-[11px] font-semibold text-neutral-400 uppercase">Họ và tên</p><p className="mt-1 text-sm font-semibold text-ink">{user.fullName}</p></div>
@@ -104,11 +105,11 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
               <Link href="/account" onClick={() => setOpen(false)} className="flex w-full items-center justify-center rounded-full bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark">Mở cài đặt tài khoản</Link>
           </div>
         </div>
-      </div>}
+      </div>, document.body)}
 
-      {activeModal === "bookings" && <div className="fixed inset-0 z-80 flex items-center justify-center bg-ink/30 p-4 backdrop-blur-sm sm:p-6">
-        <div role="dialog" aria-modal="true" aria-label="Lịch sử đặt phòng" className="w-full max-w-lg overflow-hidden rounded-3xl border border-line bg-surface shadow-2xl">
-          <div className="flex items-center justify-between bg-ink px-5 py-5 text-white sm:px-6"><div><p className="text-[11px] font-bold tracking-[0.16em] text-white/55 uppercase">Lưu trú</p><h2 className="mt-1 font-display text-2xl">Lịch sử đặt phòng</h2></div><button type="button" onClick={() => setActiveModal(null)} className="rounded-full p-1 text-white/60 hover:bg-white/10 hover:text-white" aria-label="Đóng"><X size={17} /></button></div>
+      {activeModal === "bookings" && typeof document !== "undefined" && createPortal(<div className="fixed inset-0 z-80 flex items-center justify-center bg-ink/30 p-4 backdrop-blur-sm sm:p-6">
+        <div role="dialog" aria-modal="true" aria-label="Lịch sử" className="w-full max-w-lg overflow-hidden rounded-3xl border border-line bg-surface shadow-2xl">
+          <div className="flex items-center justify-between bg-ink px-5 py-5 text-white sm:px-6"><div><p className="text-[11px] font-bold tracking-[0.16em] text-white/55 uppercase">Về tôi</p><h2 className="mt-1 font-display text-2xl">Lịch sử</h2></div><button type="button" onClick={() => setActiveModal(null)} className="rounded-full p-1 text-white/60 hover:bg-white/10 hover:text-white" aria-label="Đóng"><X size={17} /></button></div>
           <div className="p-5 sm:p-6">
               <div className="flex justify-end"><CalendarDays className="text-primary" size={22} /></div>
               {bookingsLoading && <p className="py-10 text-center text-sm text-neutral-500">Đang tải booking...</p>}
@@ -117,7 +118,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
               {!bookingsLoading && !bookingsError && bookings.length > 0 && <div className="mt-5 max-h-72 space-y-2 overflow-y-auto pr-1">{bookings.map((booking) => <div key={booking.id} className="rounded-2xl border border-line p-3"><div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="truncate text-sm font-semibold text-ink">{booking.roomName}</p><p className="mt-1 text-xs text-neutral-500">{formatDate(booking.checkInDate)} → {formatDate(booking.checkOutDate)}</p></div><BookingStatusBadge status={booking.status} /></div></div>)}</div>}
           </div>
         </div>
-      </div>}
+      </div>, document.body)}
     </div>
   );
 }
