@@ -29,6 +29,10 @@ public class User {
 
     private String phone;
 
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String avatarUrl;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default

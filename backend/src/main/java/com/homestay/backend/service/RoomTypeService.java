@@ -24,11 +24,13 @@ public class RoomTypeService {
     private final BookingRepository bookingRepository;
     private final PricingService pricingService;
 
-    public List<RoomTypeAvailabilityResponse> getAvailability(LocalDate checkIn, LocalDate checkOut) {
+    public List<RoomTypeAvailabilityResponse> getAvailability(LocalDate checkIn, LocalDate checkOut, int guestCount) {
         List<RoomTypeAvailabilityResponse> result = new ArrayList<>();
 
         for (RoomType type : RoomType.values()) {
-            List<Room> rooms = roomRepository.findByTypeAndActiveTrue(type);
+            List<Room> rooms = roomRepository.findByTypeAndActiveTrue(type).stream()
+                    .filter(r -> r.getMaxGuests() != null && r.getMaxGuests() >= guestCount)
+                    .toList();
 
             long available = rooms.stream()
                     .filter(r -> bookingRepository.findOverlappingBookings(r.getId(), checkIn, checkOut).isEmpty())
@@ -59,8 +61,9 @@ public class RoomTypeService {
         return result;
     }
 
-    public List<RoomResponse> getAvailableRoomsByType(RoomType type, LocalDate checkIn, LocalDate checkOut) {
+    public List<RoomResponse> getAvailableRoomsByType(RoomType type, LocalDate checkIn, LocalDate checkOut, int guestCount) {
         return roomRepository.findByTypeAndActiveTrue(type).stream()
+                .filter(r -> r.getMaxGuests() != null && r.getMaxGuests() >= guestCount)
                 .filter(r -> bookingRepository.findOverlappingBookings(r.getId(), checkIn, checkOut).isEmpty())
                 .map(r -> {
                     RoomResponse response = RoomMapper.toResponse(r);

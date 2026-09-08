@@ -22,15 +22,17 @@ public class RoomTypeController {
     @GetMapping
     public ResponseEntity<List<RoomTypeAvailabilityResponse>> getAvailability(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkIn,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOut) {
-        return ResponseEntity.ok(roomTypeService.getAvailability(checkIn, checkOut));
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOut,
+            @RequestParam(defaultValue = "1") int guestCount) {
+        return ResponseEntity.ok(roomTypeService.getAvailability(checkIn, checkOut, Math.max(1, guestCount)));
     }
 
     @GetMapping("/{type}/rooms")
     public ResponseEntity<List<RoomResponse>> getAvailableRooms(
             @PathVariable RoomType type,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkIn,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOut) {
-        return ResponseEntity.ok(roomTypeService.getAvailableRoomsByType(type, checkIn, checkOut));
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOut,
+            @RequestParam(defaultValue = "1") int guestCount) {
+        return ResponseEntity.ok(roomTypeService.getAvailableRoomsByType(type, checkIn, checkOut, Math.max(1, guestCount)));
     }
 }

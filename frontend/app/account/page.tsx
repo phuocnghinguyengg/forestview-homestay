@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { KeyRound, Mail, Phone } from "lucide-react";
+import { ImagePlus, KeyRound, Mail, Phone } from "lucide-react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import AccountLayout from "@/components/AccountLayout";
 import TabSwitcher from "@/components/TabSwitcher";
 import { accountService, AccountProfile } from "@/lib/services/accountService";
 import { getErrorMessage } from "@/lib/getErrorMessage";
+import { useAuthStore } from "@/hooks/useAuthStore";
 
 const inputClass =
   "mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink focus:border-primary focus:outline-none";
@@ -227,7 +228,7 @@ function PhoneTab({ profile, onUpdated }: { profile: AccountProfile | null; onUp
     setError("");
     setBusy(true);
     try {
-      const updated = await accountService.updateProfile({ fullName: fullName.trim(), phone: phone.trim() });
+      const updated = await accountService.updateProfile({ fullName: fullName.trim(), phone: phone.trim(), avatarUrl: profile?.avatarUrl });
       onUpdated(updated);
       setMessage("Số điện thoại đã được cập nhật.");
     } catch (err) {
@@ -271,16 +272,79 @@ function PhoneTab({ profile, onUpdated }: { profile: AccountProfile | null; onUp
   );
 }
 
+function AvatarTab({ profile, onUpdated }: { profile: AccountProfile | null; onUpdated: (p: AccountProfile) => void }) {
+  const [avatarUrl, setAvatarUrl] = useState(profile?.avatarUrl ?? "");
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  const chooseFile = (file?: File) => {
+    if (!file) return;
+    if (!file.type.startsWith("image/") || file.size > 2 * 1024 * 1024) {
+      setError("Vui lòng chọn ảnh hợp lệ, dung lượng tối đa 2MB.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => setAvatarUrl(String(reader.result));
+    reader.onerror = () => setError("Không thể đọc tệp ảnh.");
+    reader.readAsDataURL(file);
+  };
+
+  const submit = async () => {
+    if (!profile) return;
+    setBusy(true);
+    setError("");
+    setMessage("");
+    try {
+      const updated = await accountService.updateProfile({
+        fullName: profile.fullName,
+        phone: profile.phone ?? "",
+        avatarUrl: avatarUrl || null,
+      });
+      onUpdated(updated);
+      setMessage("Avatar đã được cập nhật.");
+    } catch (err) {
+      setError(getErrorMessage(err, "Không thể cập nhật avatar"));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="max-w-md">
+      <h2 className="font-display text-xl text-ink">Thay đổi avatar</h2>
+      <p className="mt-1 text-sm text-neutral-500">Chọn ảnh tối đa 2MB để hiển thị trên thanh điều hướng.</p>
+      <div className="mt-6 flex items-center gap-5">
+        <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary/10 text-2xl font-bold text-primary">
+          {avatarUrl ? <img src={avatarUrl} alt="Avatar xem trước" className="h-full w-full object-cover" /> : profile?.fullName?.charAt(0).toUpperCase()}
+        </div>
+        <label className="cursor-pointer rounded-full border border-primary px-4 py-2.5 text-sm font-semibold text-primary hover:bg-primary hover:text-white">
+          <span className="inline-flex items-center gap-2"><ImagePlus size={16} /> Chọn ảnh</span>
+          <input type="file" accept="image/*" className="sr-only" onChange={(e) => chooseFile(e.target.files?.[0])} />
+        </label>
+      </div>
+      <Notice message={message} error={error} />
+      <button type="button" onClick={submit} disabled={busy} className="mt-5 w-full rounded-full bg-primary py-3 text-sm font-semibold text-white hover:bg-primary-dark disabled:opacity-50">
+        {busy ? "Đang lưu..." : "Lưu avatar"}
+      </button>
+    </div>
+  );
+}
+
 function AccountContent() {
   const [profile, setProfile] = useState<AccountProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
-  const [tab, setTab] = useState<"password" | "email" | "phone">("password");
+  const [tab, setTab] = useState<"avatar" | "password" | "email" | "phone">("avatar");
+  const updateUser = useAuthStore((s) => s.updateUser);
 
   useEffect(() => {
     accountService
       .getMe()
-      .then(setProfile)
+      .then((next) => {
+        setProfile(next);
+        updateUser(next);
+      })
       .catch((err) => setLoadError(getErrorMessage(err, "Không thể tải thông tin tài khoản")))
       .finally(() => setLoading(false));
   }, []);
@@ -300,6 +364,7 @@ function AccountContent() {
           <>
             <TabSwitcher
               tabs={[
+                { key: "avatar", label: "Đổi Avatar", icon: <ImagePlus size={15} /> },
                 { key: "password", label: "Thay Đổi Mật Khẩu", icon: <KeyRound size={15} /> },
                 { key: "email", label: "Thay Đổi Email", icon: <Mail size={15} /> },
                 { key: "phone", label: "Thay Đổi Số Điện Thoại", icon: <Phone size={15} /> },
@@ -308,6 +373,7 @@ function AccountContent() {
               onChange={setTab}
             />
 
+            {tab === "avatar" && <AvatarTab profile={profile} onUpdated={(next) => { setProfile(next); updateUser(next); }} />}
             {tab === "password" && <PasswordTab />}
             {tab === "email" && <EmailTab profile={profile} onUpdated={setProfile} />}
             {tab === "phone" && <PhoneTab profile={profile} onUpdated={setProfile} />}

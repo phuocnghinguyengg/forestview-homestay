@@ -14,6 +14,7 @@ export interface AccountProfile extends AuthUser {
 export interface ProfileUpdateRequest {
   fullName: string;
   phone: string;
+  avatarUrl?: string | null;
 }
 
 export const accountService = {

@@ -53,7 +53,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-5 md:flex-row md:py-8">
       <AccountNav />
-      <div className="min-w-0 flex-1 rounded-3xl border border-line bg-surface p-5 shadow-sm sm:p-7">{children}</div>
+      <div className="min-w-0 flex-1 rounded-3xl border border-line bg-surface p-5 shadow-sm sm:p-7 md:h-[680px] md:overflow-y-auto">{children}</div>
     </div>
   );
 }

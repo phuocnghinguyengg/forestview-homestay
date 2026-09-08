@@ -53,6 +53,7 @@ export default function LoginPage() {
       login(res.accessToken, res.refreshToken, {
         fullName: res.fullName,
         email: res.email,
+        avatarUrl: res.avatarUrl,
         role: res.role,
         emailVerified: res.emailVerified,
         membershipTier: res.membershipTier,

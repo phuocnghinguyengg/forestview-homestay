@@ -52,6 +52,7 @@ export default function RoomsPage() {
 
   const [checkIn, setCheckIn] = useState(() => todayISO());
   const [checkOut, setCheckOut] = useState(() => tomorrowISO());
+  const [guests, setGuests] = useState(2);
 
   const [results, setResults] = useState<RoomTypeAvailability[]>([]);
   const [searched, setSearched] = useState(false);
@@ -64,7 +65,7 @@ export default function RoomsPage() {
     const co = tomorrowISO();
 
     roomTypeService
-      .getAvailability(ci, co)
+      .getAvailability(ci, co, guests)
       .then(setResults)
       .catch((err) => setError(getErrorMessage(err)))
       .finally(() => setLoading(false));
@@ -116,7 +117,7 @@ export default function RoomsPage() {
     setSearched(true);
 
     try {
-      const data = await roomTypeService.getAvailability(checkIn, checkOut);
+      const data = await roomTypeService.getAvailability(checkIn, checkOut, guests);
       setResults(data);
     } catch (err) {
       setError(getErrorMessage(err));
@@ -200,6 +201,12 @@ export default function RoomsPage() {
                 {nights} đêm lưu trú
               </span>
             </div>
+            <label className="mt-4 flex items-center gap-3 text-sm text-neutral-600">
+              Số khách
+              <select value={guests} onChange={(e) => setGuests(Number(e.target.value))} className="rounded-xl border border-line bg-surface px-3 py-2 text-ink">
+                {Array.from({ length: 12 }, (_, i) => i + 1).map((count) => <option key={count} value={count}>{count} khách</option>)}
+              </select>
+            </label>
 
             <button
               type="button"
@@ -349,4 +356,3 @@ export default function RoomsPage() {
     </main>
   );
 }
-

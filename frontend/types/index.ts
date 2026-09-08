@@ -6,6 +6,7 @@ export type PaymentStatus = "UNPAID" | "PAID" | "HOLD";
 export interface AuthUser {
   fullName: string;
   email: string;
+  avatarUrl?: string | null;
   role: Role;
   emailVerified: boolean;
   membershipTier?: MembershipTier;
@@ -16,6 +17,7 @@ export interface AuthResponse {
   refreshToken: string;
   fullName: string;
   email: string;
+  avatarUrl?: string | null;
   role: Role;
   emailVerified: boolean;
   membershipTier?: MembershipTier;

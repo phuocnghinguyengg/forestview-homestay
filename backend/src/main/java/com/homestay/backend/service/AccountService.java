@@ -42,7 +42,7 @@ public class AccountService {
         MembershipTier tier = u.getMembershipTier() == null ? MembershipTier.NONE : u.getMembershipTier();
         MembershipTier next = membershipService.nextTier(u);
         return UserResponse.builder()
-                .id(u.getId()).fullName(u.getFullName()).email(u.getEmail()).phone(u.getPhone()).role(u.getRole())
+                .id(u.getId()).fullName(u.getFullName()).email(u.getEmail()).phone(u.getPhone()).avatarUrl(u.getAvatarUrl()).role(u.getRole())
                 .enabled(u.getEnabled()).createdAt(u.getCreatedAt()).emailVerified(u.getEmailVerified())
                 .membershipTier(tier).membershipBookingCount(membershipService.bookingCount(u))
                 .membershipTotalSpent(membershipService.totalSpent(u))
@@ -52,7 +52,7 @@ public class AccountService {
     }
 
     public UserResponse updateProfile(String email, UpdateProfileRequest r) {
-        User u = user(email); u.setFullName(r.getFullName().trim()); u.setPhone(r.getPhone()); return profile(userRepository.save(u));
+        User u = user(email); u.setFullName(r.getFullName().trim()); u.setPhone(r.getPhone()); u.setAvatarUrl(r.getAvatarUrl()); return profile(userRepository.save(u));
     }
 
     public void changePassword(String email, ChangePasswordRequest r) {
@@ -87,6 +87,7 @@ public class AccountService {
                 .role(saved.getRole().name())
                 .id(saved.getId())
                 .phone(saved.getPhone())
+                .avatarUrl(saved.getAvatarUrl())
                 .build();
     }
 

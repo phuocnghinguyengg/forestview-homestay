@@ -9,6 +9,8 @@ import DateRangeCalendar from "@/components/DateRangeCalendar";
 import RoomSearchResultsModal from "@/components/RoomSearchResultsModal";
 import RoomTypeBookingModal from "@/components/RoomTypeBookingModal";
 import ReviewShowcase from "@/components/ReviewShowcase";
+import { reviewService } from "@/lib/services/reviewService";
+import { ReviewSummary } from "@/types";
 import Footer from "@/components/Footer";
 import {
   CalendarDays,
@@ -142,6 +144,7 @@ export default function Home() {
   const [checkIn, setCheckIn] = useState(() => todayISO());
   const [checkOut, setCheckOut] = useState(() => tomorrowISO());
   const [guests, setGuests] = useState(2);
+  const [reviewSummary, setReviewSummary] = useState<ReviewSummary | null>(null);
   const [calendarOpen, setCalendarOpen] = useState(false);
 
   // Search Results Modal State
@@ -190,6 +193,10 @@ export default function Home() {
     return () => observers.forEach((o) => o.disconnect());
   }, []);
 
+  useEffect(() => {
+    reviewService.getSummary().then(setReviewSummary).catch(() => setReviewSummary(null));
+  }, []);
+
   // Section nào đã từng hiện ra trong khung nhìn -> dùng để tạo hiệu ứng
   // xuất hiện mượt mà (fade + trượt lên) thay vì hiện đột ngột.
   useEffect(() => {
@@ -222,7 +229,7 @@ export default function Home() {
 
     setSearching(true);
     try {
-      const data = await roomTypeService.getAvailability(checkIn, checkOut);
+      const data = await roomTypeService.getAvailability(checkIn, checkOut, guests);
       setSearchResults(data);
     } catch (err) {
       setSearchError(getErrorMessage(err, "Không thể tìm phòng lúc này"));
@@ -398,7 +405,7 @@ export default function Home() {
             <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs font-medium text-neutral-500 sm:gap-6">
               <span className="flex items-center gap-1.5">
                 <Star size={13} className="fill-amber-400 text-amber-400" />
-                <b className="text-ink">4.9/5</b> Đánh giá thực tế
+                <b className="text-ink">{reviewSummary ? `${reviewSummary.averageRating.toFixed(1)}/5` : "Đang tính..."}</b> Đánh giá thực tế
               </span>
               <span>·</span>
               <span className="flex items-center gap-1.5">
@@ -618,7 +625,7 @@ export default function Home() {
             {/* Trust Badges */}
             <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
               <div className="rounded-2xl border border-line bg-surface p-4 text-center">
-                <p className="font-display text-xl font-bold text-accent">4.9 / 5</p>
+                <p className="font-display text-xl font-bold text-accent">{reviewSummary ? `${reviewSummary.averageRating.toFixed(1)} / 5` : "—"}</p>
                 <p className="mt-0.5 text-[11px] text-neutral-500">Điểm đánh giá hài lòng</p>
               </div>
               <div className="rounded-2xl border border-line bg-surface p-4 text-center">

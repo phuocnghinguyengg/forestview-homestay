@@ -10,6 +10,7 @@ public class UserMapper {
                 .fullName(user.getFullName())
                 .email(user.getEmail())
                 .phone(user.getPhone())
+                .avatarUrl(user.getAvatarUrl())
                 .role(user.getRole())
                 .enabled(user.getEnabled())
                 .createdAt(user.getCreatedAt())
