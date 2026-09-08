@@ -1,12 +1,93 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import {
+  BedDouble,
+  CalendarDays,
+  ClipboardList,
+  LayoutDashboard,
+  LogOut,
+  MessageSquareQuote,
+  ShieldCheck,
+  Tag,
+  Users,
+} from "lucide-react";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { useAuthStore } from "@/hooks/useAuthStore";
+
+const ADMIN_NAV = [
+  { href: "/admin", label: "Tổng quan", icon: LayoutDashboard },
+  { href: "/admin/rooms", label: "Phòng", icon: BedDouble },
+  { href: "/admin/bookings", label: "Đặt phòng", icon: ClipboardList },
+  { href: "/admin/users", label: "Khách hàng", icon: Users },
+  { href: "/admin/reviews", label: "Đánh giá", icon: MessageSquareQuote },
+  { href: "/admin/holidays", label: "Ngày lễ", icon: CalendarDays },
+  { href: "/admin/discount-codes", label: "Ưu đãi", icon: Tag },
+];
+
+function AdminControlBar() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const { user, logout } = useAuthStore();
+
+  const handleLogout = () => {
+    logout();
+    router.push("/");
+  };
+
+  return (
+    <header className="mb-6 border-b border-line pb-5">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-white shadow-sm">
+            <ShieldCheck size={22} />
+          </div>
+          <div>
+            <p className="font-display text-xl text-ink">ForestView studio</p>
+            <p className="text-xs text-neutral-500">Không gian vận hành · {user?.fullName || "Quản trị viên"}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <Link href="/" className="rounded-full border border-line px-4 py-2 text-xs font-semibold text-neutral-600 transition hover:border-primary hover:text-primary">
+            Xem website
+          </Link>
+          <button type="button" onClick={handleLogout} className="inline-flex items-center gap-1.5 rounded-full border border-line px-4 py-2 text-xs font-semibold text-neutral-600 transition hover:border-red-200 hover:text-red-600">
+            <LogOut size={14} /> Đăng xuất
+          </button>
+        </div>
+      </div>
+
+      <nav className="mt-5 flex gap-1.5 overflow-x-auto pb-1" aria-label="Điều hướng quản trị">
+        {ADMIN_NAV.map((item) => {
+          const active = pathname === item.href;
+          const Icon = item.icon;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`inline-flex shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition sm:px-3.5 sm:text-sm ${
+                active ? "bg-ink text-white shadow-sm" : "text-neutral-500 hover:bg-primary/10 hover:text-primary"
+              }`}
+            >
+              <Icon size={15} />
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
+    </header>
+  );
+}
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <ProtectedRoute allowedRoles={["ADMIN"]}>
       <div className="admin-shell mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 md:py-10">
-        <div className="admin-surface">{children}</div>
+        <div className="admin-surface">
+          <AdminControlBar />
+          {children}
+        </div>
       </div>
     </ProtectedRoute>
   );

@@ -16,9 +16,9 @@ function AccountNav() {
   const initial = user?.fullName ? user.fullName.trim().charAt(0).toUpperCase() : "?";
 
   return (
-    <aside className="h-[680px] w-full shrink-0 overflow-hidden rounded-3xl bg-ink p-3 text-white sm:p-4 md:sticky md:top-5 md:w-64">
-      <div className="mb-1 flex items-center gap-3 px-3 pt-2 md:mb-6">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/10 font-display text-base font-bold">
+    <aside className="w-full shrink-0 rounded-3xl bg-ink p-4 text-white sm:p-5 md:sticky md:top-5 md:w-64">
+      <div className="flex items-center gap-3 px-2 pt-1">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/10 font-display text-base font-bold">
           {initial}
         </div>
         <div className="min-w-0">
@@ -27,7 +27,7 @@ function AccountNav() {
         </div>
       </div>
 
-      <nav className="mt-2 flex gap-1.5 overflow-x-auto pb-1 md:mt-0 md:block md:space-y-1 md:overflow-visible md:pb-0">
+      <nav className="mt-5 flex gap-1.5 overflow-x-auto pb-1 md:block md:space-y-1 md:overflow-visible md:pb-0">
         {NAV_ITEMS.map((item) => {
           const active = pathname === item.href;
           const Icon = item.icon;
@@ -51,9 +51,9 @@ function AccountNav() {
 
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-5 md:flex-row md:py-8">
+    <div className="workspace-shell mx-auto flex max-w-7xl flex-col gap-5 px-4 py-6 sm:px-6 md:flex-row md:py-10">
       <AccountNav />
-      <div className="h-[680px] min-w-0 flex-1 overflow-y-auto rounded-3xl border border-line bg-surface p-5 shadow-sm sm:p-7">{children}</div>
+      <div className="workspace-panel min-w-0 flex-1 rounded-3xl border border-line bg-surface p-5 shadow-sm sm:p-7">{children}</div>
     </div>
   );
 }

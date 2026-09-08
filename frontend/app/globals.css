@@ -23,6 +23,10 @@ body {
   min-height: calc(100vh - 80px);
 }
 
+.workspace-shell {
+  min-height: calc(100vh - 80px);
+}
+
 .admin-surface {
   min-height: calc(100vh - 128px);
   border: 1px solid var(--color-line);
@@ -30,6 +34,10 @@ body {
   background: color-mix(in srgb, var(--color-surface) 86%, var(--color-canvas));
   padding: clamp(1.25rem, 3vw, 2.25rem);
   box-shadow: 0 18px 50px rgb(36 38 31 / 0.06);
+}
+
+.workspace-panel {
+  background: color-mix(in srgb, var(--color-surface) 86%, var(--color-canvas));
 }
 
 .landing-shell {

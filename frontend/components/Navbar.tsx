@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { Menu, UserRound, X } from "lucide-react";
 import { useAuthStore } from "@/hooks/useAuthStore";
@@ -15,7 +16,10 @@ function displayName(fullName?: string) {
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuthStore();
   const router = useRouter();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
+
+  if (pathname.startsWith("/admin")) return null;
 
   const handleLogout = () => {
     setOpen(false);
