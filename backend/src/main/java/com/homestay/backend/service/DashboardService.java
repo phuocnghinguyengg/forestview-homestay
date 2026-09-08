@@ -35,7 +35,7 @@ public class DashboardService {
                 Arrays.stream(BookingStatus.values())
                         .collect(
                                 Collectors.toMap(
-                                        Enum::name,
+                                        status -> status.name(),
                                         bookingRepository::countByStatus
                                 )
                         );
@@ -88,12 +88,7 @@ public class DashboardService {
          */
         List<Booking> bookings =
                 bookingRepository
-                        .findByStatusInAndCreatedAtAfter(
-                                List.of(
-                                        BookingStatus.COMPLETED
-                                ),
-                                from
-                        );
+                        .findCompletedForRevenueSince(from);
 
         Map<YearMonth, BigDecimal> grouped =
                 bookings.stream()
@@ -101,12 +96,12 @@ public class DashboardService {
                                 Collectors.groupingBy(
                                         b ->
                                                 YearMonth.from(
-                                                        b.getCreatedAt()
+                                                        b.getCompletedAt() == null ? b.getCreatedAt() : b.getCompletedAt()
                                                 ),
                                         Collectors.reducing(
                                                 BigDecimal.ZERO,
-                                                Booking::getTotalPrice,
-                                                BigDecimal::add
+                                                booking -> booking.getTotalPrice(),
+                                                (left, right) -> left.add(right)
                                         )
                                 )
                         );

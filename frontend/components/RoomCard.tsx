@@ -68,7 +68,7 @@ export default function RoomCard({
             </p>
           </div>
 
-          <span className="flex items-center gap-1 rounded-full bg-base px-2.5 py-1 text-xs text-neutral-600">
+          <span className="flex items-center gap-1 rounded-full bg-canvas px-2.5 py-1 text-xs text-neutral-600">
             <Users size={12} /> Tối đa {room.maxGuests}
           </span>
         </div>

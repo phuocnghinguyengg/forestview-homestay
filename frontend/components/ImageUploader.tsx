@@ -64,7 +64,7 @@ export default function ImageUploader({
   const galleryImages = images.slice(1);
 
   return (
-    <div className="rounded-2xl border border-line bg-base/50 p-4">
+    <div className="rounded-2xl border border-line bg-canvas/50 p-4">
       <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <label className="flex items-center gap-2 font-medium text-ink">

@@ -217,7 +217,7 @@ function VerifyOtpContent() {
         </div>
 
         {/* Email icon row */}
-        <div className="mt-4 flex items-center gap-2 rounded-2xl border border-line bg-base/40 px-4 py-2.5">
+        <div className="mt-4 flex items-center gap-2 rounded-2xl border border-line bg-canvas/40 px-4 py-2.5">
           <Mail size={15} className="shrink-0 text-neutral-400" />
           <span className="truncate text-xs font-medium text-neutral-600">{email || "—"}</span>
         </div>
@@ -253,7 +253,7 @@ function VerifyOtpContent() {
                 onChange={(e) => handleDigitChange(idx, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(idx, e)}
                 onPaste={idx === 0 ? handlePaste : undefined}
-                className={`h-12 w-10 rounded-xl border-2 bg-base/40 text-center text-lg font-bold text-ink transition focus:bg-surface focus:outline-none sm:h-14 sm:w-12 sm:text-xl ${
+                className={`h-12 w-10 rounded-xl border-2 bg-canvas/40 text-center text-lg font-bold text-ink transition focus:bg-surface focus:outline-none sm:h-14 sm:w-12 sm:text-xl ${
                   d
                     ? "border-primary text-primary shadow-sm shadow-primary/20"
                     : "border-line focus:border-primary"

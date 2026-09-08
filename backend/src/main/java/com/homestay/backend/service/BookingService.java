@@ -43,7 +43,7 @@ public class BookingService {
         }
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         if (!Boolean.TRUE.equals(user.getEmailVerified())) throw new IllegalArgumentException("Vui lòng xác thực email trước khi đặt phòng");
-        Room room = roomRepository.findById(request.getRoomId()).orElseThrow(() -> new ResourceNotFoundException("Room not found"));
+        Room room = roomRepository.findByIdForUpdate(request.getRoomId()).orElseThrow(() -> new ResourceNotFoundException("Room not found"));
         if (!Boolean.TRUE.equals(room.getActive())) throw new IllegalArgumentException("Room is not available");
         if (request.getGuestCount() > room.getMaxGuests()) throw new IllegalArgumentException("Guest count exceeds room capacity");
 
@@ -74,24 +74,23 @@ public class BookingService {
         BigDecimal total = afterCoupon.subtract(discount).max(BigDecimal.ZERO);
 
         PaymentMethod method = request.getPaymentMethod() == null ? PaymentMethod.HOLD : request.getPaymentMethod();
-        boolean instant = method != PaymentMethod.HOLD;
-        LocalDateTime holdExpires = instant ? null : LocalDateTime.now().plusHours(2);
+        boolean held = method == PaymentMethod.HOLD;
+        LocalDateTime holdExpires = held ? LocalDateTime.now().plusHours(2) : null;
 
         Booking booking = Booking.builder()
                 .user(user).room(room).checkInDate(request.getCheckInDate()).checkOutDate(request.getCheckOutDate())
                 .guestCount(request.getGuestCount()).nights(price.nights()).basePrice(price.basePrice()).holidayPrice(price.holidayPrice())
                 .extraGuestFee(extraFee).membershipDiscountPercent(discountPercent).membershipDiscountAmount(discount)
                 .discountCode(normalizedCode).discountCodePercent(discountCodePercent).discountCodeAmount(discountCodeAmount)
-                .totalPrice(total).status(instant ? BookingStatus.CONFIRMED : BookingStatus.PENDING)
-                .paymentMethod(method).paymentStatus(instant ? PaymentStatus.PAID : PaymentStatus.HOLD)
+                .totalPrice(total).status(BookingStatus.PENDING)
+                .paymentMethod(method).paymentStatus(held ? PaymentStatus.HOLD : PaymentStatus.UNPAID)
                 .paymentHoldExpiresAt(holdExpires).note(request.getNote()).build();
 
         Booking saved = bookingRepository.save(booking);
         saved.setBookingCode("FV" + String.format("%06d", saved.getId()));
         saved = bookingRepository.save(saved);
 
-        emailService.sendBookingConfirmation(user.getEmail(), user.getFullName(), room.getName(), saved.getCheckInDate(), saved.getCheckOutDate(), saved.getGuestCount(), saved.getTotalPrice(), instant ? "Đã xác nhận" : "Đang giữ chỗ - chờ xác nhận");
-        if (instant) membershipService.refreshAfterConfirmedBooking(user);
+        emailService.sendBookingConfirmation(user.getEmail(), user.getFullName(), room.getName(), saved.getCheckInDate(), saved.getCheckOutDate(), saved.getGuestCount(), saved.getTotalPrice(), held ? "Đang giữ chỗ - chờ xác nhận" : "Đã tiếp nhận - chờ xác nhận");
         return BookingMapper.toResponse(saved, false);
     }
 
@@ -106,12 +105,14 @@ public class BookingService {
         return BookingMapper.toResponse(booking, reviewRepository.existsByBookingId(booking.getId()));
     }
 
+    @Transactional
     public void cancelBooking(String userEmail, Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
         if (!booking.getUser().getEmail().equals(userEmail)) throw new IllegalArgumentException("You can only cancel your own booking");
         if (booking.getStatus() == BookingStatus.CANCELLED || booking.getStatus() == BookingStatus.COMPLETED) throw new IllegalArgumentException("Booking cannot be cancelled");
         booking.setStatus(BookingStatus.CANCELLED);
-        booking.setPaymentStatus(PaymentStatus.UNPAID);
+        if (booking.getPaymentStatus() == PaymentStatus.HOLD) booking.setPaymentStatus(PaymentStatus.UNPAID);
+        booking.setPaymentHoldExpiresAt(null);
         bookingRepository.save(booking);
     }
 
@@ -123,15 +124,21 @@ public class BookingService {
     @Transactional
     public BookingResponse updateBookingStatus(Long bookingId, BookingStatus status, String reason) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+        if (!isAllowedTransition(booking.getStatus(), status)) {
+            throw new IllegalArgumentException("Không thể chuyển đơn từ " + booking.getStatus() + " sang " + status);
+        }
         if (status == BookingStatus.CANCELLED && (reason == null || reason.isBlank())) throw new IllegalArgumentException("Vui lòng nhập lý do từ chối");
         booking.setStatus(status);
         if (status == BookingStatus.CONFIRMED) {
-            booking.setPaymentStatus(PaymentStatus.PAID);
+            if (booking.getPaymentStatus() == PaymentStatus.HOLD) booking.setPaymentStatus(PaymentStatus.UNPAID);
             booking.setPaymentHoldExpiresAt(null);
+            booking.setRejectionReason(null);
             membershipService.refreshAfterConfirmedBooking(booking.getUser());
             emailService.sendBookingStatusEmail(booking.getUser().getEmail(), booking.getUser().getFullName(), booking.getRoom().getName(), "Đã xác nhận", null);
+        } else if (status == BookingStatus.COMPLETED) {
+            booking.setCompletedAt(LocalDateTime.now());
         } else if (status == BookingStatus.CANCELLED) {
-            booking.setPaymentStatus(PaymentStatus.UNPAID);
+            if (booking.getPaymentStatus() == PaymentStatus.HOLD) booking.setPaymentStatus(PaymentStatus.UNPAID);
             booking.setPaymentHoldExpiresAt(null);
             booking.setRejectionReason(reason);
             emailService.sendBookingStatusEmail(booking.getUser().getEmail(), booking.getUser().getFullName(), booking.getRoom().getName(), "Đã từ chối", reason);
@@ -140,12 +147,17 @@ public class BookingService {
         return BookingMapper.toResponse(saved, reviewRepository.existsByBookingId(saved.getId()));
     }
 
+    private boolean isAllowedTransition(BookingStatus current, BookingStatus next) {
+        return (current == BookingStatus.PENDING && (next == BookingStatus.CONFIRMED || next == BookingStatus.CANCELLED))
+                || (current == BookingStatus.CONFIRMED && (next == BookingStatus.COMPLETED || next == BookingStatus.CANCELLED));
+    }
+
     @Scheduled(fixedDelay = 60000)
     @Transactional
     public void expireHolds() {
         LocalDateTime now = LocalDateTime.now();
         bookingRepository.findAllByOrderByCreatedAtDesc().stream()
                 .filter(b -> b.getStatus() == BookingStatus.PENDING && b.getPaymentHoldExpiresAt() != null && b.getPaymentHoldExpiresAt().isBefore(now))
-                .forEach(b -> { b.setStatus(BookingStatus.CANCELLED); b.setPaymentStatus(PaymentStatus.UNPAID); b.setRejectionReason("Hết thời gian giữ chỗ 2 giờ"); bookingRepository.save(b); });
+                .forEach(b -> { b.setStatus(BookingStatus.CANCELLED); b.setPaymentStatus(PaymentStatus.UNPAID); b.setPaymentHoldExpiresAt(null); b.setRejectionReason("Hết thời gian giữ chỗ 2 giờ"); bookingRepository.save(b); });
     }
 }

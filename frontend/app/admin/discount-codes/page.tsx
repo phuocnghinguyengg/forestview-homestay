@@ -126,7 +126,7 @@ export default function AdminDiscountCodesPage() {
             value={code}
             onChange={(e) => setCode(e.target.value)}
             placeholder="VD: FORESTVIEW10"
-            className="mt-1 w-full rounded-xl border border-line bg-base/50 px-3 py-2 text-sm uppercase focus:border-primary focus:outline-none"
+            className="mt-1 w-full rounded-xl border border-line bg-canvas/50 px-3 py-2 text-sm uppercase focus:border-primary focus:outline-none"
           />
         </div>
 
@@ -140,7 +140,7 @@ export default function AdminDiscountCodesPage() {
               max={100}
               value={percent}
               onChange={(e) => setPercent(Number(e.target.value))}
-              className="w-full rounded-xl border border-line bg-base/50 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+              className="w-full rounded-xl border border-line bg-canvas/50 px-3 py-2 text-sm focus:border-primary focus:outline-none"
             />
             <span className="absolute top-1/2 right-3 -translate-y-1/2 text-xs font-bold text-neutral-400">
               %
@@ -154,7 +154,7 @@ export default function AdminDiscountCodesPage() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="VD: Ưu đãi mừng năm mới giữa rừng thông"
-            className="mt-1 w-full rounded-xl border border-line bg-base/50 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+            className="mt-1 w-full rounded-xl border border-line bg-canvas/50 px-3 py-2 text-sm focus:border-primary focus:outline-none"
           />
         </div>
 
@@ -173,7 +173,7 @@ export default function AdminDiscountCodesPage() {
               onChange={(e) =>
                 setStartAt(`${startAt.split("T")[0] || new Date().toISOString().slice(0, 10)}T${e.target.value}`)
               }
-              className="rounded-xl border border-line bg-base/50 px-2 py-2 text-sm focus:border-primary focus:outline-none"
+              className="rounded-xl border border-line bg-canvas/50 px-2 py-2 text-sm focus:border-primary focus:outline-none"
             />
           </div>
         </div>
@@ -193,7 +193,7 @@ export default function AdminDiscountCodesPage() {
               onChange={(e) =>
                 setEndAt(`${endAt.split("T")[0] || new Date().toISOString().slice(0, 10)}T${e.target.value}`)
               }
-              className="rounded-xl border border-line bg-base/50 px-2 py-2 text-sm focus:border-primary focus:outline-none"
+              className="rounded-xl border border-line bg-canvas/50 px-2 py-2 text-sm focus:border-primary focus:outline-none"
             />
           </div>
         </div>

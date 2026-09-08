@@ -130,7 +130,7 @@ export default function AdminUsersPage() {
             placeholder="Tìm theo tên khách hàng, email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-xl border border-line bg-base/50 py-2 pr-3 pl-9 text-sm focus:border-primary focus:outline-none"
+            className="w-full rounded-xl border border-line bg-canvas/50 py-2 pr-3 pl-9 text-sm focus:border-primary focus:outline-none"
           />
         </div>
 
@@ -139,7 +139,7 @@ export default function AdminUsersPage() {
             type="button"
             onClick={() => setRoleFilter("ALL")}
             className={`rounded-xl px-3 py-1.5 text-xs font-medium transition ${
-              roleFilter === "ALL" ? "bg-primary text-white shadow-xs" : "bg-base text-neutral-600 hover:bg-neutral-200"
+              roleFilter === "ALL" ? "bg-primary text-white shadow-xs" : "bg-canvas text-neutral-600 hover:bg-neutral-200"
             }`}
           >
             Tất cả ({users.length})
@@ -148,7 +148,7 @@ export default function AdminUsersPage() {
             type="button"
             onClick={() => setRoleFilter("USER")}
             className={`rounded-xl px-3 py-1.5 text-xs font-medium transition ${
-              roleFilter === "USER" ? "bg-primary text-white shadow-xs" : "bg-base text-neutral-600 hover:bg-neutral-200"
+              roleFilter === "USER" ? "bg-primary text-white shadow-xs" : "bg-canvas text-neutral-600 hover:bg-neutral-200"
             }`}
           >
             Khách (USER)
@@ -157,7 +157,7 @@ export default function AdminUsersPage() {
             type="button"
             onClick={() => setRoleFilter("ADMIN")}
             className={`rounded-xl px-3 py-1.5 text-xs font-medium transition ${
-              roleFilter === "ADMIN" ? "bg-primary text-white shadow-xs" : "bg-base text-neutral-600 hover:bg-neutral-200"
+              roleFilter === "ADMIN" ? "bg-primary text-white shadow-xs" : "bg-canvas text-neutral-600 hover:bg-neutral-200"
             }`}
           >
             Quản trị (ADMIN)
@@ -178,7 +178,7 @@ export default function AdminUsersPage() {
       <div className="overflow-x-auto rounded-2xl border border-line">
         <div className="min-w-[880px]">
           {/* Header */}
-          <div className="grid grid-cols-[minmax(0,1fr)_170px_120px_130px_190px] gap-3 border-b border-line bg-base/60 px-4 py-3 text-xs font-semibold tracking-wide text-neutral-500 uppercase">
+          <div className="grid grid-cols-[minmax(0,1fr)_170px_120px_130px_190px] gap-3 border-b border-line bg-canvas/60 px-4 py-3 text-xs font-semibold tracking-wide text-neutral-500 uppercase">
             <div>Khách hàng</div>
             <div>Hạng thành viên</div>
             <div>Vai trò</div>
@@ -194,7 +194,7 @@ export default function AdminUsersPage() {
               <div
                 key={u.id}
                 className={`grid grid-cols-[minmax(0,1fr)_170px_120px_130px_190px] items-center gap-3 border-b border-line/60 px-4 py-3.5 transition last:border-b-0 ${
-                  u.enabled ? "hover:bg-base/30" : "bg-red-50/40 opacity-75"
+                  u.enabled ? "hover:bg-canvas/30" : "bg-red-50/40 opacity-75"
                 }`}
               >
                 {/* Khách hàng */}
@@ -235,7 +235,7 @@ export default function AdminUsersPage() {
                     value={u.membershipTier}
                     disabled={busyId === u.id}
                     onChange={(e) => handleMembershipChange(u.id, e.target.value as MembershipTier)}
-                    className="w-full rounded-xl border border-line bg-base/50 px-2.5 py-1.5 text-xs font-medium text-ink focus:border-primary focus:outline-none disabled:opacity-50"
+                    className="w-full rounded-xl border border-line bg-canvas/50 px-2.5 py-1.5 text-xs font-medium text-ink focus:border-primary focus:outline-none disabled:opacity-50"
                   >
                     <option value="NONE">Chưa có hạng</option>
                     <option value="BRONZE">Đồng - 5%</option>
@@ -251,7 +251,7 @@ export default function AdminUsersPage() {
                     value={u.role}
                     disabled={isSelf || busyId === u.id}
                     onChange={(e) => handleRoleChange(u.id, e.target.value as Role)}
-                    className="w-full rounded-xl border border-line bg-base/50 px-2.5 py-1.5 text-xs font-medium text-ink focus:border-primary focus:outline-none disabled:opacity-50"
+                    className="w-full rounded-xl border border-line bg-canvas/50 px-2.5 py-1.5 text-xs font-medium text-ink focus:border-primary focus:outline-none disabled:opacity-50"
                   >
                     <option value="USER">USER</option>
                     <option value="ADMIN">ADMIN</option>

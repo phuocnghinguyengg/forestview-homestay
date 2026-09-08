@@ -72,14 +72,16 @@ public interface BookingRepository
             SELECT COALESCE(SUM(b.totalPrice), 0)
             FROM Booking b
             WHERE b.status = 'COMPLETED'
-            AND b.createdAt >= :from
+            AND (b.completedAt >= :from OR (b.completedAt IS NULL AND b.createdAt >= :from))
             """)
     BigDecimal sumRevenueSince(
             @Param("from") LocalDateTime from
     );
 
-    List<Booking> findByStatusInAndCreatedAtAfter(
-            List<BookingStatus> statuses,
-            LocalDateTime from
-    );
+    @Query("""
+            SELECT b FROM Booking b
+            WHERE b.status = 'COMPLETED'
+            AND (b.completedAt >= :from OR (b.completedAt IS NULL AND b.createdAt >= :from))
+            """)
+    List<Booking> findCompletedForRevenueSince(@Param("from") LocalDateTime from);
 }

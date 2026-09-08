@@ -1,0 +1,15 @@
+{
+  "properties": [
+    { "name": "jwt.secret", "type": "java.lang.String" },
+    { "name": "jwt.access-token-expiration", "type": "java.lang.Long" },
+    { "name": "jwt.refresh-token-expiration", "type": "java.lang.Long" },
+    { "name": "cors.allowed-origins", "type": "java.lang.String" },
+    { "name": "cloudinary.cloud-name", "type": "java.lang.String" },
+    { "name": "cloudinary.api-key", "type": "java.lang.String" },
+    { "name": "cloudinary.api-secret", "type": "java.lang.String" },
+    { "name": "resend.api-key", "type": "java.lang.String" },
+    { "name": "app.sample-data.reset-on-start", "type": "java.lang.Boolean" },
+    { "name": "app.mail.from", "type": "java.lang.String" },
+    { "name": "app.mail.frontend-url", "type": "java.lang.String" }
+  ]
+}

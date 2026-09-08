@@ -1,6 +1,5 @@
 package com.homestay.backend.service;
 
-import com.homestay.backend.entity.Holiday;
 import com.homestay.backend.entity.Room;
 import com.homestay.backend.repository.HolidayRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,7 @@ public class PricingService {
 
     public PriceBreakdown calculate(Room room, LocalDate checkIn, LocalDate checkOut) {
         Set<LocalDate> holidays = holidayRepository.findAll().stream()
-                .map(Holiday::getDate)
+            .map(holiday -> holiday.getDate())
                 .collect(Collectors.toSet());
         holidays.addAll(VietnameseHolidayService.autoHolidayDatesBetween(checkIn, checkOut));
 

@@ -510,28 +510,28 @@ export default function RoomTypeBookingModal({
 
                   {/* Room specs grid */}
                   <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="rounded-xl border border-line bg-base/40 p-2.5">
+                    <div className="rounded-xl border border-line bg-canvas/40 p-2.5">
                       <p className="text-neutral-400">Khách đề xuất</p>
                       <p className="font-semibold text-ink">{detailRoom.recommendedGuests} khách</p>
                     </div>
-                    <div className="rounded-xl border border-line bg-base/40 p-2.5">
+                    <div className="rounded-xl border border-line bg-canvas/40 p-2.5">
                       <p className="text-neutral-400">Tối đa</p>
                       <p className="font-semibold text-ink">{detailRoom.maxGuests} khách</p>
                     </div>
                     {detailRoom.roomSize && (
-                      <div className="rounded-xl border border-line bg-base/40 p-2.5">
+                      <div className="rounded-xl border border-line bg-canvas/40 p-2.5">
                         <p className="text-neutral-400">Diện tích</p>
                         <p className="font-semibold text-ink">{detailRoom.roomSize} m²</p>
                       </div>
                     )}
                     {detailRoom.bedConfiguration && (
-                      <div className="rounded-xl border border-line bg-base/40 p-2.5">
+                      <div className="rounded-xl border border-line bg-canvas/40 p-2.5">
                         <p className="text-neutral-400">Giường</p>
                         <p className="font-semibold text-ink">{detailRoom.bedConfiguration}</p>
                       </div>
                     )}
                     {detailRoom.viewDescription && (
-                      <div className="col-span-2 rounded-xl border border-line bg-base/40 p-2.5">
+                      <div className="col-span-2 rounded-xl border border-line bg-canvas/40 p-2.5">
                         <p className="text-neutral-400">Hướng nhìn</p>
                         <p className="font-semibold text-ink">{detailRoom.viewDescription}</p>
                       </div>
@@ -687,7 +687,7 @@ export default function RoomTypeBookingModal({
                 )}
 
                 {selectedRoom && (
-                  <div className="mt-7 rounded-2xl border border-line bg-base p-5 sm:p-6">
+                  <div className="mt-7 rounded-2xl border border-line bg-canvas p-5 sm:p-6">
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">

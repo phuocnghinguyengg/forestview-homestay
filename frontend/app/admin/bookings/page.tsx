@@ -23,6 +23,13 @@ const STATUS_LABELS: Record<BookingStatus, string> = {
   COMPLETED: "Hoàn tất",
 };
 
+const NEXT_STATUSES: Record<BookingStatus, BookingStatus[]> = {
+  PENDING: ["CONFIRMED", "CANCELLED"],
+  CONFIRMED: ["COMPLETED", "CANCELLED"],
+  CANCELLED: [],
+  COMPLETED: [],
+};
+
 export default function AdminBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,9 +39,13 @@ export default function AdminBookingsPage() {
 
   const loadBookings = () => {
     setLoading(true);
+    setError("");
     bookingService
       .getAllAdmin()
-      .then(setBookings)
+      .then((data) => {
+        setBookings(data);
+        setError("");
+      })
       .catch((err) => setError(getErrorMessage(err)))
       .finally(() => setLoading(false));
   };
@@ -67,7 +78,7 @@ export default function AdminBookingsPage() {
     setUpdatingId(id);
     try {
       await bookingService.updateStatus(id, status, reason);
-      loadBookings();
+      await loadBookings();
     } catch (err) {
       alert(getErrorMessage(err, "Không thể cập nhật trạng thái"));
     } finally {
@@ -130,18 +141,25 @@ export default function AdminBookingsPage() {
               {/* Cột trạng thái/hành động có chiều rộng cố định, không co giãn theo nội dung bên trái */}
               <div className="flex shrink-0 flex-col items-end gap-2 sm:w-48">
                 <BookingStatusBadge status={b.status} />
-                <select
-                  value={b.status}
-                  disabled={updatingId === b.id}
-                  onChange={(e) => handleStatusChange(b.id, e.target.value as BookingStatus)}
-                  className="w-full rounded-lg border border-line px-2 py-1 text-sm focus:border-primary focus:outline-none"
-                >
-                  {STATUS_OPTIONS.map((s) => (
-                    <option key={s} value={s}>
-                      {STATUS_LABELS[s]}
-                    </option>
-                  ))}
-                </select>
+                {NEXT_STATUSES[b.status].length > 0 ? (
+                  <select
+                    defaultValue=""
+                    disabled={updatingId === b.id}
+                    onChange={(e) => {
+                      if (e.target.value) handleStatusChange(b.id, e.target.value as BookingStatus);
+                    }}
+                    className="w-full rounded-lg border border-line bg-surface px-2 py-1 text-sm focus:border-primary focus:outline-none"
+                  >
+                    <option value="">Cập nhật trạng thái</option>
+                    {NEXT_STATUSES[b.status].map((s) => (
+                      <option key={s} value={s}>
+                        {STATUS_LABELS[s]}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <span className="text-right text-xs text-neutral-400">Đơn đã kết thúc</span>
+                )}
               </div>
             </div>
           </div>

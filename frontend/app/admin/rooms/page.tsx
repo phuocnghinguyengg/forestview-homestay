@@ -125,7 +125,7 @@ export default function AdminRoomsPage() {
             placeholder="Tìm theo tên phòng, địa chỉ..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-xl border border-line bg-base/50 py-2 pr-3 pl-9 text-sm focus:border-primary focus:outline-none"
+            className="w-full rounded-xl border border-line bg-canvas/50 py-2 pr-3 pl-9 text-sm focus:border-primary focus:outline-none"
           />
         </div>
 
@@ -138,7 +138,7 @@ export default function AdminRoomsPage() {
               className={`rounded-xl px-3 py-1.5 text-xs font-medium transition ${
                 selectedType === tf.value
                   ? "bg-primary text-white shadow-xs"
-                  : "bg-base text-neutral-600 hover:bg-neutral-200"
+                  : "bg-canvas text-neutral-600 hover:bg-neutral-200"
               }`}
             >
               {tf.label}
@@ -160,7 +160,7 @@ export default function AdminRoomsPage() {
       <div className="overflow-x-auto rounded-2xl border border-line">
         <div className="min-w-[900px]">
           {/* Header */}
-          <div className="grid grid-cols-[130px_minmax(0,1fr)_190px_160px_150px_170px] gap-3 border-b border-line bg-base/60 px-4 py-3 text-xs font-semibold tracking-wide text-neutral-500 uppercase">
+          <div className="grid grid-cols-[130px_minmax(0,1fr)_190px_160px_150px_170px] gap-3 border-b border-line bg-canvas/60 px-4 py-3 text-xs font-semibold tracking-wide text-neutral-500 uppercase">
             <div>Ảnh</div>
             <div>Phòng</div>
             <div>Giá</div>
@@ -177,7 +177,7 @@ export default function AdminRoomsPage() {
               <div
                 key={room.id}
                 className={`grid grid-cols-[130px_minmax(0,1fr)_190px_160px_150px_170px] items-center gap-3 border-b border-line/60 px-4 py-3.5 transition last:border-b-0 ${
-                  room.active ? "hover:bg-base/30" : "bg-neutral-50/70 opacity-75"
+                  room.active ? "hover:bg-canvas/30" : "bg-neutral-50/70 opacity-75"
                 }`}
               >
                 {/* Ảnh */}

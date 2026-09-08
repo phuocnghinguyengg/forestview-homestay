@@ -19,7 +19,7 @@ export default function TabSwitcher<T extends string>({
           className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition ${
             active === tab.key
               ? "bg-primary text-white shadow-xs"
-              : "bg-base text-neutral-600 hover:bg-neutral-200"
+              : "bg-canvas text-neutral-600 hover:bg-neutral-200"
           }`}
         >
           {tab.icon}

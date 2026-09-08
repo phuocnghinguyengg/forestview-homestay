@@ -42,7 +42,7 @@ const TIERS = [
 
 function MembershipCard({ profile }: { profile: AccountProfile }) {
   const next = TIERS.find(
-    (t) => profile.membershipBookingCount < t.bookings && profile.membershipTotalSpent < t.spent
+    (t) => profile.membershipBookingCount < t.bookings || profile.membershipTotalSpent < t.spent
   );
   const progress = next
     ? Math.max(
@@ -136,7 +136,7 @@ function BookingHistoryTab() {
       {error && <p className="mt-6 text-sm text-red-600">{error}</p>}
 
       {!loading && !error && bookings.length === 0 && (
-        <div className="mt-6 rounded-2xl border border-dashed border-line bg-base/40 p-8 text-center text-sm text-neutral-500">
+        <div className="mt-6 rounded-2xl border border-dashed border-line bg-canvas/40 p-8 text-center text-sm text-neutral-500">
           Bạn chưa có đơn đặt phòng nào.
         </div>
       )}
@@ -164,6 +164,7 @@ function BookingHistoryTab() {
                       : b.paymentMethod === "CARD"
                         ? "Thẻ"
                         : "Tiền mặt"}
+                        {b.paymentStatus === "PAID" ? " · Đã thanh toán" : b.paymentStatus === "HOLD" ? " · Đang giữ chỗ" : " · Chờ thanh toán"}
                 </p>
                 {(b.membershipDiscountAmount ?? 0) > 0 && (
                   <p className="mt-1 text-xs text-primary">
@@ -171,6 +172,7 @@ function BookingHistoryTab() {
                   </p>
                 )}
                 <p className="mt-1 text-sm font-medium text-accent">{formatPrice(b.totalPrice)}</p>
+                {b.rejectionReason && <p className="mt-2 text-sm text-red-600">Lý do: {b.rejectionReason}</p>}
               </div>
 
               <div className="flex items-center gap-3">
@@ -248,7 +250,7 @@ function ReviewHistoryTab() {
       {error && <p className="mt-6 text-sm text-red-600">{error}</p>}
 
       {!loading && !error && reviews.length === 0 && (
-        <div className="mt-6 rounded-2xl border border-dashed border-line bg-base/40 p-8 text-center text-sm text-neutral-500">
+        <div className="mt-6 rounded-2xl border border-dashed border-line bg-canvas/40 p-8 text-center text-sm text-neutral-500">
           Bạn chưa có đánh giá nào. Hãy để lại đánh giá sau khi hoàn tất kỳ nghỉ ở tab Lịch Sử Đặt Phòng nhé!
         </div>
       )}

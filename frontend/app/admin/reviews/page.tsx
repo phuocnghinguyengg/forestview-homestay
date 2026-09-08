@@ -56,7 +56,7 @@ export default function AdminReviewsPage() {
         <button
           onClick={() => setFilter("ALL")}
           className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-            filter === "ALL" ? "bg-primary text-white" : "bg-base text-neutral-600 hover:bg-neutral-200"
+            filter === "ALL" ? "bg-primary text-white" : "bg-canvas text-neutral-600 hover:bg-neutral-200"
           }`}
         >
           Tất cả
@@ -66,7 +66,7 @@ export default function AdminReviewsPage() {
             key={rating}
             onClick={() => setFilter(String(rating))}
             className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-              filter === String(rating) ? "bg-primary text-white" : "bg-base text-neutral-600 hover:bg-neutral-200"
+              filter === String(rating) ? "bg-primary text-white" : "bg-canvas text-neutral-600 hover:bg-neutral-200"
             }`}
           >
             {rating} sao

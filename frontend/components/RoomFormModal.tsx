@@ -111,7 +111,7 @@ export default function RoomFormModal({
           className="mt-5 space-y-5"
         >
           {/* Section: Thông tin cơ bản */}
-          <div className="space-y-3 rounded-2xl border border-line bg-base/30 p-4">
+          <div className="space-y-3 rounded-2xl border border-line bg-canvas/30 p-4">
             <h3 className="flex items-center gap-2 text-sm font-semibold text-ink">
               <Building size={16} className="text-primary" /> Thông tin cơ bản
             </h3>
@@ -169,7 +169,7 @@ export default function RoomFormModal({
           </div>
 
           {/* Section: Thông tin lưu trú & Chi tiết */}
-          <div className="space-y-3 rounded-2xl border border-line bg-base/30 p-4">
+          <div className="space-y-3 rounded-2xl border border-line bg-canvas/30 p-4">
             <h3 className="flex items-center gap-2 text-sm font-semibold text-ink">
               <BedDouble size={16} className="text-primary" /> Chi tiết phòng &amp; Lưu trú
             </h3>
@@ -262,7 +262,7 @@ export default function RoomFormModal({
           </div>
 
           {/* Section: Giá & Sức chứa */}
-          <div className="space-y-3 rounded-2xl border border-line bg-base/30 p-4">
+          <div className="space-y-3 rounded-2xl border border-line bg-canvas/30 p-4">
             <h3 className="flex items-center gap-2 text-sm font-semibold text-ink">
               <DollarSign size={16} className="text-primary" /> Giá &amp; Sức chứa
             </h3>

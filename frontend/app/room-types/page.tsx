@@ -120,7 +120,7 @@ export default function RoomTypesPage() {
                 <select
                   value={typeFilter}
                   onChange={(e) => setTypeFilter(e.target.value as RoomTypeCode | "ALL")}
-                  className="mt-1 w-full rounded-xl border border-line bg-base/50 px-3 py-2.5 text-sm focus:border-primary focus:outline-none"
+                  className="mt-1 w-full rounded-xl border border-line bg-canvas/50 px-3 py-2.5 text-sm focus:border-primary focus:outline-none"
                 >
                   {TYPE_FILTER_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>
@@ -141,10 +141,10 @@ export default function RoomTypesPage() {
         ) : (
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-wrap items-center gap-2 text-sm">
-              <span className="rounded-xl border border-line bg-base/50 px-3 py-2">
+              <span className="rounded-xl border border-line bg-canvas/50 px-3 py-2">
                 Nhận: <b>{formatDate(checkIn)}</b>
               </span>
-              <span className="rounded-xl border border-line bg-base/50 px-3 py-2">
+              <span className="rounded-xl border border-line bg-canvas/50 px-3 py-2">
                 Trả: <b>{formatDate(checkOut)}</b>
               </span>
               <span className="rounded-xl bg-primary/10 px-3 py-2 font-semibold text-primary">

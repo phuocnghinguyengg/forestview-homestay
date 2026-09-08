@@ -119,7 +119,7 @@ export default function LoginPage() {
                 placeholder="name@example.com"
                 value={form.email}
                 onChange={handleChange}
-                className="w-full rounded-xl border border-line bg-base/40 py-2.5 pr-3.5 pl-10 text-xs text-ink transition focus:border-primary focus:bg-surface focus:outline-none focus:ring-2 focus:ring-primary/10 sm:text-sm"
+                className="w-full rounded-xl border border-line bg-canvas/40 py-2.5 pr-3.5 pl-10 text-xs text-ink transition focus:border-primary focus:bg-surface focus:outline-none focus:ring-2 focus:ring-primary/10 sm:text-sm"
               />
             </div>
           </div>
@@ -147,7 +147,7 @@ export default function LoginPage() {
                 placeholder="••••••••"
                 value={form.password}
                 onChange={handleChange}
-                className="w-full rounded-xl border border-line bg-base/40 py-2.5 pr-10 pl-10 text-xs text-ink transition focus:border-primary focus:bg-surface focus:outline-none focus:ring-2 focus:ring-primary/10 sm:text-sm"
+                className="w-full rounded-xl border border-line bg-canvas/40 py-2.5 pr-10 pl-10 text-xs text-ink transition focus:border-primary focus:bg-surface focus:outline-none focus:ring-2 focus:ring-primary/10 sm:text-sm"
               />
               <button
                 type="button"

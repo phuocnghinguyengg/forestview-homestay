@@ -286,7 +286,7 @@ export default function Home() {
         >
           {/* Subtle Pines Decorative SVG at Bottom */}
           <svg
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-[35%] w-full text-primary/[0.06]"
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-[35%] w-full text-primary/6"
             viewBox="0 0 1200 300"
             preserveAspectRatio="none"
             fill="currentColor"
@@ -312,12 +312,12 @@ export default function Home() {
               Một khoảng bình yên để thức dậy cùng mây, dùng bữa giữa vườn xanh và lưu lại những ngày thật chậm.
             </p>
             {/* Quick Compact Search Bar */}
-            <div className="mx-auto mt-8 max-w-4xl rounded-[2rem] border border-white/80 bg-white/85 p-3 shadow-2xl shadow-primary/10 backdrop-blur-xl sm:p-5">
+            <div className="mx-auto mt-8 max-w-4xl rounded-4xl border border-white/80 bg-white/85 p-3 shadow-2xl shadow-primary/10 backdrop-blur-xl sm:p-5">
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1.4fr_1fr_auto]">
                 {/* Date range trigger */}
                 <div
                   onClick={() => setCalendarOpen(!calendarOpen)}
-                  className="flex cursor-pointer items-center gap-3 rounded-2xl border border-line bg-base/50 p-3 text-left transition hover:border-primary/50"
+                  className="flex cursor-pointer items-center gap-3 rounded-2xl border border-line bg-canvas/50 p-3 text-left transition hover:border-primary/50"
                 >
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                     <CalendarDays size={18} />
@@ -333,7 +333,7 @@ export default function Home() {
                 </div>
 
                 {/* Guests */}
-                <div className="flex items-center gap-3 rounded-2xl border border-line bg-base/50 p-3 text-left">
+                <div className="flex items-center gap-3 rounded-2xl border border-line bg-canvas/50 p-3 text-left">
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent">
                     <Users size={18} />
                   </div>
@@ -368,7 +368,7 @@ export default function Home() {
                   type="button"
                   onClick={handleSearch}
                   disabled={searching}
-                  className="flex h-full min-h-[46px] items-center justify-center gap-2 rounded-2xl bg-primary px-7 py-3 text-xs font-semibold text-white shadow-md transition hover:bg-primary-dark disabled:opacity-50"
+                  className="flex h-full min-h-11.5 items-center justify-center gap-2 rounded-2xl bg-primary px-7 py-3 text-xs font-semibold text-white shadow-md transition hover:bg-primary-dark disabled:opacity-50"
                 >
                   <Search size={15} />
                   {searching ? "Đang tìm..." : "Tìm phòng trống"}
@@ -439,7 +439,7 @@ export default function Home() {
         {/* ================= KHẤC 2: KHÔNG GIAN LƯU TRÚ (HẠNG PHÒNG) ================= */}
         <section
           id="section-rooms"
-          className={`flex w-full flex-col justify-center border-t border-line/60 bg-base/30 px-5 py-10 md:min-h-[calc(100vh-69px)] md:snap-start md:snap-always md:py-8 ${reveal("section-rooms")}`}
+          className={`flex w-full flex-col justify-center border-t border-line/60 bg-canvas/30 px-5 py-10 md:min-h-[calc(100vh-69px)] md:snap-start md:snap-always md:py-8 ${reveal("section-rooms")}`}
         >
           <div className="mx-auto w-full max-w-6xl">
             {/* Header */}
@@ -550,7 +550,7 @@ export default function Home() {
               {EXPERIENCES.map((exp) => (
                 <div
                   key={exp.title}
-                  className="flex flex-col rounded-2xl border border-line bg-base/30 p-5 transition hover:border-primary/40 hover:shadow-xs"
+                  className="flex flex-col rounded-2xl border border-line bg-canvas/30 p-5 transition hover:border-primary/40 hover:shadow-xs"
                 >
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface shadow-2xs">
                     {exp.icon}
@@ -562,7 +562,7 @@ export default function Home() {
             </div>
 
             {/* Compact Member Perks Banner */}
-            <div className="mt-6 rounded-3xl border border-primary/20 bg-gradient-to-r from-primary/10 via-surface to-accent/10 p-6">
+            <div className="mt-6 rounded-3xl border border-primary/20 bg-linear-to-r from-primary/10 via-surface to-accent/10 p-6">
               <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
                 <div>
                   <div className="flex items-center gap-2">
@@ -611,7 +611,7 @@ export default function Home() {
         {/* ================= KHẤC 4: ĐÁNH GIÁ & CAM KẾT CHẤT LƯỢNG ================= */}
         <section
           id="section-reviews"
-          className={`flex w-full flex-col justify-center border-t border-line/60 bg-base/40 px-5 py-10 md:min-h-[calc(100vh-69px)] md:snap-start md:snap-always md:py-8 ${reveal("section-reviews")}`}
+          className={`flex w-full flex-col justify-center border-t border-line/60 bg-canvas/40 px-5 py-10 md:min-h-[calc(100vh-69px)] md:snap-start md:snap-always md:py-8 ${reveal("section-reviews")}`}
         >
           <div className="mx-auto w-full max-w-6xl">
             <div className="text-center">

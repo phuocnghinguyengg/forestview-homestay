@@ -69,7 +69,7 @@ export default function RoomsPage() {
       .then(setResults)
       .catch((err) => setError(getErrorMessage(err)))
       .finally(() => setLoading(false));
-  }, []);
+  }, [guests]);
 
   const nights = useMemo(() => getNights(checkIn, checkOut), [checkIn, checkOut]);
 
@@ -191,10 +191,10 @@ export default function RoomsPage() {
 
           <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-wrap items-center gap-2 text-sm">
-              <span className="rounded-xl border border-line bg-base/50 px-3 py-2">
+              <span className="rounded-xl border border-line bg-canvas/50 px-3 py-2">
                 Nhận: <b>{formatDate(checkIn)}</b>
               </span>
-              <span className="rounded-xl border border-line bg-base/50 px-3 py-2">
+              <span className="rounded-xl border border-line bg-canvas/50 px-3 py-2">
                 Trả: <b>{formatDate(checkOut)}</b>
               </span>
               <span className="rounded-xl bg-primary/10 px-3.5 py-2 font-bold text-primary">

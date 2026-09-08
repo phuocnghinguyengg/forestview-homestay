@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { ImagePlus, KeyRound, Mail, Phone } from "lucide-react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import AccountLayout from "@/components/AccountLayout";
@@ -162,7 +163,7 @@ function EmailTab({ profile, onUpdated }: { profile: AccountProfile | null; onUp
       <div className="mt-5 space-y-4">
         <div>
           <label className="text-sm text-neutral-600">Email hiện tại</label>
-          <input disabled value={profile?.email ?? ""} className={`${inputClass} bg-base text-neutral-500`} />
+          <input disabled value={profile?.email ?? ""} className={`${inputClass} bg-canvas text-neutral-500`} />
         </div>
 
         <div>
@@ -316,7 +317,7 @@ function AvatarTab({ profile, onUpdated }: { profile: AccountProfile | null; onU
       <p className="mt-1 text-sm text-neutral-500">Chọn ảnh tối đa 2MB để hiển thị trên thanh điều hướng.</p>
       <div className="mt-6 flex items-center gap-5">
         <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary/10 text-2xl font-bold text-primary">
-          {avatarUrl ? <img src={avatarUrl} alt="Avatar xem trước" className="h-full w-full object-cover" /> : profile?.fullName?.charAt(0).toUpperCase()}
+          {avatarUrl ? <Image src={avatarUrl} alt="Avatar xem trước" width={96} height={96} unoptimized className="h-full w-full object-cover" /> : profile?.fullName?.charAt(0).toUpperCase()}
         </div>
         <label className="cursor-pointer rounded-full border border-primary px-4 py-2.5 text-sm font-semibold text-primary hover:bg-primary hover:text-white">
           <span className="inline-flex items-center gap-2"><ImagePlus size={16} /> Chọn ảnh</span>
@@ -347,7 +348,7 @@ function AccountContent() {
       })
       .catch((err) => setLoadError(getErrorMessage(err, "Không thể tải thông tin tài khoản")))
       .finally(() => setLoading(false));
-  }, []);
+  }, [updateUser]);
 
   return (
     <AccountLayout>

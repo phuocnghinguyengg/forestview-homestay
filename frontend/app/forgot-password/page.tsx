@@ -232,7 +232,7 @@ export default function ForgotPasswordPage() {
                     placeholder="name@example.com"
                     value={email}
                     onChange={(e) => { setEmail(e.target.value); setError(""); }}
-                    className="w-full rounded-xl border border-line bg-base/40 py-2.5 pr-3.5 pl-10 text-xs text-ink transition focus:border-primary focus:bg-surface focus:outline-none focus:ring-2 focus:ring-primary/10 sm:text-sm"
+                    className="w-full rounded-xl border border-line bg-canvas/40 py-2.5 pr-3.5 pl-10 text-xs text-ink transition focus:border-primary focus:bg-surface focus:outline-none focus:ring-2 focus:ring-primary/10 sm:text-sm"
                   />
                 </div>
               </div>
@@ -300,7 +300,7 @@ export default function ForgotPasswordPage() {
                       onChange={(e) => handleDigitChange(idx, e.target.value)}
                       onKeyDown={(e) => handleKeyDown(idx, e)}
                       onPaste={idx === 0 ? handlePaste : undefined}
-                      className={`h-12 w-10 rounded-xl border-2 bg-base/40 text-center text-lg font-bold text-ink transition focus:bg-surface focus:outline-none sm:h-13 sm:w-11 sm:text-xl ${
+                      className={`h-12 w-10 rounded-xl border-2 bg-canvas/40 text-center text-lg font-bold text-ink transition focus:bg-surface focus:outline-none sm:h-13 sm:w-11 sm:text-xl ${
                         d
                           ? "border-primary text-primary shadow-sm shadow-primary/20"
                           : "border-line focus:border-primary"
@@ -326,7 +326,7 @@ export default function ForgotPasswordPage() {
                     placeholder="Tối thiểu 6 ký tự"
                     value={password}
                     onChange={(e) => { setPassword(e.target.value); setError(""); }}
-                    className="w-full rounded-xl border border-line bg-base/40 py-2.5 pr-10 pl-10 text-xs text-ink transition focus:border-primary focus:bg-surface focus:outline-none focus:ring-2 focus:ring-primary/10 sm:text-sm"
+                    className="w-full rounded-xl border border-line bg-canvas/40 py-2.5 pr-10 pl-10 text-xs text-ink transition focus:border-primary focus:bg-surface focus:outline-none focus:ring-2 focus:ring-primary/10 sm:text-sm"
                   />
                   <button
                     type="button"
@@ -354,7 +354,7 @@ export default function ForgotPasswordPage() {
                     placeholder="Nhập lại mật khẩu mới"
                     value={confirm}
                     onChange={(e) => { setConfirm(e.target.value); setError(""); }}
-                    className="w-full rounded-xl border border-line bg-base/40 py-2.5 pr-10 pl-10 text-xs text-ink transition focus:border-primary focus:bg-surface focus:outline-none focus:ring-2 focus:ring-primary/10 sm:text-sm"
+                    className="w-full rounded-xl border border-line bg-canvas/40 py-2.5 pr-10 pl-10 text-xs text-ink transition focus:border-primary focus:bg-surface focus:outline-none focus:ring-2 focus:ring-primary/10 sm:text-sm"
                   />
                   <button
                     type="button"

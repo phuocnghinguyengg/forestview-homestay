@@ -403,8 +403,8 @@ export default function RoomDetailPage() {
 
           {/* House Rules */}
           {room.houseRules && (
-            <div className="rounded-2xl border border-line bg-base/40 p-5">
-              <h3 className="flex items-center gap-2 font-display text-base text-ink">
+            <div className="rounded-2xl border border-line bg-canvas/40 p-5">
+              <h3 className="flex items-center gap-2 font-display text-[1rem] text-ink">
                 <FileText size={16} className="text-primary" /> Quy định &amp; Lưu ý lưu trú
               </h3>
               <p className="mt-2 text-xs leading-5 whitespace-pre-line text-neutral-600">
@@ -482,7 +482,7 @@ export default function RoomDetailPage() {
                 Đề xuất {room.recommendedGuests} · tối đa {room.maxGuests} khách
               </span>
             </div>
-            <div className="mt-2 flex items-center justify-between rounded-xl border border-line bg-base/50 p-2">
+            <div className="mt-2 flex items-center justify-between rounded-xl border border-line bg-canvas/50 p-2">
               <span className="text-sm font-semibold text-ink pl-2">{guests} khách</span>
               <div className="flex items-center gap-2">
                 <button
@@ -528,7 +528,7 @@ export default function RoomDetailPage() {
                   value={couponInput}
                   onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
                   placeholder="Nhập mã giảm giá"
-                  className="flex-1 rounded-xl border border-line bg-base/50 px-3 py-2 text-xs uppercase focus:border-primary focus:outline-none"
+                  className="flex-1 rounded-xl border border-line bg-canvas/50 px-3 py-2 text-xs uppercase focus:border-primary focus:outline-none"
                 />
                 <button
                   type="button"
@@ -551,13 +551,13 @@ export default function RoomDetailPage() {
               onChange={(e) => setNote(e.target.value)}
               rows={2}
               placeholder="VD: Cần nhận phòng sớm, chuẩn bị thêm chăn..."
-              className="mt-1.5 w-full rounded-xl border border-line bg-base/50 p-2.5 text-xs focus:border-primary focus:outline-none"
+              className="mt-1.5 w-full rounded-xl border border-line bg-canvas/50 p-2.5 text-xs focus:border-primary focus:outline-none"
             />
           </div>
 
           {/* Price Breakdown */}
           {nights > 0 && (
-            <div className="mt-5 space-y-2 rounded-2xl border border-line bg-base/30 p-4 text-xs">
+            <div className="mt-5 space-y-2 rounded-2xl border border-line bg-canvas/30 p-4 text-xs">
               {pricingLoading && <p className="text-neutral-400">Đang tính giá lưu trú theo số đêm...</p>}
               {pricing && (
                 <>
@@ -599,7 +599,7 @@ export default function RoomDetailPage() {
               )}
               <div className="flex justify-between border-t border-line pt-2 text-sm font-bold text-ink">
                 <span>Tổng chi phí ({nights} đêm)</span>
-                <span className="text-accent text-base">{formatPrice(estimate)}</span>
+                <span className="text-accent text-[1rem]">{formatPrice(estimate)}</span>
               </div>
             </div>
           )}

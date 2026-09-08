@@ -87,7 +87,7 @@ export default function AdminHolidaysPage() {
             placeholder="VD: Lễ hội Hoa Đà Lạt"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="mt-1 w-full rounded-xl border border-line bg-base/50 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+            className="mt-1 w-full rounded-xl border border-line bg-canvas/50 px-3 py-2 text-sm focus:border-primary focus:outline-none"
           />
         </div>
 

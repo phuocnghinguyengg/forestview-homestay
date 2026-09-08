@@ -362,7 +362,7 @@ export default function GeminiAIChatbot() {
                       className={`rounded-2xl px-3.5 py-2.5 text-xs leading-relaxed ${
                         msg.sender === "user"
                           ? "bg-primary text-white rounded-tr-xs"
-                          : "border border-line bg-base/60 text-ink rounded-tl-xs whitespace-pre-line"
+                          : "border border-line bg-canvas/60 text-ink rounded-tl-xs whitespace-pre-line"
                       }`}
                     >
                       {msg.text}
@@ -384,7 +384,7 @@ export default function GeminiAIChatbot() {
                   <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
                     <Bot size={14} />
                   </div>
-                  <div className="flex items-center gap-1.5 rounded-2xl rounded-tl-xs border border-line bg-base/60 px-4 py-3">
+                  <div className="flex items-center gap-1.5 rounded-2xl rounded-tl-xs border border-line bg-canvas/60 px-4 py-3">
                     <span className="h-2 w-2 animate-bounce rounded-full bg-primary/60" />
                     <span className="h-2 w-2 animate-bounce rounded-full bg-primary/60 [animation-delay:150ms]" />
                     <span className="h-2 w-2 animate-bounce rounded-full bg-primary/60 [animation-delay:300ms]" />
@@ -397,7 +397,7 @@ export default function GeminiAIChatbot() {
 
             {/* Suggestion Chips */}
             {messages.length <= 2 && (
-              <div className="border-t border-line/60 bg-base/20 px-3 py-2">
+              <div className="border-t border-line/60 bg-canvas/20 px-3 py-2">
                 <p className="text-[10px] font-semibold text-neutral-400">Gợi ý câu hỏi nhanh:</p>
                 <div className="mt-1 flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
                   {SUGGESTIONS.map((sug) => (
@@ -422,7 +422,7 @@ export default function GeminiAIChatbot() {
               }}
               className="border-t border-line bg-surface p-3"
             >
-              <div className="flex items-center gap-2 rounded-2xl border border-line bg-base/50 p-1.5 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10">
+              <div className="flex items-center gap-2 rounded-2xl border border-line bg-canvas/50 p-1.5 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10">
                 <input
                   type="text"
                   value={inputValue}
@@ -472,7 +472,7 @@ export default function GeminiAIChatbot() {
                 value={inputKey}
                 onChange={(e) => setInputKey(e.target.value)}
                 placeholder="AIzaSy..."
-                className="mt-1.5 w-full rounded-xl border border-line bg-base/50 px-3.5 py-2.5 text-xs focus:border-primary focus:outline-none"
+                className="mt-1.5 w-full rounded-xl border border-line bg-canvas/50 px-3.5 py-2.5 text-xs focus:border-primary focus:outline-none"
               />
               <p className="mt-1.5 text-[11px] text-neutral-400">
                 Chưa có key? Lấy miễn phí tại{" "}

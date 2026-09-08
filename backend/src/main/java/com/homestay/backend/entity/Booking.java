@@ -78,6 +78,8 @@ public class Booking {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
+    private LocalDateTime completedAt;
+
     @Column(unique = true)
     private String bookingCode;
 

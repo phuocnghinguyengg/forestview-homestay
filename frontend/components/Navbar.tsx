@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Menu, UserRound, X } from "lucide-react";
 import { useAuthStore } from "@/hooks/useAuthStore";
@@ -32,7 +33,7 @@ export default function Navbar() {
       : [];
 
   return (
-    <header className="sticky top-0 z-50 border-b border-line bg-base/90 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-line bg-canvas/90 backdrop-blur-md">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
         <Link
           href="/"
@@ -67,7 +68,7 @@ export default function Navbar() {
                 aria-label={user?.role === "ADMIN" ? "Trang quản trị" : "Thông tin tài khoản"}
               >
                 <span className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-primary/10 text-primary">
-                  {user?.avatarUrl ? <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" /> : <UserRound size={16} />}
+                  {user?.avatarUrl ? <Image src={user.avatarUrl} alt="" width={32} height={32} unoptimized className="h-full w-full object-cover" /> : <UserRound size={16} />}
                 </span>
                 <span className="max-w-32 truncate">{displayName(user?.fullName)}</span>
               </Link>
@@ -89,12 +90,12 @@ export default function Navbar() {
 
       {/* Mobile panel */}
       {open && (
-        <div className="border-t border-line bg-base px-5 pt-2 pb-5 text-sm font-medium text-ink md:hidden">
+        <div className="border-t border-line bg-canvas px-5 pt-2 pb-5 text-sm font-medium text-ink md:hidden">
           <div className="flex flex-col gap-1">
             {isAuthenticated && (
               <Link href={user?.role === "ADMIN" ? "/admin" : "/account"} onClick={() => setOpen(false)} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-primary/10">
                 <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-primary/10 text-primary">
-                  {user?.avatarUrl ? <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" /> : <UserRound size={17} />}
+                  {user?.avatarUrl ? <Image src={user.avatarUrl} alt="" width={36} height={36} unoptimized className="h-full w-full object-cover" /> : <UserRound size={17} />}
                 </span>
                 <span className="font-semibold">{displayName(user?.fullName)}</span>
               </Link>

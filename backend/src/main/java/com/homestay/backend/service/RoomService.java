@@ -23,7 +23,7 @@ public class RoomService {
 
     public List<RoomResponse> getAllActiveRooms() {
         return roomRepository.findAll().stream()
-                .filter(Room::getActive)
+            .filter(room -> Boolean.TRUE.equals(room.getActive()))
                 .map(RoomMapper::toResponse)
                 .toList();
     }
