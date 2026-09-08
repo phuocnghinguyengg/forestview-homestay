@@ -3,8 +3,7 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import Link from "next/link";
-import { BedDouble, CalendarDays, ClipboardList, LayoutDashboard, LogOut, MessageSquareQuote, Settings2, ShieldCheck, Tag, UserRound, Users, X } from "lucide-react";
+import { LogOut, Settings2, ShieldCheck, UserRound, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { bookingService } from "@/lib/services/bookingService";
@@ -12,26 +11,7 @@ import { Booking } from "@/types";
 import BookingStatusBadge from "@/components/BookingStatusBadge";
 import { getErrorMessage } from "@/lib/getErrorMessage";
 import { accountService, AccountProfile } from "@/lib/services/accountService";
-
-const ADMIN_LINKS = [
-  { href: "/admin", label: "Tổng quan", icon: LayoutDashboard },
-  { href: "/admin/rooms", label: "Phòng", icon: BedDouble },
-  { href: "/admin/bookings", label: "Đặt phòng", icon: ClipboardList },
-  { href: "/admin/users", label: "Khách hàng", icon: Users },
-  { href: "/admin/reviews", label: "Đánh giá", icon: MessageSquareQuote },
-  { href: "/admin/holidays", label: "Ngày lễ", icon: CalendarDays },
-  { href: "/admin/discount-codes", label: "Ưu đãi", icon: Tag },
-];
-
-const ADMIN_DESCRIPTIONS: Record<string, string> = {
-  "/admin": "Theo dõi nhanh tình hình phòng, booking và doanh thu.",
-  "/admin/rooms": "Tạo, chỉnh sửa, ẩn hiện và quản lý giá phòng.",
-  "/admin/bookings": "Xác nhận, hoàn tất hoặc từ chối các booking.",
-  "/admin/users": "Quản lý khách hàng, vai trò và hạng thành viên.",
-  "/admin/reviews": "Theo dõi và kiểm duyệt đánh giá của khách.",
-  "/admin/holidays": "Thiết lập ngày lễ và chính sách giá lễ.",
-  "/admin/discount-codes": "Tạo và quản lý các mã ưu đãi.",
-};
+import AdminWorkspaceModal from "@/components/AdminWorkspaceModal";
 
 function displayName(fullName?: string) {
   const words = fullName?.trim().split(/\s+/).filter(Boolean) ?? [];
@@ -48,7 +28,6 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
   const [open, setOpen] = useState(false);
   const [activeModal, setActiveModal] = useState<"account" | "admin" | null>(null);
   const [aboutTab, setAboutTab] = useState<"info" | "edit" | "password" | "email" | "history">("info");
-  const [adminSection, setAdminSection] = useState<string | null>(null);
   const [profile, setProfile] = useState<AccountProfile | null>(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileError, setProfileError] = useState("");
@@ -191,8 +170,8 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
         className={`${compact ? "h-10 w-10" : "flex h-10 items-center gap-2 px-2.5"} rounded-full border border-line bg-surface text-ink transition hover:border-primary hover:text-primary`}
         aria-label="Mở bảng điều khiển tài khoản"
       >
-        <span className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-primary/10 text-primary">
-          {user.avatarUrl ? <Image src={user.avatarUrl} alt="" width={32} height={32} unoptimized className="h-full w-full object-cover" /> : <UserRound size={16} />}
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary/10 text-primary">
+          {user.avatarUrl ? <Image src={user.avatarUrl} alt="" width={32} height={32} unoptimized className="block h-full w-full object-cover" /> : <UserRound size={16} />}
         </span>
         {!compact && <span className="hidden max-w-32 truncate text-sm font-semibold sm:block">{displayName(user.fullName)}</span>}
       </button>
@@ -201,19 +180,19 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
         <>
           <button type="button" aria-label="Đóng bảng điều khiển tài khoản" onClick={() => setOpen(false)} className="fixed inset-0 z-40 cursor-default" />
           <div className="absolute top-12 right-0 z-50 w-[min(21rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-line bg-surface shadow-xl">
-            <div className="flex items-start justify-between bg-ink px-5 py-5 text-white">
-              <div className="flex min-w-0 items-center gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white/10 font-display text-lg font-bold">
-                  {user.avatarUrl ? <Image src={user.avatarUrl} alt="" width={44} height={44} unoptimized className="h-full w-full object-cover" /> : user.fullName.charAt(0).toUpperCase()}
+            <div className="flex items-center justify-between gap-3 bg-ink px-5 py-5 text-white">
+              <div className="flex min-w-0 flex-1 items-center gap-3">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white/10 font-display text-lg font-bold leading-none">
+                  {user.avatarUrl ? <Image src={user.avatarUrl} alt="" width={44} height={44} unoptimized className="block h-full w-full object-cover" /> : user.fullName.charAt(0).toUpperCase()}
                 </span>
-                <span className="min-w-0"><span className="block truncate font-display text-lg">{displayName(user.fullName)}</span><span className="mt-0.5 block truncate text-xs text-white/55">{user.email}</span></span>
+                <span className="flex min-w-0 flex-1 flex-col justify-center leading-tight"><span className="block truncate font-display text-lg">{displayName(user.fullName)}</span><span className="mt-1 block truncate text-xs text-white/55">{user.email}</span></span>
               </div>
               <button type="button" onClick={() => setOpen(false)} className="rounded-full p-1 text-white/60 hover:bg-white/10 hover:text-white" aria-label="Đóng"><X size={16} /></button>
             </div>
             <div className="space-y-1 p-3 sm:p-4">
               <p className="px-3 pb-2 text-[11px] font-bold tracking-[0.16em] text-neutral-400 uppercase">Về tôi</p>
               <button type="button" onClick={openAccount} className="flex w-full items-center gap-3 rounded-2xl px-3 py-3.5 text-left text-sm font-semibold text-ink transition hover:bg-canvas hover:text-primary"><Settings2 size={17} /> <span>Về tôi<small className="mt-0.5 block text-xs font-normal text-neutral-500">Thông tin và bảo mật</small></span></button>
-              {user.role === "ADMIN" && <button type="button" onClick={() => { setOpen(false); setAdminSection(null); setActiveModal("admin"); }} className="flex w-full items-center gap-3 rounded-2xl px-3 py-3.5 text-left text-sm font-semibold text-ink transition hover:bg-canvas hover:text-primary"><ShieldCheck size={17} /> <span>Không gian quản trị<small className="mt-0.5 block text-xs font-normal text-neutral-500">Vận hành ForestView</small></span></button>}
+              {user.role === "ADMIN" && <button type="button" onClick={() => { setOpen(false); setActiveModal("admin"); }} className="flex w-full items-center gap-3 rounded-2xl px-3 py-3.5 text-left text-sm font-semibold text-ink transition hover:bg-canvas hover:text-primary"><ShieldCheck size={17} /> <span>Không gian quản trị<small className="mt-0.5 block text-xs font-normal text-neutral-500">Vận hành ForestView</small></span></button>}
               <div className="my-1 border-t border-line" />
               <button type="button" onClick={handleLogout} className="flex w-full items-center gap-3 rounded-2xl px-3 py-3.5 text-left text-sm font-semibold text-red-600 transition hover:bg-red-50"><LogOut size={17} /> Đăng xuất</button>
             </div>
@@ -222,10 +201,10 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
       )}
 
       {activeModal === "account" && typeof document !== "undefined" && createPortal(<div className="fixed inset-0 z-80 flex items-center justify-center bg-ink/30 p-4 backdrop-blur-sm sm:p-6">
-        <div role="dialog" aria-modal="true" aria-label="Về tôi" className="w-full max-w-md overflow-hidden rounded-3xl border border-line bg-surface shadow-2xl">
-          <div className="flex items-center justify-between bg-ink px-5 py-5 text-white sm:px-6"><div><p className="text-[11px] font-bold tracking-[0.16em] text-white/55 uppercase">Về tôi</p><h2 className="mt-1 font-display text-2xl">Hồ sơ của bạn</h2></div><button type="button" onClick={() => setActiveModal(null)} className="rounded-full p-1 text-white/60 hover:bg-white/10 hover:text-white" aria-label="Đóng"><X size={17} /></button></div>
-          <div className="space-y-4 p-5 sm:p-6">
-            <div className="flex gap-1 overflow-x-auto rounded-2xl bg-canvas p-1">
+        <div role="dialog" aria-modal="true" aria-label="Về tôi" className="flex h-[min(82vh,720px)] w-full max-w-2xl flex-col overflow-hidden rounded-4xl border border-white/70 bg-surface shadow-2xl">
+          <div className="relative shrink-0 overflow-hidden bg-ink px-5 py-6 text-white sm:px-7"><div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-linear-to-r from-primary via-accent to-primary" /><div className="flex items-center justify-between gap-4"><div className="flex min-w-0 flex-1 items-center gap-3"><span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white/10 font-display text-xl font-bold leading-none">{user.avatarUrl ? <Image src={user.avatarUrl} alt="" width={48} height={48} unoptimized className="block h-full w-full object-cover" /> : user.fullName.charAt(0).toUpperCase()}</span><div className="flex min-w-0 flex-1 flex-col justify-center leading-tight"><p className="text-[11px] font-bold tracking-[0.16em] text-white/55 uppercase">Về tôi</p><h2 className="mt-1 truncate font-display text-2xl leading-tight">{displayName(user.fullName)}</h2><p className="mt-1 truncate text-xs text-white/55">{user.email}</p></div></div><button type="button" onClick={() => setActiveModal(null)} className="shrink-0 rounded-full p-2 text-white/60 hover:bg-white/10 hover:text-white" aria-label="Đóng"><X size={18} /></button></div></div>
+          <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-5 sm:p-7">
+            <div className="flex gap-1 overflow-x-auto rounded-2xl border border-line bg-canvas p-1">
               {[{ key: "info", label: "Thông tin" }, { key: "edit", label: "Cá nhân" }, { key: "password", label: "Mật khẩu" }, { key: "email", label: "Email" }, { key: "history", label: "Lịch sử" }].map((tab) => (
                 <button key={tab.key} type="button" onClick={() => { setAboutTab(tab.key as typeof aboutTab); if (tab.key === "history") void loadBookings(); }} className={`shrink-0 rounded-xl px-3 py-2 text-[11px] font-semibold transition ${aboutTab === tab.key ? "bg-surface text-primary shadow-sm" : "text-neutral-500 hover:text-primary"}`}>
                   {tab.label}
@@ -270,14 +249,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
         </div>
       </div>, document.body)}
 
-      {activeModal === "admin" && typeof document !== "undefined" && createPortal(<div className="fixed inset-0 z-80 flex items-center justify-center bg-ink/30 p-4 backdrop-blur-sm sm:p-6">
-        <div role="dialog" aria-modal="true" aria-label="Không gian quản trị" className="w-full max-w-2xl overflow-hidden rounded-3xl border border-line bg-surface shadow-2xl">
-          <div className="flex items-center justify-between bg-ink px-5 py-5 text-white sm:px-7"><div><p className="text-[11px] font-bold tracking-[0.16em] text-white/55 uppercase">ForestView studio</p><h2 className="mt-1 font-display text-2xl">Không gian quản trị</h2></div><button type="button" onClick={() => setActiveModal(null)} className="rounded-full p-1 text-white/60 hover:bg-white/10 hover:text-white" aria-label="Đóng"><X size={17} /></button></div>
-          <div className="p-5 sm:p-7">
-            {!adminSection ? <><p className="text-sm text-neutral-500">Chọn khu vực bạn muốn quản lý.</p><div className="mt-5 grid gap-3 sm:grid-cols-2">{ADMIN_LINKS.map((item) => { const Icon = item.icon; return <button key={item.href} type="button" onClick={() => setAdminSection(item.href)} className="flex items-center gap-3 rounded-2xl border border-line bg-canvas/40 p-4 text-left transition hover:border-primary hover:bg-primary/5"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary"><Icon size={18} /></span><span className="text-sm font-semibold text-ink">{item.label}</span></button>; })}</div></> : <div><button type="button" onClick={() => setAdminSection(null)} className="text-xs font-semibold text-primary hover:underline">← Tất cả khu vực</button><h3 className="mt-4 font-display text-2xl text-ink">{ADMIN_LINKS.find((item) => item.href === adminSection)?.label}</h3><p className="mt-2 text-sm leading-6 text-neutral-600">{ADMIN_DESCRIPTIONS[adminSection]}</p><Link href={adminSection} onClick={() => setActiveModal(null)} className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark">Mở khu vực này</Link></div>}
-          </div>
-        </div>
-      </div>, document.body)}
+      <AdminWorkspaceModal open={activeModal === "admin"} onClose={() => setActiveModal(null)} />
     </div>
   );
 }

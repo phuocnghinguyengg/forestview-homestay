@@ -1,35 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import {
-  BedDouble,
-  CalendarDays,
-  ClipboardList,
-  LayoutDashboard,
-  MessageSquareQuote,
-  ShieldCheck,
-  Tag,
-  Users,
-} from "lucide-react";
+import { Suspense, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { ShieldCheck } from "lucide-react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import AccountPopover from "@/components/AccountPopover";
 import NotificationCenter from "@/components/NotificationCenter";
+import AdminWorkspaceModal, { ADMIN_LINKS } from "@/components/AdminWorkspaceModal";
 
-const ADMIN_NAV = [
-  { href: "/admin", label: "Tổng quan", icon: LayoutDashboard },
-  { href: "/admin/rooms", label: "Phòng", icon: BedDouble },
-  { href: "/admin/bookings", label: "Đặt phòng", icon: ClipboardList },
-  { href: "/admin/users", label: "Khách hàng", icon: Users },
-  { href: "/admin/reviews", label: "Đánh giá", icon: MessageSquareQuote },
-  { href: "/admin/holidays", label: "Ngày lễ", icon: CalendarDays },
-  { href: "/admin/discount-codes", label: "Ưu đãi", icon: Tag },
-];
 
 function AdminControlBar() {
   const pathname = usePathname();
   const user = useAuthStore((state) => state.user);
+  const [workspaceOpen, setWorkspaceOpen] = useState(false);
 
   return (
     <header className="mb-6 border-b border-line pb-5">
@@ -53,36 +38,48 @@ function AdminControlBar() {
       </div>
 
       <nav className="mt-5 flex gap-1.5 overflow-x-auto pb-1" aria-label="Điều hướng quản trị">
-        {ADMIN_NAV.map((item) => {
+        {ADMIN_LINKS.map((item) => {
           const active = pathname === item.href;
           const Icon = item.icon;
           return (
-            <Link
+            <button
               key={item.href}
-              href={item.href}
+              type="button"
+              onClick={() => setWorkspaceOpen(true)}
               className={`inline-flex shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition sm:px-3.5 sm:text-sm ${
                 active ? "bg-ink text-white shadow-sm" : "text-neutral-500 hover:bg-primary/10 hover:text-primary"
               }`}
             >
               <Icon size={15} />
               {item.label}
-            </Link>
+            </button>
           );
         })}
       </nav>
+      <AdminWorkspaceModal open={workspaceOpen} initialPath={pathname.startsWith("/admin") ? pathname : "/admin"} onClose={() => setWorkspaceOpen(false)} />
     </header>
+  );
+}
+
+function AdminLayoutContent({ children }: { children: React.ReactNode }) {
+  const searchParams = useSearchParams();
+
+  return (
+    <ProtectedRoute allowedRoles={["ADMIN"]}>
+      <div className="admin-shell mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 md:py-10">
+        <div className={searchParams.get("embedded") === "1" ? "min-h-full" : "admin-surface"}>
+          {searchParams.get("embedded") !== "1" && <AdminControlBar />}
+          {children}
+        </div>
+      </div>
+    </ProtectedRoute>
   );
 }
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ProtectedRoute allowedRoles={["ADMIN"]}>
-      <div className="admin-shell mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 md:py-10">
-        <div className="admin-surface">
-          <AdminControlBar />
-          {children}
-        </div>
-      </div>
-    </ProtectedRoute>
+    <Suspense fallback={<div className="min-h-screen bg-canvas" />}>
+      <AdminLayoutContent>{children}</AdminLayoutContent>
+    </Suspense>
   );
 }

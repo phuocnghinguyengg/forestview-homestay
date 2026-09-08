@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Bell, CheckCircle2, ClipboardCheck, MessageSquareText, X } from "lucide-react";
 import { bookingService } from "@/lib/services/bookingService";
@@ -92,13 +91,11 @@ export default function NotificationCenter() {
       </button>
 
       {open && (
-        <>
-          <button type="button" aria-label="Đóng thông báo" onClick={() => setOpen(false)} className="fixed inset-0 z-40 cursor-default bg-ink/25 backdrop-blur-sm" />
-          {typeof document !== "undefined" && createPortal(<div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-            <div role="dialog" aria-modal="true" aria-label="Thông báo" className="w-full max-w-md overflow-hidden rounded-3xl border border-line bg-surface shadow-2xl">
-            <div className="flex items-center justify-between border-b border-line px-5 py-5 sm:px-6">
+        <div className="absolute top-12 right-0 z-50 w-[min(22rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-line bg-surface shadow-xl">
+          <div role="dialog" aria-label="Thông báo">
+            <div className="flex items-center justify-between border-b border-line px-4 py-4">
               <div>
-                <p className="font-display text-2xl text-ink">Thông báo</p>
+                <p className="font-display text-xl text-ink">Thông báo</p>
                 <p className="mt-1 text-xs text-neutral-500">{user.role === "ADMIN" ? "Việc cần xử lý" : "Điều đáng nhớ trong chuyến đi"}</p>
               </div>
               <button type="button" onClick={() => setOpen(false)} className="rounded-full p-1.5 text-neutral-400 hover:bg-canvas hover:text-ink" aria-label="Đóng thông báo"><X size={16} /></button>
@@ -127,8 +124,7 @@ export default function NotificationCenter() {
               </div>
             )}
           </div>
-          </div>, document.body)}
-        </>
+        </div>
       )}
     </div>
   );
