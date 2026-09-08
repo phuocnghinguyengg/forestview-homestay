@@ -185,15 +185,15 @@ small, .text-sm {
 }
 
 .card-hover {
-  @apply card hover:shadow-md hover:border-primary/40 hover:-translate-y-1 cursor-pointer;
+  @apply bg-surface rounded-2xl border border-line shadow-xs transition-all duration-300 hover:shadow-md hover:border-primary/40 hover:-translate-y-1 cursor-pointer;
 }
 
 .card-elevated {
-  @apply card shadow-md hover:shadow-lg;
+  @apply bg-surface rounded-2xl border border-line shadow-md transition-all duration-300 hover:shadow-lg;
 }
 
 .card-interactive {
-  @apply card hover:bg-neutral-50 active:bg-neutral-100 cursor-pointer transition-colors;
+  @apply bg-surface rounded-2xl border border-line shadow-xs transition-all duration-300 hover:bg-neutral-50 active:bg-neutral-100 cursor-pointer;
 }
 
 /* ========== Button Base Styles ========== */
@@ -202,27 +202,27 @@ small, .text-sm {
 }
 
 .btn-primary {
-  @apply btn-base bg-primary text-surface hover:bg-primary-dark active:scale-95 shadow-sm hover:shadow-md;
+  @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary bg-primary text-surface hover:bg-primary-dark active:scale-95 shadow-sm hover:shadow-md;
 }
 
 .btn-secondary {
-  @apply btn-base bg-accent text-surface hover:bg-amber-600 active:scale-95 shadow-sm hover:shadow-md;
+  @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary bg-accent text-surface hover:bg-amber-600 active:scale-95 shadow-sm hover:shadow-md;
 }
 
 .btn-outline {
-  @apply btn-base border-2 border-primary text-primary hover:bg-primary-light active:bg-primary-light/80;
+  @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary border-2 border-primary text-primary hover:bg-primary-light active:bg-primary-light/80;
 }
 
 .btn-ghost {
-  @apply btn-base text-ink hover:bg-neutral-100 active:bg-neutral-200;
+  @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary text-ink hover:bg-neutral-100 active:bg-neutral-200;
 }
 
 .btn-danger {
-  @apply btn-base bg-error text-surface hover:bg-red-700 active:scale-95;
+  @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary bg-error text-surface hover:bg-red-700 active:scale-95;
 }
 
 .btn-success {
-  @apply btn-base bg-success text-surface hover:bg-green-700 active:scale-95;
+  @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary bg-success text-surface hover:bg-green-700 active:scale-95;
 }
 
 .btn-sm {
@@ -285,27 +285,27 @@ small, .text-sm {
 }
 
 .badge-primary {
-  @apply badge bg-primary-light text-primary;
+  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-primary-light text-primary;
 }
 
 .badge-accent {
-  @apply badge bg-accent-light text-accent;
+  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-accent-light text-accent;
 }
 
 .badge-success {
-  @apply badge bg-success-light text-success;
+  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-success-light text-success;
 }
 
 .badge-warning {
-  @apply badge bg-warning-light text-warning;
+  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-warning-light text-warning;
 }
 
 .badge-error {
-  @apply badge bg-error-light text-error;
+  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-error-light text-error;
 }
 
 .badge-info {
-  @apply badge bg-info-light text-info;
+  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-info-light text-info;
 }
 
 /* ========== Modal Styles ========== */
@@ -581,11 +581,11 @@ small, .text-sm {
 }
 
 .gradient-primary {
-  @apply bg-gradient-to-r from-primary to-primary-dark;
+  @apply bg-linear-to-r from-primary to-primary-dark;
 }
 
 .gradient-accent {
-  @apply bg-gradient-to-r from-accent to-orange-500;
+  @apply bg-linear-to-r from-accent to-orange-500;
 }
 
 /* ========== Responsive Utilities ========== */

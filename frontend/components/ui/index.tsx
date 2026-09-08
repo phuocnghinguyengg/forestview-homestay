@@ -70,7 +70,7 @@ export const Alert: React.FC<AlertProps> = ({
 
   return (
     <div className={`alert ${variantClass} ${className}`}>
-      {icon && <span className="flex-shrink-0">{icon}</span>}
+      {icon && <span className="shrink-0">{icon}</span>}
       <div className="flex-1">
         {title && <p className="font-semibold mb-1">{title}</p>}
         <p className="text-sm">{children}</p>
@@ -78,7 +78,7 @@ export const Alert: React.FC<AlertProps> = ({
       {onClose && (
         <button
           onClick={onClose}
-          className="flex-shrink-0 ml-2 hover:opacity-70 transition-opacity"
+          className="shrink-0 ml-2 hover:opacity-70 transition-opacity"
         >
           ✕
         </button>

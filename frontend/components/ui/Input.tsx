@@ -1,6 +1,6 @@
 import React, { InputHTMLAttributes } from 'react';
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
   label?: string;
   error?: string;
   helper?: string;
@@ -37,7 +37,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         
         <div className="relative flex items-center">
           {leftIcon && (
-            <span className="absolute left-3 text-neutral-500 flex-shrink-0">
+            <span className="absolute left-3 text-neutral-500 shrink-0">
               {leftIcon}
             </span>
           )}
@@ -52,7 +52,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           />
           
           {rightIcon && (
-            <span className="absolute right-3 text-neutral-500 flex-shrink-0">
+            <span className="absolute right-3 text-neutral-500 shrink-0">
               {rightIcon}
             </span>
           )}

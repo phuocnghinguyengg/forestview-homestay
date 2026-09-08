@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Mail, Phone, MapPin, Facebook, Instagram, Twitter } from "lucide-react";
+import { Mail, Phone, MapPin, Send, Heart, Star } from "lucide-react";
 
 export default function Footer({ embedded = false }: { embedded?: boolean }) {
   const currentYear = new Date().getFullYear();
@@ -32,9 +32,9 @@ export default function Footer({ embedded = false }: { embedded?: boolean }) {
   ];
 
   const socialLinks = [
-    { icon: Facebook, href: "#", label: "Facebook" },
-    { icon: Instagram, href: "#", label: "Instagram" },
-    { icon: Twitter, href: "#", label: "Twitter" },
+    { icon: Send, href: "#", label: "Message" },
+    { icon: Heart, href: "#", label: "Like" },
+    { icon: Star, href: "#", label: "Review" },
   ];
 
   return (
@@ -99,7 +99,7 @@ export default function Footer({ embedded = false }: { embedded?: boolean }) {
         {/* Contact Info */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12 pb-12 border-b border-line">
           <div className="flex gap-3 items-start">
-            <div className="w-10 h-10 rounded-lg bg-primary-light flex items-center justify-center text-primary flex-shrink-0 mt-0.5">
+            <div className="w-10 h-10 rounded-lg bg-primary-light flex items-center justify-center text-primary shrink-0 mt-0.5">
               <MapPin size={18} />
             </div>
             <div>
@@ -109,7 +109,7 @@ export default function Footer({ embedded = false }: { embedded?: boolean }) {
           </div>
 
           <div className="flex gap-3 items-start">
-            <div className="w-10 h-10 rounded-lg bg-accent-light flex items-center justify-center text-accent flex-shrink-0 mt-0.5">
+            <div className="w-10 h-10 rounded-lg bg-accent-light flex items-center justify-center text-accent shrink-0 mt-0.5">
               <Mail size={18} />
             </div>
             <div>
@@ -119,7 +119,7 @@ export default function Footer({ embedded = false }: { embedded?: boolean }) {
           </div>
 
           <div className="flex gap-3 items-start">
-            <div className="w-10 h-10 rounded-lg bg-success-light flex items-center justify-center text-success flex-shrink-0 mt-0.5">
+            <div className="w-10 h-10 rounded-lg bg-success-light flex items-center justify-center text-success shrink-0 mt-0.5">
               <Phone size={18} />
             </div>
             <div>

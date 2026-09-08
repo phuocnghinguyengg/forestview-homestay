@@ -41,7 +41,7 @@ export default function RoomCard({
           />
 
           {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
           {/* Top Left Badge */}
           <div className="absolute top-3 left-3 z-10">
@@ -71,7 +71,7 @@ export default function RoomCard({
         </div>
 
         {/* Content Section */}
-        <div className="p-5 sm:p-6 flex flex-col flex-grow">
+        <div className="p-5 sm:p-6 flex flex-col grow">
           {/* Title */}
           <h3 className="font-display text-lg sm:text-xl font-semibold text-ink group-hover:text-primary transition line-clamp-2">
             {room.name}
@@ -79,7 +79,7 @@ export default function RoomCard({
 
           {/* Address */}
           <div className="flex items-start gap-2 mt-2 text-neutral-600">
-            <MapPin size={14} className="flex-shrink-0 mt-0.5" />
+            <MapPin size={14} className="shrink-0 mt-0.5" />
             <p className="text-xs sm:text-sm line-clamp-2">{room.address}</p>
           </div>
 
