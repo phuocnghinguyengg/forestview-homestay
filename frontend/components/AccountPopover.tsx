@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import { LogOut, Settings2, ShieldCheck, UserRound, X } from "lucide-react";
+import { LogOut, Settings2, ShieldCheck, UserRound, X, Mail, Phone, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { bookingService } from "@/lib/services/bookingService";
@@ -12,6 +12,8 @@ import BookingStatusBadge from "@/components/BookingStatusBadge";
 import { getErrorMessage } from "@/lib/getErrorMessage";
 import { accountService, AccountProfile } from "@/lib/services/accountService";
 import AdminWorkspaceModal from "@/components/AdminWorkspaceModal";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 
 function displayName(fullName?: string) {
   const words = fullName?.trim().split(/\s+/).filter(Boolean) ?? [];
