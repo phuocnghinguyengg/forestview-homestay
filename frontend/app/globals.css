@@ -19,6 +19,29 @@ body {
   font-family: var(--font-body);
 }
 
+.landing-shell {
+  background:
+    radial-gradient(circle at 12% 12%, rgb(201 122 61 / 0.12), transparent 28rem),
+    radial-gradient(circle at 88% 20%, rgb(47 93 80 / 0.12), transparent 32rem),
+    var(--color-base);
+}
+
+.landing-hero {
+  background:
+    linear-gradient(180deg, rgb(250 246 238 / 0.18), rgb(250 246 238 / 0.82)),
+    radial-gradient(ellipse at 50% 0%, rgb(255 255 255 / 0.95), transparent 65%);
+}
+
+@media (max-width: 767px) {
+  .landing-shell {
+    background: var(--color-base);
+  }
+
+  .landing-hero {
+    min-height: calc(100svh - 72px);
+  }
+}
+
 h1, h2, h3, .font-display {
   font-family: var(--font-display);
 }

@@ -276,13 +276,13 @@ export default function Home() {
       {/* Snap Scrollable Container (Mỗi scroll là 1 khấc) */}
       <main
         ref={scrollContainerRef}
-        className="w-full overflow-x-hidden scroll-smooth md:h-[calc(100vh-69px)] md:overflow-y-auto md:snap-y md:snap-mandatory"
+        className="landing-shell w-full overflow-x-hidden scroll-smooth md:h-[calc(100vh-69px)] md:overflow-y-auto md:snap-y md:snap-mandatory"
       >
         
         {/* ================= KHẤC 1: TÌM PHÒNG & HERO BANNER ================= */}
         <section
           id="section-hero"
-          className={`relative flex w-full flex-col items-center justify-center overflow-hidden px-5 py-10 text-center md:min-h-[calc(100vh-69px)] md:snap-start md:snap-always md:py-6`}
+          className={`landing-hero relative flex w-full flex-col items-center justify-center overflow-hidden px-5 py-14 text-center md:min-h-[calc(100vh-69px)] md:snap-start md:snap-always md:py-6`}
         >
           {/* Subtle Pines Decorative SVG at Bottom */}
           <svg
@@ -300,15 +300,19 @@ export default function Home() {
           </svg>
 
           <div className={`relative z-10 mx-auto max-w-3xl transition-all duration-700 ease-out ${heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-            <p className="font-display text-sm italic tracking-wide text-accent">
+            <p className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-surface/75 px-4 py-2 font-display text-sm italic tracking-wide text-accent shadow-sm backdrop-blur">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
               Đà Lạt, Lâm Đồng
             </p>
 
-            <h1 className="mx-auto mt-3 max-w-2xl font-display text-4xl leading-tight text-ink sm:text-6xl">
+            <h1 className="mx-auto mt-6 max-w-3xl font-display text-4xl leading-[1.08] text-ink sm:text-6xl">
               Chốn dừng chân giữa rừng thông Đà Lạt
             </h1>
+            <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-neutral-600 sm:text-base">
+              Một khoảng bình yên để thức dậy cùng mây, dùng bữa giữa vườn xanh và lưu lại những ngày thật chậm.
+            </p>
             {/* Quick Compact Search Bar */}
-            <div className="mx-auto mt-8 max-w-3xl rounded-3xl border border-line bg-surface p-4 shadow-xl shadow-ink/5 backdrop-blur-md sm:p-5">
+            <div className="mx-auto mt-8 max-w-4xl rounded-[2rem] border border-white/80 bg-white/85 p-3 shadow-2xl shadow-primary/10 backdrop-blur-xl sm:p-5">
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1.4fr_1fr_auto]">
                 {/* Date range trigger */}
                 <div

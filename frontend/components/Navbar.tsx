@@ -6,6 +6,11 @@ import { useRouter } from "next/navigation";
 import { Menu, UserRound, X } from "lucide-react";
 import { useAuthStore } from "@/hooks/useAuthStore";
 
+function displayName(fullName?: string) {
+  const words = fullName?.trim().split(/\s+/).filter(Boolean) ?? [];
+  return words.length > 2 ? words.slice(-2).join(" ") : words.join(" ");
+}
+
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuthStore();
   const router = useRouter();
@@ -56,13 +61,16 @@ export default function Navbar() {
 
           {isAuthenticated && (
             <>
-              <Link href="/dashboard" className="flex items-center gap-2 rounded-full border border-line px-3 py-2 transition hover:border-primary hover:text-primary">
+              <Link
+                href={user?.role === "ADMIN" ? "/admin" : "/account"}
+                className="flex min-w-0 items-center gap-2 rounded-full border border-line px-3 py-2 transition hover:border-primary hover:text-primary"
+                aria-label={user?.role === "ADMIN" ? "Trang quản trị" : "Thông tin tài khoản"}
+              >
                 <span className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-primary/10 text-primary">
                   {user?.avatarUrl ? <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" /> : <UserRound size={16} />}
                 </span>
-                <span className="max-w-32 truncate">{user?.fullName}</span>
+                <span className="max-w-32 truncate">{displayName(user?.fullName)}</span>
               </Link>
-              <Link href="/account" className="transition hover:text-primary">Tài khoản</Link>
               <button type="button" onClick={handleLogout} className="rounded-full border border-line px-5 py-2.5 transition hover:border-primary hover:text-primary">Đăng xuất</button>
             </>
           )}
@@ -84,11 +92,11 @@ export default function Navbar() {
         <div className="border-t border-line bg-base px-5 pt-2 pb-5 text-sm font-medium text-ink md:hidden">
           <div className="flex flex-col gap-1">
             {isAuthenticated && (
-              <Link href="/dashboard" onClick={() => setOpen(false)} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-primary/10">
+              <Link href={user?.role === "ADMIN" ? "/admin" : "/account"} onClick={() => setOpen(false)} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-primary/10">
                 <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-primary/10 text-primary">
                   {user?.avatarUrl ? <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" /> : <UserRound size={17} />}
                 </span>
-                <span className="font-semibold">{user?.fullName}</span>
+                <span className="font-semibold">{displayName(user?.fullName)}</span>
               </Link>
             )}
             {links.map((l) => (
@@ -105,8 +113,6 @@ export default function Navbar() {
                 {l.label}
               </Link>
             ))}
-            {isAuthenticated && <Link href="/account" onClick={() => setOpen(false)} className="rounded-xl px-4 py-3 hover:bg-primary/10">Tài khoản</Link>}
-
             {isAuthenticated && (
               <button
                 type="button"

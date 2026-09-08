@@ -6,8 +6,8 @@ import { ClipboardList, UserCog } from "lucide-react";
 import { useAuthStore } from "@/hooks/useAuthStore";
 
 const NAV_ITEMS = [
-  { href: "/dashboard", label: "Lịch sử đặt hàng", icon: ClipboardList },
   { href: "/account", label: "Tài khoản của tôi", icon: UserCog },
+  { href: "/dashboard", label: "Lịch sử đặt hàng", icon: ClipboardList },
 ];
 
 function AccountNav() {
@@ -16,7 +16,7 @@ function AccountNav() {
   const initial = user?.fullName ? user.fullName.trim().charAt(0).toUpperCase() : "?";
 
   return (
-    <aside className="w-full shrink-0 rounded-3xl bg-ink p-3 text-white sm:p-4 md:sticky md:top-5 md:h-fit md:w-64">
+    <aside className="h-[680px] w-full shrink-0 overflow-hidden rounded-3xl bg-ink p-3 text-white sm:p-4 md:sticky md:top-5 md:w-64">
       <div className="mb-1 flex items-center gap-3 px-3 pt-2 md:mb-6">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/10 font-display text-base font-bold">
           {initial}
@@ -53,7 +53,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-5 md:flex-row md:py-8">
       <AccountNav />
-      <div className="min-w-0 flex-1 rounded-3xl border border-line bg-surface p-5 shadow-sm sm:p-7 md:h-[680px] md:overflow-y-auto">{children}</div>
+      <div className="h-[680px] min-w-0 flex-1 overflow-y-auto rounded-3xl border border-line bg-surface p-5 shadow-sm sm:p-7">{children}</div>
     </div>
   );
 }
