@@ -1,13 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   BedDouble,
   CalendarDays,
   ClipboardList,
   LayoutDashboard,
-  LogOut,
   MessageSquareQuote,
   ShieldCheck,
   Tag,
@@ -15,6 +14,8 @@ import {
 } from "lucide-react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuthStore } from "@/hooks/useAuthStore";
+import AccountPopover from "@/components/AccountPopover";
+import NotificationCenter from "@/components/NotificationCenter";
 
 const ADMIN_NAV = [
   { href: "/admin", label: "Tổng quan", icon: LayoutDashboard },
@@ -28,13 +29,7 @@ const ADMIN_NAV = [
 
 function AdminControlBar() {
   const pathname = usePathname();
-  const router = useRouter();
-  const { user, logout } = useAuthStore();
-
-  const handleLogout = () => {
-    logout();
-    router.push("/");
-  };
+  const user = useAuthStore((state) => state.user);
 
   return (
     <header className="mb-6 border-b border-line pb-5">
@@ -52,9 +47,8 @@ function AdminControlBar() {
           <Link href="/" className="rounded-full border border-line px-4 py-2 text-xs font-semibold text-neutral-600 transition hover:border-primary hover:text-primary">
             Xem website
           </Link>
-          <button type="button" onClick={handleLogout} className="inline-flex items-center gap-1.5 rounded-full border border-line px-4 py-2 text-xs font-semibold text-neutral-600 transition hover:border-red-200 hover:text-red-600">
-            <LogOut size={14} /> Đăng xuất
-          </button>
+          <NotificationCenter />
+          <AccountPopover compact />
         </div>
       </div>
 

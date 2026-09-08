@@ -2,39 +2,25 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
-import { Menu, UserRound, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useAuthStore } from "@/hooks/useAuthStore";
-
-function displayName(fullName?: string) {
-  const words = fullName?.trim().split(/\s+/).filter(Boolean) ?? [];
-  return words.length > 2 ? words.slice(-2).join(" ") : words.join(" ");
-}
+import AccountPopover from "@/components/AccountPopover";
+import NotificationCenter from "@/components/NotificationCenter";
 
 export default function Navbar() {
-  const { user, isAuthenticated, logout } = useAuthStore();
-  const router = useRouter();
+  const { isAuthenticated } = useAuthStore();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
   if (pathname.startsWith("/admin")) return null;
-
-  const handleLogout = () => {
-    setOpen(false);
-    logout();
-    router.push("/");
-  };
 
   const links = !isAuthenticated
     ? [
         { href: "/login", label: "Đăng nhập" },
         { href: "/register", label: "Đăng ký", primary: true },
       ]
-    : user?.role === "ADMIN"
-      ? [{ href: "/admin", label: "Trang quản trị" }]
-      : [];
+    : [];
 
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-canvas/90 backdrop-blur-md">
@@ -49,7 +35,7 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop links */}
-        <div className="hidden items-center gap-6 text-sm font-medium text-ink md:flex">
+        <div className="hidden items-center gap-3 text-sm font-medium text-ink md:flex">
           {links.map((l) => (
             <Link
               key={l.href}
@@ -64,46 +50,31 @@ export default function Navbar() {
             </Link>
           ))}
 
-          {isAuthenticated && (
-            <>
-              <Link
-                href={user?.role === "ADMIN" ? "/admin" : "/account"}
-                className="flex min-w-0 items-center gap-2 rounded-full border border-line px-3 py-2 transition hover:border-primary hover:text-primary"
-                aria-label={user?.role === "ADMIN" ? "Trang quản trị" : "Thông tin tài khoản"}
-              >
-                <span className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-primary/10 text-primary">
-                  {user?.avatarUrl ? <Image src={user.avatarUrl} alt="" width={32} height={32} unoptimized className="h-full w-full object-cover" /> : <UserRound size={16} />}
-                </span>
-                <span className="max-w-32 truncate">{displayName(user?.fullName)}</span>
-              </Link>
-              <button type="button" onClick={handleLogout} className="rounded-full border border-line px-5 py-2.5 transition hover:border-primary hover:text-primary">Đăng xuất</button>
-            </>
-          )}
+          {isAuthenticated && <><NotificationCenter /><AccountPopover /></>}
         </div>
 
-        {/* Mobile toggle */}
-        <button
-          type="button"
-          aria-label={open ? "Đóng menu" : "Mở menu"}
-          onClick={() => setOpen((v) => !v)}
-          className="rounded-full p-2 text-ink transition hover:bg-primary/10 md:hidden"
-        >
-          {open ? <X size={22} /> : <Menu size={22} />}
-        </button>
+        {/* Mobile controls */}
+        {isAuthenticated ? (
+          <div className="flex items-center gap-2 md:hidden">
+            <NotificationCenter />
+            <AccountPopover compact />
+          </div>
+        ) : (
+          <button
+            type="button"
+            aria-label={open ? "Đóng menu" : "Mở menu"}
+            onClick={() => setOpen((v) => !v)}
+            className="rounded-full p-2 text-ink transition hover:bg-primary/10 md:hidden"
+          >
+            {open ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        )}
       </nav>
 
       {/* Mobile panel */}
-      {open && (
+      {open && !isAuthenticated && (
         <div className="border-t border-line bg-canvas px-5 pt-2 pb-5 text-sm font-medium text-ink md:hidden">
           <div className="flex flex-col gap-1">
-            {isAuthenticated && (
-              <Link href={user?.role === "ADMIN" ? "/admin" : "/account"} onClick={() => setOpen(false)} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-primary/10">
-                <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-primary/10 text-primary">
-                  {user?.avatarUrl ? <Image src={user.avatarUrl} alt="" width={36} height={36} unoptimized className="h-full w-full object-cover" /> : <UserRound size={17} />}
-                </span>
-                <span className="font-semibold">{displayName(user?.fullName)}</span>
-              </Link>
-            )}
             {links.map((l) => (
               <Link
                 key={l.href}
@@ -118,15 +89,6 @@ export default function Navbar() {
                 {l.label}
               </Link>
             ))}
-            {isAuthenticated && (
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="mt-1 rounded-xl border border-line px-4 py-3 text-left transition hover:border-primary hover:text-primary"
-              >
-                Đăng xuất
-              </button>
-            )}
           </div>
         </div>
       )}
