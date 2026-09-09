@@ -96,7 +96,7 @@ export default function NotificationCenter() {
             <div className="flex items-center justify-between border-b border-line px-4 py-4">
               <div>
                 <p className="font-display text-xl text-ink">Thông báo</p>
-                <p className="mt-1 text-xs text-neutral-500">{user.role === "ADMIN" ? "Việc cần xử lý" : "Điều đáng nhớ trong chuyến đi"}</p>
+                <p className="mt-1 text-xs text-neutral-500">{user.role === "ADMIN" ? "" : ""}</p>
               </div>
               <button type="button" onClick={() => setOpen(false)} className="rounded-full p-1.5 text-neutral-400 hover:bg-canvas hover:text-ink" aria-label="Đóng thông báo"><X size={16} /></button>
             </div>
