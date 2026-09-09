@@ -133,7 +133,7 @@ function BookingHistoryTab() {
         </div>
       )}
 
-      {error && <p className="mt-6 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-6 text-sm text-rose">{error}</p>}
 
       {!loading && !error && bookings.length === 0 && (
         <div className="mt-6 rounded-2xl border border-dashed border-line bg-canvas/40 p-8 text-center text-sm text-neutral-500">
@@ -172,7 +172,7 @@ function BookingHistoryTab() {
                   </p>
                 )}
                 <p className="mt-1 text-sm font-medium text-accent">{formatPrice(b.totalPrice)}</p>
-                {b.rejectionReason && <p className="mt-2 text-sm text-red-600">Lý do: {b.rejectionReason}</p>}
+                {b.rejectionReason && <p className="mt-2 text-sm text-rose">Lý do: {b.rejectionReason}</p>}
               </div>
 
               <div className="flex items-center gap-3">
@@ -182,7 +182,7 @@ function BookingHistoryTab() {
                   <button
                     onClick={() => handleCancel(b.id)}
                     disabled={cancellingId === b.id}
-                    className="rounded-full border border-line px-3 py-1.5 text-sm text-red-600 transition hover:border-red-300 hover:bg-red-50 disabled:opacity-50"
+                    className="rounded-full border border-line px-3 py-1.5 text-sm text-rose transition hover:border-rose/40 hover:bg-rose/10 disabled:opacity-50"
                   >
                     {cancellingId === b.id ? "Đang hủy..." : "Hủy đơn"}
                   </button>
@@ -247,7 +247,7 @@ function ReviewHistoryTab() {
         </div>
       )}
 
-      {error && <p className="mt-6 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-6 text-sm text-rose">{error}</p>}
 
       {!loading && !error && reviews.length === 0 && (
         <div className="mt-6 rounded-2xl border border-dashed border-line bg-canvas/40 p-8 text-center text-sm text-neutral-500">
@@ -266,7 +266,7 @@ function ReviewHistoryTab() {
                 </div>
                 <p className="text-xs text-neutral-400">{formatDate(r.createdAt)}</p>
               </div>
-              <div className="mt-2 flex items-center gap-0.5 text-amber-400">
+              <div className="mt-2 flex items-center gap-0.5 text-lantern">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star key={i} size={15} className={i < r.rating ? "fill-current" : "text-neutral-200"} />
                 ))}

@@ -172,7 +172,7 @@ export default function AdminUsersPage() {
         </div>
       )}
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-rose">{error}</p>}
 
       {/* Danh sách khách hàng - bảng cột cố định, không co giãn theo nội dung */}
       <div className="overflow-x-auto rounded-2xl border border-line">
@@ -194,7 +194,7 @@ export default function AdminUsersPage() {
               <div
                 key={u.id}
                 className={`grid grid-cols-[minmax(0,1fr)_170px_120px_130px_190px] items-center gap-3 border-b border-line/60 px-4 py-3.5 transition last:border-b-0 ${
-                  u.enabled ? "hover:bg-canvas/30" : "bg-red-50/40 opacity-75"
+                  u.enabled ? "hover:bg-canvas/30" : "bg-rose/10/40 opacity-75"
                 }`}
               >
                 {/* Khách hàng */}
@@ -267,7 +267,7 @@ export default function AdminUsersPage() {
                     className={`inline-flex w-full items-center justify-center gap-1 rounded-xl px-2.5 py-1.5 text-xs font-medium transition disabled:opacity-50 ${
                       u.enabled
                         ? "bg-primary/10 text-primary hover:bg-primary/20"
-                        : "bg-red-100 text-red-600 hover:bg-red-200"
+                        : "bg-rose/15 text-rose hover:bg-rose/20"
                     }`}
                   >
                     {u.enabled ? (
@@ -296,7 +296,7 @@ export default function AdminUsersPage() {
                     type="button"
                     onClick={() => handleDelete(u.id)}
                     disabled={isSelf || busyId === u.id}
-                    className="rounded-xl p-1.5 text-neutral-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+                    className="rounded-xl p-1.5 text-neutral-400 hover:bg-rose/10 hover:text-rose disabled:opacity-50"
                     title="Xóa tài khoản"
                   >
                     <Trash2 size={15} />

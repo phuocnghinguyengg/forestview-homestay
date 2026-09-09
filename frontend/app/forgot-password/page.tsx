@@ -210,8 +210,8 @@ export default function ForgotPasswordPage() {
             </div>
 
             {error && (
-              <div className="mt-5 flex items-start gap-2.5 rounded-2xl border border-red-200 bg-red-50 p-3.5 text-xs text-red-700">
-                <AlertCircle size={16} className="mt-0.5 shrink-0 text-red-600" />
+              <div className="mt-5 flex items-start gap-2.5 rounded-2xl border border-rose/30 bg-rose/10 p-3.5 text-xs text-rose-dark">
+                <AlertCircle size={16} className="mt-0.5 shrink-0 text-rose" />
                 <span>{error}</span>
               </div>
             )}
@@ -269,8 +269,8 @@ export default function ForgotPasswordPage() {
             </div>
 
             {error && (
-              <div className="mt-4 flex items-start gap-2.5 rounded-2xl border border-red-200 bg-red-50 p-3.5 text-xs text-red-700">
-                <AlertCircle size={16} className="mt-0.5 shrink-0 text-red-600" />
+              <div className="mt-4 flex items-start gap-2.5 rounded-2xl border border-rose/30 bg-rose/10 p-3.5 text-xs text-rose-dark">
+                <AlertCircle size={16} className="mt-0.5 shrink-0 text-rose" />
                 <span>{error}</span>
               </div>
             )}
@@ -304,7 +304,7 @@ export default function ForgotPasswordPage() {
                         d
                           ? "border-primary text-primary shadow-sm shadow-primary/20"
                           : "border-line focus:border-primary"
-                      } ${error ? "border-red-300" : ""}`}
+                      } ${error ? "border-rose/40" : ""}`}
                     />
                   ))}
                 </div>

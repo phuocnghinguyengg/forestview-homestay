@@ -83,21 +83,25 @@ export default function RoomFormModal({
   };
 
   return (
-    <div className="fixed inset-0 z-70 flex items-center justify-center bg-black/50 p-3 backdrop-blur-xs sm:p-4">
-      <div className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-surface p-5 shadow-2xl sm:p-7">
-        <div className="flex items-center justify-between border-b border-line pb-4">
-          <div>
-            <h2 className="font-display text-xl text-ink sm:text-2xl">
-              {initial ? "Sửa thông tin phòng" : "Thêm phòng mới"}
-            </h2>
-            <p className="mt-0.5 text-xs text-neutral-500">
-              Quản lý thông tin lưu trú, giá và bộ sưu tập ảnh phòng
-            </p>
+    <div className="modal-overlay" style={{ zIndex: 85 }}>
+      <div role="dialog" aria-modal="true" aria-label={initial ? "Sửa thông tin phòng" : "Thêm phòng mới"} className="modal-panel max-h-[92vh] max-w-2xl">
+        <div className="modal-head flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10"><BedDouble size={18} /></span>
+            <div>
+              <h2 className="font-display text-xl sm:text-2xl">
+                {initial ? "Sửa thông tin phòng" : "Thêm phòng mới"}
+              </h2>
+              <p className="mt-0.5 text-xs text-white/55">
+                Quản lý thông tin lưu trú, giá và bộ sưu tập ảnh phòng
+              </p>
+            </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full p-2 text-neutral-400 hover:bg-neutral-100 hover:text-ink"
+            className="rounded-full p-2 text-white/60 hover:bg-white/10 hover:text-white"
+            aria-label="Đóng"
           >
             ✕
           </button>
@@ -108,7 +112,7 @@ export default function RoomFormModal({
             e.preventDefault();
             onSubmit(form);
           }}
-          className="mt-5 space-y-5"
+          className="min-h-0 flex-1 space-y-5 overflow-y-auto p-5 sm:p-7"
         >
           {/* Section: Thông tin cơ bản */}
           <div className="space-y-3 rounded-2xl border border-line bg-canvas/30 p-4">
@@ -382,7 +386,7 @@ export default function RoomFormModal({
                   <button
                     type="button"
                     onClick={() => removeAmenity(a)}
-                    className="text-primary hover:text-red-600"
+                    className="text-primary hover:text-rose"
                   >
                     ✕
                   </button>
@@ -399,14 +403,14 @@ export default function RoomFormModal({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-full border border-line px-5 py-2.5 text-sm font-medium text-neutral-600 hover:bg-neutral-100"
+              className="btn btn-outline"
             >
               Hủy
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="rounded-full bg-primary px-7 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-dark disabled:opacity-50"
+              className="btn btn-primary px-7"
             >
               {submitting ? "Đang lưu..." : "Lưu thông tin phòng"}
             </button>

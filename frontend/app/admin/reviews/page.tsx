@@ -50,7 +50,7 @@ export default function AdminReviewsPage() {
         </div>
       </div>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-rose">{error}</p>}
 
       <div className="flex flex-wrap gap-2">
         <button
@@ -89,7 +89,7 @@ export default function AdminReviewsPage() {
                     {review.roomName} · {review.roomTypeLabel}
                   </p>
                 </div>
-                <p className="shrink-0 text-sm whitespace-nowrap text-amber-500">
+                <p className="shrink-0 text-sm whitespace-nowrap text-lantern">
                   {"★".repeat(review.rating)}
                   <span className="text-neutral-200">{"★".repeat(5 - review.rating)}</span>
                 </p>
@@ -100,7 +100,7 @@ export default function AdminReviewsPage() {
             <button
               aria-label="Xóa đánh giá"
               onClick={() => remove(review.id)}
-              className="h-fit shrink-0 rounded-lg p-2 text-neutral-400 hover:bg-red-50 hover:text-red-600"
+              className="h-fit shrink-0 rounded-lg p-2 text-neutral-400 hover:bg-rose/10 hover:text-rose"
             >
               <Trash2 size={17} />
             </button>

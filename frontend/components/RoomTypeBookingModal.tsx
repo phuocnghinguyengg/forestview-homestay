@@ -605,7 +605,7 @@ export default function RoomTypeBookingModal({
                 )}
 
                 {error && (
-                  <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600">
+                  <div className="rounded-xl border border-rose/30 bg-rose/10 p-4 text-sm text-rose">
                     {error}
                   </div>
                 )}
@@ -799,7 +799,7 @@ export default function RoomTypeBookingModal({
                             <button
                               type="button"
                               onClick={removeCoupon}
-                              className="text-xs text-neutral-500 hover:text-red-600"
+                              className="text-xs text-neutral-500 hover:text-rose"
                             >
                               Bỏ mã
                             </button>
@@ -822,7 +822,7 @@ export default function RoomTypeBookingModal({
                             </button>
                           </div>
                         )}
-                        {couponError && <p className="mt-1 text-xs text-red-600">{couponError}</p>}
+                        {couponError && <p className="mt-1 text-xs text-rose">{couponError}</p>}
                       </div>
 
                       <div>
@@ -916,7 +916,7 @@ export default function RoomTypeBookingModal({
                     </div>
 
                     {bookingError && (
-                      <p className="mt-3 text-sm text-red-600">
+                      <p className="mt-3 text-sm text-rose">
                         {bookingError}
                       </p>
                     )}

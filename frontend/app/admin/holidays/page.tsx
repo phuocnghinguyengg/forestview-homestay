@@ -102,7 +102,7 @@ export default function AdminHolidaysPage() {
         </div>
       </form>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-rose">{error}</p>}
 
       {/* Holiday list - Responsive cards */}
       <div className="space-y-3">
@@ -139,7 +139,7 @@ export default function AdminHolidaysPage() {
 
             <button
               onClick={() => remove(h.id)}
-              className="rounded-xl p-2 text-neutral-400 hover:bg-red-50 hover:text-red-600"
+              className="rounded-xl p-2 text-neutral-400 hover:bg-rose/10 hover:text-rose"
               title="Xóa ngày lễ"
             >
               <Trash2 size={16} />

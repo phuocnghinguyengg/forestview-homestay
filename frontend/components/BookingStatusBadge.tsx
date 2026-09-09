@@ -1,7 +1,7 @@
 import { BookingStatus } from "@/types";
 
 const STYLES: Record<BookingStatus, string> = {
-  PENDING: "bg-amber-100 text-amber-700",
+  PENDING: "bg-lantern/15 text-lantern-dark",
   CONFIRMED: "bg-green-100 text-green-700",
   CANCELLED: "bg-neutral-100 text-neutral-500",
   COMPLETED: "bg-blue-100 text-blue-700",

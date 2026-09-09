@@ -209,7 +209,7 @@ export default function AdminDiscountCodesPage() {
         </div>
       </form>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-rose">{error}</p>}
       {success && <p className="text-sm text-primary">{success}</p>}
 
       {/* List discount codes - No horizontal scroll! */}
@@ -265,7 +265,7 @@ export default function AdminDiscountCodesPage() {
                 type="button"
                 onClick={() => handleDelete(d.id)}
                 disabled={busyId === d.id}
-                className="rounded-xl p-1.5 text-neutral-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+                className="rounded-xl p-1.5 text-neutral-400 hover:bg-rose/10 hover:text-rose disabled:opacity-50"
                 title="Xóa mã"
               >
                 <Trash2 size={16} />

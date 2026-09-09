@@ -427,7 +427,7 @@ export default function RoomDetailPage() {
                   <article key={review.id} className="rounded-2xl border border-line bg-surface p-4 shadow-2xs">
                     <div className="flex items-center justify-between">
                       <p className="font-semibold text-sm text-ink">{review.userFullName}</p>
-                      <span className="text-amber-500 text-xs">
+                      <span className="text-lantern text-xs">
                         {"★".repeat(review.rating)}
                         <span className="text-neutral-200">{"★".repeat(5 - review.rating)}</span>
                       </span>
@@ -518,7 +518,7 @@ export default function RoomDetailPage() {
                 <span className="font-semibold text-primary">
                   {appliedCoupon.code} · giảm {appliedCoupon.percent}%
                 </span>
-                <button type="button" onClick={removeCoupon} className="text-neutral-400 hover:text-red-600">
+                <button type="button" onClick={removeCoupon} className="text-neutral-400 hover:text-rose">
                   Bỏ mã
                 </button>
               </div>
@@ -540,7 +540,7 @@ export default function RoomDetailPage() {
                 </button>
               </div>
             )}
-            {couponError && <p className="mt-1 text-xs text-red-600">{couponError}</p>}
+            {couponError && <p className="mt-1 text-xs text-rose">{couponError}</p>}
           </div>
 
           {/* Note Input */}
@@ -604,7 +604,7 @@ export default function RoomDetailPage() {
             </div>
           )}
 
-          {error && <p className="mt-3 text-xs text-red-600">{error}</p>}
+          {error && <p className="mt-3 text-xs text-rose">{error}</p>}
           {success && (
             <div className="mt-3 rounded-2xl bg-primary/10 p-3.5 text-xs text-primary">
               ✓ Đặt phòng thành công! Mã đơn: <b>#{success}</b>

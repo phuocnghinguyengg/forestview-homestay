@@ -25,7 +25,7 @@ export default function AdminOverviewPage() {
     dashboardService.getStats().then(setStats).catch((err) => setError(getErrorMessage(err)));
   }, []);
 
-  if (error) return <p className="text-red-600">{error}</p>;
+  if (error) return <p className="text-rose">{error}</p>;
   if (!stats) return <p className="text-neutral-500">Đang tải...</p>;
 
   return (

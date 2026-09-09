@@ -37,8 +37,8 @@ export default function ReviewFormModal({
   };
 
   return (
-    <div className="fixed inset-0 z-70 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
-      <div className="w-full max-w-md rounded-3xl bg-surface p-6 shadow-2xl sm:p-7">
+    <div className="modal-overlay" style={{ zIndex: 85 }}>
+      <div role="dialog" aria-modal="true" aria-label="Đánh giá" className="modal-panel max-w-md p-6 sm:p-7">
         <p className="font-display text-xs italic text-accent">Chia sẻ trải nghiệm của bạn</p>
         <h2 className="mt-1 font-display text-2xl text-ink">{roomName}</h2>
         <p className="mt-1 text-sm text-neutral-500">
@@ -60,7 +60,7 @@ export default function ReviewFormModal({
                 size={28}
                 className={
                   value <= (hoverRating || rating)
-                    ? "fill-amber-400 text-amber-400"
+                    ? "fill-lantern text-lantern"
                     : "text-neutral-200"
                 }
               />
@@ -76,14 +76,14 @@ export default function ReviewFormModal({
           className="mt-5 w-full rounded-xl border border-line bg-canvas/40 px-3.5 py-2.5 text-sm text-ink focus:border-primary focus:outline-none"
         />
 
-        {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+        {error && <p className="mt-2 text-sm text-rose">{error}</p>}
 
         <div className="mt-5 flex justify-end gap-2.5">
           <button
             type="button"
             onClick={onClose}
             disabled={submitting}
-            className="rounded-full border border-line px-4 py-2.5 text-sm font-medium hover:bg-neutral-100 disabled:opacity-50"
+            className="btn btn-outline"
           >
             Để sau
           </button>
@@ -91,7 +91,7 @@ export default function ReviewFormModal({
             type="button"
             onClick={handleSubmit}
             disabled={submitting}
-            className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
+            className="btn btn-primary"
           >
             {submitting ? "Đang gửi..." : "Gửi đánh giá"}
           </button>

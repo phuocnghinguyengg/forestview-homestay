@@ -154,7 +154,7 @@ export default function AdminRoomsPage() {
         </div>
       )}
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-rose">{error}</p>}
 
       {/* Danh sách phòng - bảng cột cố định, không co giãn theo nội dung */}
       <div className="overflow-x-auto rounded-2xl border border-line">
@@ -264,7 +264,7 @@ export default function AdminRoomsPage() {
                   <button
                     type="button"
                     onClick={() => handleDelete(room.id)}
-                    className="inline-flex items-center gap-1 rounded-xl p-2 text-neutral-400 transition hover:bg-red-50 hover:text-red-600"
+                    className="inline-flex items-center gap-1 rounded-xl p-2 text-neutral-400 transition hover:bg-rose/10 hover:text-rose"
                     title="Xóa phòng"
                   >
                     <Trash2 size={16} />

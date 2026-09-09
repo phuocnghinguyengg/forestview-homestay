@@ -90,19 +90,19 @@ export default function ImageUploader({
         </label>
       </div>
 
-      {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
+      {error && <p className="mt-2 text-xs text-rose">{error}</p>}
 
       {/* Main image highlight */}
       {mainImage ? (
         <div className="mt-4 space-y-3">
           <div>
             <div className="mb-2 flex items-center justify-between">
-              <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-600">
-                <Star size={14} className="fill-amber-500 text-amber-500" />
+              <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-lantern-dark">
+                <Star size={14} className="fill-lantern text-lantern" />
                 Ảnh chính (Hiển thị ở thẻ bên ngoài)
               </span>
             </div>
-            <div className="group relative h-48 w-full overflow-hidden rounded-xl border-2 border-amber-500/40 bg-neutral-100 shadow-sm sm:h-56">
+            <div className="group relative h-48 w-full overflow-hidden rounded-xl border-2 border-lantern/40 bg-neutral-100 shadow-sm sm:h-56">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={mainImage} alt="Main room cover" className="h-full w-full object-cover" />
               <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/40 opacity-0 transition group-hover:opacity-100">
@@ -116,7 +116,7 @@ export default function ImageUploader({
                 <button
                   type="button"
                   onClick={() => removeImage(0)}
-                  className="flex items-center gap-1 rounded-lg bg-red-600 px-3 py-1.5 text-xs font-medium text-white shadow hover:bg-red-700"
+                  className="flex items-center gap-1 rounded-lg bg-rose px-3 py-1.5 text-xs font-medium text-white shadow hover:bg-rose-dark"
                 >
                   <Trash2 size={14} /> Xóa
                 </button>
@@ -152,7 +152,7 @@ export default function ImageUploader({
                         <button
                           type="button"
                           onClick={() => setAsMain(actualIdx)}
-                          className="flex w-full items-center justify-center gap-1 rounded-md bg-amber-500 py-1 text-[11px] font-semibold text-white shadow hover:bg-amber-600"
+                          className="flex w-full items-center justify-center gap-1 rounded-md bg-lantern py-1 text-[11px] font-semibold text-white shadow hover:bg-lantern-dark"
                         >
                           <Star size={12} className="fill-current" /> Đặt làm chính
                         </button>
@@ -168,7 +168,7 @@ export default function ImageUploader({
                           <button
                             type="button"
                             onClick={() => removeImage(actualIdx)}
-                            className="rounded-md bg-red-600 p-1 text-white hover:bg-red-700"
+                            className="rounded-md bg-rose p-1 text-white hover:bg-rose-dark"
                             title="Xóa ảnh"
                           >
                             <Trash2 size={13} />

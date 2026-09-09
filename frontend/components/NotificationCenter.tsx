@@ -102,7 +102,7 @@ export default function NotificationCenter() {
             </div>
 
             {loading && <p className="px-5 py-10 text-center text-sm text-neutral-500">Đang tải thông báo...</p>}
-            {!loading && error && <p className="px-5 py-10 text-center text-sm text-red-600">{error}</p>}
+            {!loading && error && <p className="px-5 py-10 text-center text-sm text-rose">{error}</p>}
             {!loading && !error && notices.length === 0 && (
               <div className="px-5 py-10 text-center">
                 <CheckCircle2 className="mx-auto text-primary" size={24} />

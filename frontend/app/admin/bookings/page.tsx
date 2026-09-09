@@ -115,7 +115,7 @@ export default function AdminBookingsPage() {
       </div>
 
       {loading && <p className="text-neutral-500">Đang tải...</p>}
-      {error && <p className="text-red-600">{error}</p>}
+      {error && <p className="text-rose">{error}</p>}
 
       <div className="space-y-4">
         {filtered.map((b) => (
@@ -134,7 +134,7 @@ export default function AdminBookingsPage() {
                 {b.note && <p className="mt-1 text-sm italic text-neutral-500">Ghi chú: {b.note}</p>}
                 <p className="mt-1 text-sm text-neutral-500">{b.nights} đêm · Thanh toán: {b.paymentMethod === "HOLD" ? "Giữ thanh toán" : b.paymentMethod === "QR_CODE" ? "QR Code" : b.paymentMethod === "CARD" ? "NAPAS/VISA/MasterCard" : "Tiền mặt"}</p>
                 {b.membershipDiscountAmount ? <p className="mt-1 text-xs text-primary">Membership -{b.membershipDiscountPercent}%: -{formatPrice(b.membershipDiscountAmount)}</p> : null}
-                {b.rejectionReason && <p className="mt-1 text-sm text-red-600">Lý do: {b.rejectionReason}</p>}
+                {b.rejectionReason && <p className="mt-1 text-sm text-rose">Lý do: {b.rejectionReason}</p>}
                 <p className="mt-1 text-sm font-medium text-accent">{formatPrice(b.totalPrice)}</p>
               </div>
 

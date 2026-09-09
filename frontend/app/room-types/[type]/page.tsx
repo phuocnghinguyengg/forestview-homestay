@@ -76,7 +76,7 @@ export default function RoomsByTypePage() {
           Đang tìm phòng còn trống...
         </div>
       )}
-      {error && <p className="mt-10 text-red-600">{error}</p>}
+      {error && <p className="mt-10 text-rose">{error}</p>}
 
       {!loading && rooms.length === 0 && !error && (
         <div className="mt-10 rounded-3xl border border-line bg-surface p-12 text-center text-neutral-500">

@@ -108,12 +108,12 @@ const FEATURED_ROOM_TYPES = [
 
 const EXPERIENCES = [
   {
-    icon: <Flame size={20} className="text-amber-500" />,
+    icon: <Flame size={20} className="text-lantern" />,
     title: "Tiệc Nướng BBQ & Lửa Trại",
     desc: "Sân nướng ngoài trời giữa đồi thông thơ mộng và bếp lửa ấm cúng đêm lạnh.",
   },
   {
-    icon: <Coffee size={20} className="text-amber-700" />,
+    icon: <Coffee size={20} className="text-lantern-dark" />,
     title: "Cà Phê Sáng Săn Mây",
     desc: "Thưởng thức Arabica Cầu Đất nguyên chất khi sương sớm còn phủ thung lũng.",
   },
@@ -401,14 +401,14 @@ export default function Home() {
               )}
 
               {searchError && (
-                <p className="mt-2.5 text-xs text-red-600 text-center font-medium">{searchError}</p>
+                <p className="mt-2.5 text-xs text-rose text-center font-medium">{searchError}</p>
               )}
             </div>
 
             {/* Quick Metrics */}
             <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs font-medium text-neutral-500 sm:gap-6">
               <span className="flex items-center gap-1.5">
-                <Star size={13} className="fill-amber-400 text-amber-400" />
+                <Star size={13} className="fill-lantern text-lantern" />
                 <b className="text-ink">{reviewSummary ? `${reviewSummary.averageRating.toFixed(1)}/5` : "Đang tính..."}</b> Đánh giá thực tế
               </span>
               <span>·</span>

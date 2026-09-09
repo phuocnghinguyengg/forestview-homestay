@@ -66,7 +66,7 @@ export default function ReviewShowcase({ limit = 3 }: { limit?: number }) {
             key={review.id}
             className="flex flex-col rounded-2xl border border-line bg-surface p-5 shadow-2xs"
           >
-            <p className="text-xs text-amber-500">
+            <p className="text-xs text-lantern">
               {"★".repeat(review.rating)}
               <span className="text-neutral-200">{"★".repeat(5 - review.rating)}</span>
             </p>

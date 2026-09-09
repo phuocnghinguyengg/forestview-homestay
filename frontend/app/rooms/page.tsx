@@ -221,7 +221,7 @@ export default function RoomsPage() {
       </section>
 
       {error && (
-        <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+        <div className="mt-4 rounded-2xl border border-rose/30 bg-rose/10 px-4 py-3 text-sm text-rose">
           {error}
         </div>
       )}

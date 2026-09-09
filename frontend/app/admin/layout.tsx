@@ -17,19 +17,20 @@ function AdminControlBar() {
   const [workspaceOpen, setWorkspaceOpen] = useState(false);
 
   return (
-    <header className="mb-6 border-b border-line pb-5">
+    <header className="dusk-header -mx-4 -mt-4 mb-6 rounded-t-[1.75rem] px-4 pt-5 pb-4 sm:-mx-6 sm:-mt-6 sm:px-6 sm:pt-6">
+      <div className="hairline-strip absolute inset-x-0 top-0 rounded-t-[1.75rem]" />
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-white shadow-sm">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-lantern/20 text-lantern shadow-sm">
             <ShieldCheck size={22} />
           </div>
           <div>
-            <p className="font-display text-xl text-ink">ForestView studio</p>
-            <p className="text-xs text-neutral-500">Không gian vận hành · {user?.fullName || "Quản trị viên"}</p>
+            <p className="font-display text-xl text-white">ForestView studio</p>
+            <p className="text-xs text-white/55">Không gian vận hành · {user?.fullName || "Quản trị viên"}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Link href="/" className="rounded-full border border-line px-4 py-2 text-xs font-semibold text-neutral-600 transition hover:border-primary hover:text-primary">
+          <Link href="/" className="rounded-full border border-white/20 px-4 py-2 text-xs font-semibold text-white/80 transition hover:border-white/40 hover:text-white">
             Xem website
           </Link>
           <NotificationCenter />
@@ -47,7 +48,7 @@ function AdminControlBar() {
               type="button"
               onClick={() => setWorkspaceOpen(true)}
               className={`inline-flex shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition sm:px-3.5 sm:text-sm ${
-                active ? "bg-ink text-white shadow-sm" : "text-neutral-500 hover:bg-primary/10 hover:text-primary"
+                active ? "bg-white/15 text-white shadow-sm" : "text-white/55 hover:bg-white/10 hover:text-white"
               }`}
             >
               <Icon size={15} />

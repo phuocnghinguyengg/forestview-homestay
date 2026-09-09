@@ -164,7 +164,7 @@ export default function RoomTypesPage() {
         )}
       </div>
 
-      {error && <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-4 rounded-xl bg-rose/10 p-3 text-sm text-rose">{error}</p>}
 
       {results === null && !loading && (
         <div className="mt-10 rounded-3xl border border-dashed border-neutral-300 p-10 text-center text-sm text-neutral-500">

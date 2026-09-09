@@ -18,7 +18,7 @@ function Notice({ message, error }: { message: string; error: string }) {
   return (
     <div
       className={`rounded-xl border px-4 py-3 text-sm ${
-        error ? "border-red-200 bg-red-50 text-red-700" : "border-primary/20 bg-primary/5 text-primary"
+        error ? "border-rose/30 bg-rose/10 text-rose-dark" : "border-primary/20 bg-primary/5 text-primary"
       }`}
     >
       {error || message}
@@ -359,7 +359,7 @@ function AccountContent() {
         </div>
 
         {loading && <p className="text-sm text-neutral-500">Đang tải thông tin tài khoản...</p>}
-        {loadError && <p className="text-sm text-red-600">{loadError}</p>}
+        {loadError && <p className="text-sm text-rose">{loadError}</p>}
 
         {!loading && !loadError && (
           <>
