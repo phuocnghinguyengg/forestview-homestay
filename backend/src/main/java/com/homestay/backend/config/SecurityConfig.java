@@ -43,6 +43,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/rooms/**", "/api/room-types/**").permitAll()
+                .requestMatchers("/api/upload/**").authenticated()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/reviews/me").authenticated()
                 .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/reviews/**").permitAll()

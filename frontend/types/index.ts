@@ -4,8 +4,11 @@ export type PaymentMethod = "CASH" | "QR_CODE" | "CARD" | "HOLD";
 export type PaymentStatus = "UNPAID" | "PAID" | "HOLD";
 
 export interface AuthUser {
+  id?: number;
   fullName: string;
+  username?: string;
   email: string;
+  phone?: string | null;
   avatarUrl?: string | null;
   role: Role;
   emailVerified: boolean;
@@ -15,8 +18,11 @@ export interface AuthUser {
 export interface AuthResponse {
   accessToken: string;
   refreshToken: string;
+  id?: number;
   fullName: string;
+  username?: string;
   email: string;
+  phone?: string | null;
   avatarUrl?: string | null;
   role: Role;
   emailVerified: boolean;

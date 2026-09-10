@@ -69,10 +69,23 @@ public class AuthService {
             );
         }
 
+        String username = request.getUsername() == null ? null : request.getUsername().trim().toLowerCase();
+        if (username != null && !username.isBlank()) {
+            if (!username.matches("^[a-zA-Z0-9_.-]{3,30}$")) {
+                throw new IllegalArgumentException("Tên đăng nhập từ 3-30 ký tự, chỉ gồm chữ cái, số, dấu chấm hoặc gạch dưới");
+            }
+            if (userRepository.existsByUsernameIgnoreCase(username) || userRepository.existsByEmailIgnoreCase(username)) {
+                throw new IllegalArgumentException("Tên đăng nhập này đã được sử dụng");
+            }
+        } else {
+            username = null;
+        }
+
         String otp = generateOtp();
 
         User user = User.builder()
                 .fullName(fullName)
+                .username(username)
                 .email(email)
                 .password(
                         passwordEncoder.encode(
@@ -227,29 +240,23 @@ public class AuthService {
     public AuthResponse login(
             LoginRequest request
     ) {
-        String email = normalizeEmail(request.getEmail());
+        String identifier = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
+
+        User user = userRepository.findByEmailOrUsername(identifier)
+                .orElseThrow(() -> new IllegalArgumentException("Tên đăng nhập/email hoặc mật khẩu không đúng"));
 
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            email,
+                            user.getEmail(),
                             request.getPassword()
                     )
             );
         } catch (org.springframework.security.core.AuthenticationException ex) {
             throw new IllegalArgumentException(
-                    "Email hoặc mật khẩu không đúng"
+                    "Tên đăng nhập/email hoặc mật khẩu không đúng"
             );
         }
-
-        User user =
-                userRepository
-                        .findByEmail(email)
-                        .orElseThrow(
-                                () -> new IllegalArgumentException(
-                                        "Email hoặc mật khẩu không đúng"
-                                )
-                        );
 
         return buildAuthResponse(user);
     }
@@ -318,7 +325,9 @@ public class AuthService {
                 .refreshToken(refreshToken)
                 .id(user.getId())
                 .fullName(user.getFullName())
+                .username(user.getUsername())
                 .email(user.getEmail())
+                .avatarUrl(user.getAvatarUrl())
                 .phone(user.getPhone())
                 .role(user.getRole().name())
                 .emailVerified(user.getEmailVerified())

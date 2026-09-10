@@ -6,8 +6,8 @@ import { ClipboardList, UserCog } from "lucide-react";
 import { useAuthStore } from "@/hooks/useAuthStore";
 
 const NAV_ITEMS = [
-  { href: "/account", label: "Tài khoản của tôi", icon: UserCog },
-  { href: "/dashboard", label: "Lịch sử đặt hàng", icon: ClipboardList },
+  { href: "/account", label: "Thông tin của tôi", icon: UserCog },
+  { href: "/dashboard", label: "Lịch sử đặt phòng", icon: ClipboardList },
 ];
 
 function AccountNav() {

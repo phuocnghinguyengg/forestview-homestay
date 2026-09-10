@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
+import { Eye, EyeOff, X } from "lucide-react";
 
 import { authService } from "@/lib/services/authService";
 import { useAuthStore } from "@/hooks/useAuthStore";
@@ -67,7 +68,9 @@ function OtpBoxes({
       {digits.map((d, idx) => (
         <input
           key={idx}
-          ref={(el) => { inputRefs.current[idx] = el; }}
+          ref={(el) => {
+            inputRefs.current[idx] = el;
+          }}
           type="text"
           inputMode="numeric"
           maxLength={1}
@@ -94,58 +97,47 @@ export default function AuthModal() {
     if (!open) return;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = prevOverflow; };
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
   }, [open]);
 
   if (!open || typeof document === "undefined") return null;
 
-  const titles: Record<typeof view, string> = {
-    login: "Đăng nhập",
-    register: "Tạo tài khoản mới",
-    otp: "Xác thực email",
-    forgot: "Quên mật khẩu",
-  };
-
-  const AUTH_NAV: { view: AuthModalView; label: string }[] = [
-    { view: "login", label: "Đăng nhập" },
-    { view: "register", label: "Đăng ký" },
-  ];
-
   return createPortal(
     <div
-      className="modal-overlay"
-      onClick={(e) => { if (e.target === e.currentTarget) close(); }}
+      className="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs animate-in fade-in duration-200"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) close();
+      }}
     >
-      <div role="dialog" aria-modal="true" aria-label={titles[view]} className="modal-panel modal-panel--row h-[min(90vh,720px)] max-w-2xl">
-        <aside className="side-nav">
-          {AUTH_NAV.map((item) => (
-            <button key={item.view} type="button" onClick={() => setView(item.view)} className={`side-nav-btn ${view === item.view ? "active" : ""}`}>
-              {item.label}
-            </button>
-          ))}
-        </aside>
-        <div className="flex min-w-0 flex-1 flex-col">
-          <div className="modal-head flex items-center justify-between gap-4">
-            <div className="min-w-0">
-              <p className="text-[11px] font-bold tracking-[0.16em] text-primary uppercase">ForestView Homestay</p>
-              <h2 className="mt-1 truncate font-display text-2xl text-ink">{titles[view]}</h2>
-            </div>
-            <button type="button" onClick={close} aria-label="Đóng" className="shrink-0 rounded-full border border-line p-2 text-neutral-500 transition hover:bg-canvas hover:text-ink">✕</button>
-          </div>
+      <div
+        role="dialog"
+        aria-modal="true"
+        className="relative w-full max-w-md overflow-hidden rounded-3xl border border-line bg-surface p-6 sm:p-8 shadow-2xl animate-in zoom-in-95 duration-200"
+      >
+        {/* Close button */}
+        <button
+          type="button"
+          onClick={close}
+          aria-label="Đóng"
+          className="absolute top-5 right-5 rounded-full border border-line p-1.5 text-neutral-400 transition hover:bg-neutral-100 hover:text-ink cursor-pointer"
+        >
+          <X size={18} />
+        </button>
 
-          <AuthModalBody
-            key={token}
-            view={view}
-            modalEmail={modalEmail}
-            setView={setView}
-            close={close}
-            login={login}
-            router={router}
-          />
-        </div>
+        <AuthModalBody
+          key={token}
+          view={view}
+          modalEmail={modalEmail}
+          setView={setView}
+          close={close}
+          login={login}
+          router={router}
+        />
       </div>
     </div>,
-    document.body,
+    document.body
   );
 }
 
@@ -165,13 +157,15 @@ function AuthModalBody({
   router: ReturnType<typeof useRouter>;
 }) {
   // ---- Login form ----
-  const [loginForm, setLoginForm] = useState({ email: "", password: "" });
+  const [loginIdentifier, setLoginIdentifier] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
   const [loginShowPassword, setLoginShowPassword] = useState(false);
   const [loginError, setLoginError] = useState("");
   const [loginBusy, setLoginBusy] = useState(false);
 
   // ---- Register form ----
   const [fullName, setFullName] = useState("");
+  const [username, setUsername] = useState("");
   const [regEmail, setRegEmail] = useState("");
   const [regPassword, setRegPassword] = useState("");
   const [regConfirm, setRegConfirm] = useState("");
@@ -227,12 +221,15 @@ function AuthModalBody({
     setLoginBusy(true);
     try {
       const res = await authService.login({
-        email: loginForm.email.trim().toLowerCase(),
-        password: loginForm.password,
+        email: loginIdentifier.trim(),
+        password: loginPassword,
       });
       login(res.accessToken, res.refreshToken, {
+        id: res.id,
         fullName: res.fullName,
+        username: res.username,
         email: res.email,
+        phone: res.phone,
         avatarUrl: res.avatarUrl,
         role: res.role,
         emailVerified: res.emailVerified,
@@ -240,7 +237,7 @@ function AuthModalBody({
       });
       afterAuth(res.role);
     } catch (err) {
-      setLoginError(getErrorMessage(err, "Email hoặc mật khẩu không đúng"));
+      setLoginError(getErrorMessage(err, "Tên đăng nhập/email hoặc mật khẩu không đúng"));
     } finally {
       setLoginBusy(false);
     }
@@ -252,24 +249,29 @@ function AuthModalBody({
 
     const normalizedEmail = regEmail.trim().toLowerCase();
     const normalizedName = fullName.trim();
+    const normalizedUsername = username.trim().toLowerCase();
 
     if (normalizedName.length < 2) return setRegError("Họ và tên phải có ít nhất 2 ký tự");
+    if (normalizedUsername && !/^[a-zA-Z0-9_.-]{3,30}$/.test(normalizedUsername)) {
+      return setRegError("Tên đăng nhập từ 3-30 ký tự (chữ cái, số, gạch dưới, gạch ngang, chấm)");
+    }
     if (!normalizedEmail) return setRegError("Vui lòng nhập email hợp lệ");
     if (regPhone && !isValidPhoneNumber(regPhone)) return setRegError("Số điện thoại không hợp lệ");
     if (regPassword.length < 6) return setRegError("Mật khẩu phải có ít nhất 6 ký tự");
-    if (regPassword !== regConfirm) return setRegError("Mật khẩu xác nhận không khớp với mật khẩu đã nhập");
+    if (regPassword !== regConfirm) return setRegError("Mật khẩu xác nhận không khớp với mật khẩu");
 
     setRegBusy(true);
     try {
       const res = await authService.register({
         fullName: normalizedName,
+        username: normalizedUsername || undefined,
         email: normalizedEmail,
         password: regPassword,
         phone: regPhone,
       });
       setView("otp", res.email);
     } catch (err) {
-      setRegError(getErrorMessage(err, "Đăng ký thất bại, vui lòng thử lại"));
+      setRegError(getErrorMessage(err, "Đăng ký không thành công"));
     } finally {
       setRegBusy(false);
     }
@@ -277,108 +279,97 @@ function AuthModalBody({
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    const otp = otpDigits.join("");
-    if (!modalEmail) return setOtpError("Không tìm thấy email xác thực.");
-    if (otp.length !== 6) return setOtpError("Vui lòng nhập đủ 6 chữ số.");
-
     setOtpError("");
-    setOtpMessage("");
+    const otp = otpDigits.join("");
+    if (otp.length !== 6) return setOtpError("Vui lòng nhập đủ 6 chữ số mã OTP");
+
     setOtpBusy(true);
     try {
       const res = await authService.verifyOtp({ email: modalEmail, otp });
       login(res.accessToken, res.refreshToken, {
+        id: res.id,
         fullName: res.fullName,
+        username: res.username,
         email: res.email,
+        phone: res.phone,
+        avatarUrl: res.avatarUrl,
         role: res.role,
         emailVerified: res.emailVerified,
+        membershipTier: res.membershipTier,
       });
       afterAuth(res.role);
     } catch (err) {
       setOtpError(getErrorMessage(err, "Mã OTP không đúng hoặc đã hết hạn"));
-      setOtpDigits(["", "", "", "", "", ""]);
     } finally {
       setOtpBusy(false);
     }
   };
 
   const handleResendOtp = async () => {
-    if (!modalEmail || otpCooldown > 0) return;
+    if (otpCooldown > 0) return;
     setOtpError("");
     setOtpMessage("");
     setOtpResending(true);
     try {
       await authService.resendOtp({ email: modalEmail });
-      setOtpMessage("Đã gửi lại mã OTP mới. Vui lòng kiểm tra hộp thư.");
+      setOtpMessage("Đã gửi mã OTP mới tới email của bạn.");
       runCooldown(setOtpCooldown);
     } catch (err) {
-      setOtpError(getErrorMessage(err, "Không thể gửi lại mã, vui lòng thử lại"));
+      setOtpError(getErrorMessage(err, "Không thể gửi lại mã OTP"));
     } finally {
       setOtpResending(false);
     }
   };
 
   const handleSkipOtp = async () => {
-    if (!modalEmail) return setOtpError("Không tìm thấy email xác thực.");
-    if (!confirm("Bỏ qua xác thực? Bạn sẽ không thể đặt phòng cho đến khi xác thực email.")) return;
-
     setOtpError("");
     setOtpSkipping(true);
     try {
       const res = await authService.skipOtp({ email: modalEmail });
       login(res.accessToken, res.refreshToken, {
+        id: res.id,
         fullName: res.fullName,
+        username: res.username,
         email: res.email,
+        phone: res.phone,
+        avatarUrl: res.avatarUrl,
         role: res.role,
         emailVerified: res.emailVerified,
+        membershipTier: res.membershipTier,
       });
       afterAuth(res.role);
     } catch (err) {
-      setOtpError(getErrorMessage(err, "Không thể bỏ qua xác thực"));
+      setOtpError(getErrorMessage(err, "Không thể bỏ qua xác thực lúc này"));
     } finally {
       setOtpSkipping(false);
     }
   };
 
-  const requestForgotOtp = async (e: React.FormEvent) => {
+  const handleRequestPasswordReset = async (e: React.FormEvent) => {
     e.preventDefault();
     setForgotError("");
     setForgotMessage("");
     setForgotBusy(true);
     try {
       await authService.requestPasswordReset({ email: forgotEmail.trim().toLowerCase() });
+      setForgotMessage("Mã xác thực đã được gửi tới email của bạn.");
       setForgotStep("otp");
       runCooldown(setForgotCooldown);
     } catch (err) {
-      setForgotError(getErrorMessage(err, "Không thể gửi mã OTP"));
+      setForgotError(getErrorMessage(err, "Không thể gửi mã đặt lại mật khẩu"));
     } finally {
       setForgotBusy(false);
     }
   };
 
-  const resendForgotOtp = async () => {
-    if (forgotCooldown > 0) return;
-    setForgotError("");
-    setForgotBusy(true);
-    try {
-      await authService.requestPasswordReset({ email: forgotEmail.trim().toLowerCase() });
-      setForgotMessage("Đã gửi lại mã OTP mới.");
-      runCooldown(setForgotCooldown);
-    } catch (err) {
-      setForgotError(getErrorMessage(err, "Không thể gửi lại mã"));
-    } finally {
-      setForgotBusy(false);
-    }
-  };
-
-  const submitResetPassword = async (e: React.FormEvent) => {
+  const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setForgotError("");
     setForgotMessage("");
     const otp = forgotDigits.join("");
-
-    if (otp.length !== 6) return setForgotError("Vui lòng nhập đủ 6 chữ số OTP.");
-    if (forgotPassword.length < 6) return setForgotError("Mật khẩu phải có ít nhất 6 ký tự.");
-    if (forgotPassword !== forgotConfirm) return setForgotError("Mật khẩu xác nhận không khớp.");
+    if (otp.length !== 6) return setForgotError("Vui lòng nhập đủ 6 chữ số mã OTP");
+    if (forgotPassword.length < 6) return setForgotError("Mật khẩu mới phải có ít nhất 6 ký tự");
+    if (forgotPassword !== forgotConfirm) return setForgotError("Mật khẩu xác nhận không khớp");
 
     setForgotBusy(true);
     try {
@@ -389,163 +380,414 @@ function AuthModalBody({
       });
       setForgotStep("done");
     } catch (err) {
-      setForgotError(getErrorMessage(err, "Mã OTP không đúng hoặc đã hết hạn"));
-      setForgotDigits(["", "", "", "", "", ""]);
+      setForgotError(getErrorMessage(err, "Đặt lại mật khẩu thất bại"));
     } finally {
       setForgotBusy(false);
     }
   };
 
-  return (
-        <div className="min-h-0 flex-1 overflow-y-auto p-6 sm:p-8">
-          {view === "login" && (
-            <>
-              <p className="text-sm text-neutral-500">Chào mừng bạn quay lại với kỳ nghỉ giữa rừng thông Đà Lạt.</p>
-              {loginError && <p className="mt-4 rounded-2xl border border-rose/30 bg-rose/10 p-3.5 text-xs text-rose-dark">{loginError}</p>}
-              <form onSubmit={handleLogin} className="mt-5 space-y-4">
-                <label className="field-label">Địa chỉ Email
-                  <input type="email" required autoFocus value={loginForm.email} onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })} className="field-input mt-1" placeholder="name@example.com" />
-                </label>
-                <label className="field-label">
-                  <span className="flex items-center justify-between">
-                    Mật khẩu
-                    <button type="button" onClick={() => setView("forgot", loginForm.email)} className="text-xs font-medium text-primary hover:underline">Quên mật khẩu?</button>
-                  </span>
-                  <span className="relative mt-1 block">
-                    <input type={loginShowPassword ? "text" : "password"} required value={loginForm.password} onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })} className="field-input pr-16" placeholder="••••••••" />
-                    <button type="button" onClick={() => setLoginShowPassword((v) => !v)} className="absolute inset-y-0 right-3 text-xs font-semibold text-neutral-400 hover:text-ink">{loginShowPassword ? "Ẩn" : "Hiện"}</button>
-                  </span>
-                </label>
-                <button type="submit" disabled={loginBusy || !loginForm.email || !loginForm.password} className="btn btn-primary w-full">{loginBusy ? "Đang đăng nhập..." : "Đăng nhập ngay"}</button>
-              </form>
-              <p className="mt-6 border-t border-line/70 pt-5 text-center text-xs text-neutral-500">
-                Chưa có tài khoản?{" "}
-                <button type="button" onClick={() => setView("register")} className="font-bold text-primary hover:underline">Đăng ký tài khoản mới</button>
-              </p>
-            </>
-          )}
-
-          {view === "register" && (
-            <>
-              <p className="text-sm text-neutral-500">Đăng ký để nhận ưu đãi thành viên &amp; đặt homestay nhanh chóng.</p>
-              {regError && <p className="mt-4 rounded-2xl border border-rose/30 bg-rose/10 p-3.5 text-xs text-rose-dark">{regError}</p>}
-              <form onSubmit={handleRegister} className="mt-5 space-y-4">
-                <label className="field-label">Họ và tên
-                  <input type="text" required autoFocus value={fullName} onChange={(e) => setFullName(e.target.value)} className="field-input mt-1" placeholder="Nguyễn Văn A" autoComplete="name" />
-                </label>
-                <label className="field-label">Địa chỉ Email
-                  <input type="email" required value={regEmail} onChange={(e) => setRegEmail(e.target.value)} className="field-input mt-1" placeholder="name@example.com" autoComplete="email" />
-                </label>
-                <label className="field-label">Số điện thoại <span className="font-normal text-neutral-400">(Tùy chọn)</span>
-                  <div className="phone-input-wrapper mt-1">
-                    <PhoneInput international defaultCountry="VN" value={regPhone} onChange={setRegPhone} placeholder="Nhập số điện thoại" />
-                  </div>
-                </label>
-                <label className="field-label">Mật khẩu <span className="font-normal text-neutral-400">(Tối thiểu 6 ký tự)</span>
-                  <span className="relative mt-1 block">
-                    <input type={regShowPassword ? "text" : "password"} required minLength={6} value={regPassword} onChange={(e) => setRegPassword(e.target.value)} className="field-input pr-16" placeholder="••••••••" autoComplete="new-password" />
-                    <button type="button" onClick={() => setRegShowPassword((v) => !v)} className="absolute inset-y-0 right-3 text-xs font-semibold text-neutral-400 hover:text-ink">{regShowPassword ? "Ẩn" : "Hiện"}</button>
-                  </span>
-                </label>
-                <label className="field-label">Xác nhận lại mật khẩu
-                  <span className="relative mt-1 block">
-                    <input type={regShowConfirm ? "text" : "password"} required minLength={6} value={regConfirm} onChange={(e) => setRegConfirm(e.target.value)} className="field-input pr-16" placeholder="••••••••" autoComplete="new-password" />
-                    <button type="button" onClick={() => setRegShowConfirm((v) => !v)} className="absolute inset-y-0 right-3 text-xs font-semibold text-neutral-400 hover:text-ink">{regShowConfirm ? "Ẩn" : "Hiện"}</button>
-                  </span>
-                </label>
-                <button type="submit" disabled={regBusy || !fullName || !regEmail || !regPassword || !regConfirm} className="btn btn-primary w-full">{regBusy ? "Đang tạo tài khoản..." : "Đăng ký & Nhận mã xác thực"}</button>
-              </form>
-              <p className="mt-6 border-t border-line/70 pt-5 text-center text-xs text-neutral-500">
-                Đã có tài khoản ForestView?{" "}
-                <button type="button" onClick={() => setView("login")} className="font-bold text-primary hover:underline">Đăng nhập ngay</button>
-              </p>
-            </>
-          )}
-
-          {view === "otp" && (
-            <>
-              <p className="text-sm text-neutral-500">
-                Mã gồm <b>6 chữ số</b> đã được gửi tới <span className="font-semibold text-ink">{modalEmail || "email của bạn"}</span>. Mã có hiệu lực trong <b>10 phút</b>.
-              </p>
-              {otpError && <p className="mt-4 rounded-2xl border border-rose/30 bg-rose/10 p-3.5 text-xs text-rose-dark">{otpError}</p>}
-              {otpMessage && <p className="mt-4 rounded-2xl border border-primary/20 bg-primary/10 p-3.5 text-xs text-primary">{otpMessage}</p>}
-              <form onSubmit={handleVerifyOtp} className="mt-6">
-                <OtpBoxes digits={otpDigits} onChange={setOtpDigits} hasError={!!otpError} />
-                <button type="submit" disabled={otpBusy || otpDigits.join("").length !== 6} className="btn btn-primary mt-6 w-full">{otpBusy ? "Đang xác thực..." : "Xác thực & Hoàn tất đăng ký"}</button>
-              </form>
-              <div className="mt-5 flex flex-col items-center gap-2 border-t border-line/70 pt-4 text-center">
-                <p className="text-xs text-neutral-500">Chưa nhận được mã?</p>
-                <button type="button" onClick={handleResendOtp} disabled={otpResending || otpCooldown > 0} className="text-xs font-semibold text-primary hover:underline disabled:opacity-50">
-                  {otpResending ? "Đang gửi lại..." : otpCooldown > 0 ? `Gửi lại sau ${otpCooldown}s` : "Gửi lại mã OTP"}
-                </button>
-              </div>
-              <div className="mt-3 text-center">
-                <button type="button" onClick={handleSkipOtp} disabled={otpSkipping} className="text-xs text-neutral-400 hover:text-neutral-600 disabled:opacity-50">
-                  {otpSkipping ? "Đang xử lý..." : "Bỏ qua lúc này (sẽ không thể đặt phòng)"}
-                </button>
-              </div>
-            </>
-          )}
-
-          {view === "forgot" && (
-            <>
-              {forgotStep === "done" && (
-                <div className="flex flex-col items-center py-4 text-center">
-                  <h3 className="font-display text-2xl text-ink">Đặt lại mật khẩu thành công!</h3>
-                  <p className="mt-2 text-sm text-neutral-500">Mật khẩu của bạn đã được cập nhật. Bạn có thể đăng nhập ngay bây giờ.</p>
-                  <button type="button" onClick={() => setView("login")} className="btn btn-primary mt-6">Đăng nhập ngay</button>
-                </div>
-              )}
-
-              {forgotStep === "email" && (
-                <>
-                  <p className="text-sm text-neutral-500">Nhập email đã đăng ký — chúng tôi sẽ gửi mã OTP để đặt lại mật khẩu.</p>
-                  {forgotError && <p className="mt-4 rounded-2xl border border-rose/30 bg-rose/10 p-3.5 text-xs text-rose-dark">{forgotError}</p>}
-                  <form onSubmit={requestForgotOtp} className="mt-5 space-y-4">
-                    <label className="field-label">Địa chỉ Email
-                      <input type="email" required autoFocus value={forgotEmail} onChange={(e) => { setForgotEmail(e.target.value); setForgotError(""); }} className="field-input mt-1" placeholder="name@example.com" />
-                    </label>
-                    <button type="submit" disabled={forgotBusy || !forgotEmail} className="btn btn-primary w-full">{forgotBusy ? "Đang gửi mã..." : "Gửi mã xác thực OTP"}</button>
-                  </form>
-                  <p className="mt-6 border-t border-line/70 pt-5 text-center text-xs text-neutral-500">
-                    <button type="button" onClick={() => setView("login")} className="font-bold text-primary hover:underline">Quay lại đăng nhập</button>
-                  </p>
-                </>
-              )}
-
-              {forgotStep === "otp" && (
-                <>
-                  <p className="text-sm text-neutral-500">Mã OTP đã gửi tới <span className="font-semibold text-ink">{forgotEmail}</span></p>
-                  {forgotError && <p className="mt-4 rounded-2xl border border-rose/30 bg-rose/10 p-3.5 text-xs text-rose-dark">{forgotError}</p>}
-                  {forgotMessage && <p className="mt-4 rounded-2xl border border-primary/20 bg-primary/10 p-3.5 text-xs text-primary">{forgotMessage}</p>}
-                  <form onSubmit={submitResetPassword} className="mt-5 space-y-4">
-                    <label className="field-label">Mã OTP (6 chữ số)
-                      <div className="mt-2"><OtpBoxes digits={forgotDigits} onChange={setForgotDigits} hasError={!!forgotError} /></div>
-                    </label>
-                    <label className="field-label">Mật khẩu mới
-                      <span className="relative mt-1 block">
-                        <input type={forgotShowPassword ? "text" : "password"} required minLength={6} value={forgotPassword} onChange={(e) => { setForgotPassword(e.target.value); setForgotError(""); }} className="field-input pr-16" placeholder="Tối thiểu 6 ký tự" />
-                        <button type="button" onClick={() => setForgotShowPassword((v) => !v)} className="absolute inset-y-0 right-3 text-xs font-semibold text-neutral-400 hover:text-ink">{forgotShowPassword ? "Ẩn" : "Hiện"}</button>
-                      </span>
-                    </label>
-                    <label className="field-label">Xác nhận mật khẩu mới
-                      <span className="relative mt-1 block">
-                        <input type={forgotShowConfirm ? "text" : "password"} required minLength={6} value={forgotConfirm} onChange={(e) => { setForgotConfirm(e.target.value); setForgotError(""); }} className="field-input pr-16" placeholder="Nhập lại mật khẩu mới" />
-                        <button type="button" onClick={() => setForgotShowConfirm((v) => !v)} className="absolute inset-y-0 right-3 text-xs font-semibold text-neutral-400 hover:text-ink">{forgotShowConfirm ? "Ẩn" : "Hiện"}</button>
-                      </span>
-                    </label>
-                    <button type="submit" disabled={forgotBusy || forgotDigits.join("").length !== 6 || !forgotPassword || !forgotConfirm} className="btn btn-primary w-full">{forgotBusy ? "Đang cập nhật..." : "Đặt lại mật khẩu"}</button>
-                  </form>
-                  <div className="mt-5 flex flex-col items-center gap-2 border-t border-line/70 pt-4 text-center">
-                    <button type="button" onClick={resendForgotOtp} disabled={forgotBusy || forgotCooldown > 0} className="text-xs font-semibold text-primary hover:underline disabled:opacity-50">
-                      {forgotCooldown > 0 ? `Gửi lại mã sau ${forgotCooldown}s` : "Gửi lại mã OTP"}
-                    </button>
-                    <button type="button" onClick={() => { setForgotStep("email"); setForgotError(""); setForgotMessage(""); }} className="text-xs text-neutral-400 hover:text-neutral-600">Thay đổi email</button>
-                  </div>
-                </>
-              )}
-            </>
-          )}
+  // ================= VIEW: LOGIN =================
+  if (view === "login") {
+    return (
+      <div>
+        <div className="text-center">
+          <p className="text-[11px] font-bold tracking-[0.16em] text-primary uppercase">ForestView Homestay</p>
+          <h2 className="mt-1 font-display text-2xl font-bold text-ink">Đăng nhập</h2>
+          <p className="mt-1 text-xs text-neutral-500">Chào mừng bạn quay trở lại với kỳ nghỉ bình yên</p>
         </div>
+
+        {loginError && (
+          <div className="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs text-rose-700">
+            {loginError}
+          </div>
+        )}
+
+        <form onSubmit={handleLogin} className="mt-5 space-y-3.5">
+          <div>
+            <label className="block text-xs font-semibold text-neutral-700 mb-1">Tên đăng nhập hoặc Email</label>
+            <input
+              type="text"
+              required
+              autoFocus
+              placeholder="Nhập tên đăng nhập hoặc email..."
+              value={loginIdentifier}
+              onChange={(e) => setLoginIdentifier(e.target.value)}
+              className="w-full rounded-xl border border-line bg-canvas/40 px-3.5 py-2.5 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <label className="text-xs font-semibold text-neutral-700">Mật khẩu</label>
+              <button
+                type="button"
+                onClick={() => setView("forgot", loginIdentifier.includes("@") ? loginIdentifier : "")}
+                className="text-[11px] font-semibold text-accent hover:underline cursor-pointer"
+              >
+                Quên mật khẩu?
+              </button>
+            </div>
+            <div className="relative">
+              <input
+                type={loginShowPassword ? "text" : "password"}
+                required
+                placeholder="Nhập mật khẩu..."
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
+                className="w-full rounded-xl border border-line bg-canvas/40 px-3.5 py-2.5 pr-10 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={() => setLoginShowPassword(!loginShowPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600"
+              >
+                {loginShowPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+              </button>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loginBusy}
+            className="w-full rounded-full bg-primary py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-primary-dark disabled:opacity-50 cursor-pointer mt-2"
+          >
+            {loginBusy ? "Đang đăng nhập..." : "Đăng nhập"}
+          </button>
+        </form>
+
+        <div className="mt-6 border-t border-line/70 pt-4 text-center text-xs text-neutral-500">
+          Chưa có tài khoản?{" "}
+          <button
+            type="button"
+            onClick={() => setView("register")}
+            className="font-bold text-primary hover:underline cursor-pointer"
+          >
+            Đăng ký ngay
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ================= VIEW: REGISTER =================
+  if (view === "register") {
+    return (
+      <div>
+        <div className="text-center">
+          <p className="text-[11px] font-bold tracking-[0.16em] text-primary uppercase">ForestView Homestay</p>
+          <h2 className="mt-1 font-display text-2xl font-bold text-ink">Tạo tài khoản mới</h2>
+          <p className="mt-1 text-xs text-neutral-500">Trở thành hội viên để nhận chiết khấu đến 20%</p>
+        </div>
+
+        {regError && (
+          <div className="mt-3.5 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2 text-xs text-rose-700">
+            {regError}
+          </div>
+        )}
+
+        <form onSubmit={handleRegister} className="mt-4 space-y-3">
+          <div>
+            <label className="block text-xs font-semibold text-neutral-700 mb-1">Họ và tên *</label>
+            <input
+              type="text"
+              required
+              autoFocus
+              placeholder="VD: Nguyễn Văn An"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              className="w-full rounded-xl border border-line bg-canvas/40 px-3.5 py-2 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+            <div>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1">
+                Tên đăng nhập <span className="font-normal text-neutral-400">(tùy chọn)</span>
+              </label>
+              <input
+                type="text"
+                placeholder="VD: vanan123"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full rounded-xl border border-line bg-canvas/40 px-3.5 py-2 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1">Số điện thoại</label>
+              <PhoneInput
+                defaultCountry="VN"
+                international
+                placeholder="Số điện thoại"
+                value={regPhone}
+                onChange={setRegPhone}
+                className="w-full rounded-xl border border-line bg-canvas/40 px-3 py-1 text-xs focus-within:border-primary focus-within:bg-white"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-neutral-700 mb-1">Email *</label>
+            <input
+              type="email"
+              required
+              placeholder="email@example.com"
+              value={regEmail}
+              onChange={(e) => setRegEmail(e.target.value)}
+              className="w-full rounded-xl border border-line bg-canvas/40 px-3.5 py-2 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+            <div>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1">Mật khẩu *</label>
+              <div className="relative">
+                <input
+                  type={regShowPassword ? "text" : "password"}
+                  required
+                  placeholder="Tối thiểu 6 ký tự"
+                  value={regPassword}
+                  onChange={(e) => setRegPassword(e.target.value)}
+                  className="w-full rounded-xl border border-line bg-canvas/40 px-3 py-2 pr-8 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => setRegShowPassword(!regShowPassword)}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400"
+                >
+                  {regShowPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1">Xác nhận MK *</label>
+              <div className="relative">
+                <input
+                  type={regShowConfirm ? "text" : "password"}
+                  required
+                  placeholder="Nhập lại mật khẩu"
+                  value={regConfirm}
+                  onChange={(e) => setRegConfirm(e.target.value)}
+                  className="w-full rounded-xl border border-line bg-canvas/40 px-3 py-2 pr-8 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => setRegShowConfirm(!regShowConfirm)}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400"
+                >
+                  {regShowConfirm ? <EyeOff size={14} /> : <Eye size={14} />}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={regBusy}
+            className="w-full rounded-full bg-primary py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-primary-dark disabled:opacity-50 cursor-pointer mt-3"
+          >
+            {regBusy ? "Đang tạo tài khoản..." : "Đăng ký thành viên"}
+          </button>
+        </form>
+
+        <div className="mt-4 border-t border-line/70 pt-3 text-center text-xs text-neutral-500">
+          Đã có tài khoản?{" "}
+          <button
+            type="button"
+            onClick={() => setView("login")}
+            className="font-bold text-primary hover:underline cursor-pointer"
+          >
+            Đăng nhập ngay
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ================= VIEW: OTP =================
+  if (view === "otp") {
+    return (
+      <div className="text-center">
+        <p className="text-[11px] font-bold tracking-[0.16em] text-primary uppercase">Xác thực OTP</p>
+        <h2 className="mt-1 font-display text-2xl font-bold text-ink">Kiểm tra email của bạn</h2>
+        <p className="mt-1 text-xs text-neutral-500">
+          Mã OTP 6 số đã được gửi tới <b>{modalEmail}</b>
+        </p>
+
+        {otpError && (
+          <div className="mt-3 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700">
+            {otpError}
+          </div>
+        )}
+        {otpMessage && (
+          <div className="mt-3 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
+            {otpMessage}
+          </div>
+        )}
+
+        <form onSubmit={handleVerifyOtp} className="mt-6 space-y-5">
+          <OtpBoxes digits={otpDigits} onChange={setOtpDigits} hasError={Boolean(otpError)} />
+
+          <button
+            type="submit"
+            disabled={otpBusy || otpDigits.join("").length !== 6}
+            className="w-full rounded-full bg-primary py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-primary-dark disabled:opacity-50 cursor-pointer"
+          >
+            {otpBusy ? "Đang xác thực..." : "Xác thực & Đăng nhập"}
+          </button>
+        </form>
+
+        <div className="mt-5 flex items-center justify-between text-xs text-neutral-500 border-t border-line/70 pt-3">
+          <button
+            type="button"
+            onClick={handleResendOtp}
+            disabled={otpCooldown > 0 || otpResending}
+            className="font-semibold text-primary hover:underline disabled:opacity-50 cursor-pointer"
+          >
+            {otpCooldown > 0 ? `Gửi lại mã (${otpCooldown}s)` : otpResending ? "Đang gửi..." : "Gửi lại OTP"}
+          </button>
+
+          <button
+            type="button"
+            onClick={handleSkipOtp}
+            disabled={otpSkipping}
+            className="text-neutral-400 hover:text-neutral-600 hover:underline cursor-pointer"
+          >
+            {otpSkipping ? "Đang bỏ qua..." : "Bỏ qua lúc này →"}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ================= VIEW: FORGOT PASSWORD =================
+  return (
+    <div>
+      <div className="text-center">
+        <p className="text-[11px] font-bold tracking-[0.16em] text-primary uppercase">Khôi phục tài khoản</p>
+        <h2 className="mt-1 font-display text-2xl font-bold text-ink">Quên mật khẩu</h2>
+      </div>
+
+      {forgotError && (
+        <div className="mt-3 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700">
+          {forgotError}
+        </div>
+      )}
+      {forgotMessage && (
+        <div className="mt-3 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
+          {forgotMessage}
+        </div>
+      )}
+
+      {forgotStep === "email" && (
+        <form onSubmit={handleRequestPasswordReset} className="mt-5 space-y-3.5">
+          <div>
+            <label className="block text-xs font-semibold text-neutral-700 mb-1">Email tài khoản</label>
+            <input
+              type="email"
+              required
+              autoFocus
+              placeholder="email@example.com"
+              value={forgotEmail}
+              onChange={(e) => setForgotEmail(e.target.value)}
+              className="w-full rounded-xl border border-line bg-canvas/40 px-3.5 py-2.5 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={forgotBusy}
+            className="w-full rounded-full bg-primary py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-primary-dark disabled:opacity-50 cursor-pointer"
+          >
+            {forgotBusy ? "Đang gửi mã..." : "Gửi mã xác thực"}
+          </button>
+        </form>
+      )}
+
+      {forgotStep === "otp" && (
+        <form onSubmit={handleResetPassword} className="mt-5 space-y-4">
+          <div>
+            <label className="block text-center text-xs font-semibold text-neutral-600 mb-2">Nhập mã OTP 6 số</label>
+            <OtpBoxes digits={forgotDigits} onChange={setForgotDigits} hasError={Boolean(forgotError)} />
+          </div>
+
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+            <div>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1">Mật khẩu mới</label>
+              <div className="relative">
+                <input
+                  type={forgotShowPassword ? "text" : "password"}
+                  required
+                  placeholder="Tối thiểu 6 ký tự"
+                  value={forgotPassword}
+                  onChange={(e) => setForgotPassword(e.target.value)}
+                  className="w-full rounded-xl border border-line bg-canvas/40 px-3 py-2 pr-8 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => setForgotShowPassword(!forgotShowPassword)}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400"
+                >
+                  {forgotShowPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1">Xác nhận MK</label>
+              <div className="relative">
+                <input
+                  type={forgotShowConfirm ? "text" : "password"}
+                  required
+                  placeholder="Nhập lại mật khẩu"
+                  value={forgotConfirm}
+                  onChange={(e) => setForgotConfirm(e.target.value)}
+                  className="w-full rounded-xl border border-line bg-canvas/40 px-3 py-2 pr-8 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => setForgotShowConfirm(!forgotShowConfirm)}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400"
+                >
+                  {forgotShowConfirm ? <EyeOff size={14} /> : <Eye size={14} />}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={forgotBusy || forgotDigits.join("").length !== 6}
+            className="w-full rounded-full bg-primary py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-primary-dark disabled:opacity-50 cursor-pointer"
+          >
+            {forgotBusy ? "Đang đổi mật khẩu..." : "Đặt lại mật khẩu"}
+          </button>
+        </form>
+      )}
+
+      {forgotStep === "done" && (
+        <div className="mt-5 text-center space-y-4">
+          <p className="text-xs text-neutral-600">Mật khẩu của bạn đã được đặt lại thành công!</p>
+          <button
+            type="button"
+            onClick={() => setView("login")}
+            className="w-full rounded-full bg-primary py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-primary-dark cursor-pointer"
+          >
+            Đăng nhập ngay
+          </button>
+        </div>
+      )}
+
+      <div className="mt-5 border-t border-line/70 pt-3 text-center text-xs text-neutral-500">
+        <button
+          type="button"
+          onClick={() => setView("login")}
+          className="font-bold text-primary hover:underline cursor-pointer"
+        >
+          ← Quay lại Đăng nhập
+        </button>
+      </div>
+    </div>
   );
 }

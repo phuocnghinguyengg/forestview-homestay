@@ -10,13 +10,12 @@ import AccountPopover from "@/components/AccountPopover";
 import NotificationCenter from "@/components/NotificationCenter";
 
 const NAV_SECTIONS = [
+  { id: "section-search", label: "Tìm phòng" },
   { id: "section-rooms", label: "Hạng phòng" },
-  { id: "section-experiences", label: "Trải nghiệm" },
-  { id: "section-gallery", label: "Thư viện ảnh" },
+  { id: "section-experiences", label: "Tiện ích" },
   { id: "section-perks", label: "Hội viên" },
   { id: "section-reviews", label: "Đánh giá" },
-  { id: "section-location", label: "Vị trí" },
-  { id: "section-faq", label: "FAQ" },
+  { id: "section-faq", label: "Hỏi đáp" },
   { id: "section-contact", label: "Liên hệ" },
 ];
 

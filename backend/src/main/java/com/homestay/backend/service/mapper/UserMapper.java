@@ -8,6 +8,7 @@ public class UserMapper {
         return UserResponse.builder()
                 .id(user.getId())
                 .fullName(user.getFullName())
+                .username(user.getUsername())
                 .email(user.getEmail())
                 .phone(user.getPhone())
                 .avatarUrl(user.getAvatarUrl())

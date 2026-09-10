@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/admin/upload")
+@RequestMapping({"/api/admin/upload", "/api/upload"})
 @RequiredArgsConstructor
 public class UploadController {
 

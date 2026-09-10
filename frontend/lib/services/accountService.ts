@@ -31,4 +31,11 @@ export const accountService = {
 
   verifyEmailChange: (data: { newEmail: string; otp: string }) =>
     api.post<AccountProfile>("/users/me/email/verify", data).then((res) => res.data),
+
+  uploadAvatar: async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const res = await api.post<{ url: string }>("/upload/image", formData);
+    return res.data.url;
+  },
 };

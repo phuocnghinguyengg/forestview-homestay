@@ -5,6 +5,7 @@ export const authService = {
   register: (
     data: {
       fullName: string;
+      username?: string;
       email: string;
       password: string;
       phone?: string;
