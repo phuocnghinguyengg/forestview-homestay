@@ -235,23 +235,47 @@ h1, h2, h3, .font-display {
   flex-direction: column;
 }
 .modal-head {
-  position: relative;
-  overflow: hidden;
-  flex-shrink: 0;
-  background: linear-gradient(150deg, var(--color-canvas-deep), color-mix(in srgb, var(--color-canvas-deep) 80%, var(--color-primary)));
-  color: #f4f0e4;
-  padding: 1.25rem 1.5rem;
-}
-.modal-head::before {
-  content: "";
-  position: absolute;
-  inset-inline: 0;
+  position: sticky;
   top: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--color-lantern), var(--color-accent) 45%, var(--color-primary));
+  z-index: 10;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--color-line);
+  background: color-mix(in srgb, var(--color-surface) 95%, transparent);
+  backdrop-filter: blur(6px);
+  color: var(--color-ink);
+  padding: 1.1rem 1.5rem;
 }
 .modal-panel--row {
   flex-direction: row;
+}
+
+/* ---------- Shared pill tab row (used by every popup with sub-sections) ---------- */
+.tab-row {
+  display: flex;
+  gap: 0.25rem;
+  overflow-x: auto;
+  border-radius: 1rem;
+  border: 1px solid var(--color-line);
+  background: var(--color-canvas);
+  padding: 0.25rem;
+}
+.tab-row-btn {
+  flex-shrink: 0;
+  border-radius: 0.75rem;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--color-ink) 55%, transparent);
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.tab-row-btn.active {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-soft);
+}
+.tab-row-btn:hover:not(.active) {
+  color: var(--color-primary);
 }
 
 /* ---------- Badges ---------- */

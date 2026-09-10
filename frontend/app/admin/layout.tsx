@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Suspense, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { ShieldCheck } from "lucide-react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import AccountPopover from "@/components/AccountPopover";
@@ -20,14 +19,9 @@ function AdminControlBar() {
     <header className="dusk-header -mx-4 -mt-4 mb-6 rounded-t-[1.75rem] px-4 pt-5 pb-4 sm:-mx-6 sm:-mt-6 sm:px-6 sm:pt-6">
       <div className="hairline-strip absolute inset-x-0 top-0 rounded-t-[1.75rem]" />
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-lantern/20 text-lantern shadow-sm">
-            <ShieldCheck size={22} />
-          </div>
-          <div>
-            <p className="font-display text-xl text-white">ForestView studio</p>
-            <p className="text-xs text-white/55">Không gian vận hành · {user?.fullName || "Quản trị viên"}</p>
-          </div>
+        <div>
+          <p className="font-display text-xl text-white">ForestView studio</p>
+          <p className="text-xs text-white/55">Không gian vận hành · {user?.fullName || "Quản trị viên"}</p>
         </div>
         <div className="flex items-center gap-2">
           <Link href="/" className="rounded-full border border-white/20 px-4 py-2 text-xs font-semibold text-white/80 transition hover:border-white/40 hover:text-white">
@@ -41,17 +35,15 @@ function AdminControlBar() {
       <nav className="mt-5 flex gap-1.5 overflow-x-auto pb-1" aria-label="Điều hướng quản trị">
         {ADMIN_LINKS.map((item) => {
           const active = pathname === item.href;
-          const Icon = item.icon;
           return (
             <button
               key={item.href}
               type="button"
               onClick={() => setWorkspaceOpen(true)}
-              className={`inline-flex shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition sm:px-3.5 sm:text-sm ${
+              className={`inline-flex shrink-0 items-center rounded-xl px-3 py-2 text-xs font-semibold transition sm:px-3.5 sm:text-sm ${
                 active ? "bg-white/15 text-white shadow-sm" : "text-white/55 hover:bg-white/10 hover:text-white"
               }`}
             >
-              <Icon size={15} />
               {item.label}
             </button>
           );

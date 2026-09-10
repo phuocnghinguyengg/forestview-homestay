@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 import { roomTypeService } from "@/lib/services/roomTypeService";
 import { bookingService } from "@/lib/services/bookingService";
@@ -16,6 +15,7 @@ import {
 } from "@/types";
 
 import { useAuthStore } from "@/hooks/useAuthStore";
+import { useAuthModalStore } from "@/hooks/useAuthModalStore";
 import { accountService } from "@/lib/services/accountService";
 import { getErrorMessage } from "@/lib/getErrorMessage";
 
@@ -63,6 +63,7 @@ export default function RoomTypeBookingModal({
   const router = useRouter();
 
   const { isAuthenticated, user } = useAuthStore();
+  const openAuthModal = useAuthModalStore((s) => s.openModal);
 
     const requestKey = useMemo(
     () => `${type}|${checkIn}|${checkOut}`,
@@ -341,8 +342,7 @@ export default function RoomTypeBookingModal({
 
   const requireBookingAuth = () => {
     if (!isAuthenticated) {
-      onClose();
-      router.push("/login");
+      openAuthModal("login");
       return false;
     }
 
@@ -925,12 +925,13 @@ export default function RoomTypeBookingModal({
                       !bookingError && (
                         <p className="mt-3 text-sm text-accent">
                           Bạn cần{" "}
-                          <Link
-                            href="/login"
+                          <button
+                            type="button"
+                            onClick={() => openAuthModal("login")}
                             className="underline"
                           >
                             đăng nhập
-                          </Link>{" "}
+                          </button>{" "}
                           để đặt phòng.
                         </p>
                       )}

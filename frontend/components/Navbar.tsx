@@ -5,11 +5,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, TreePine, X } from "lucide-react";
 import { useAuthStore } from "@/hooks/useAuthStore";
+import { useAuthModalStore } from "@/hooks/useAuthModalStore";
 import AccountPopover from "@/components/AccountPopover";
 import NotificationCenter from "@/components/NotificationCenter";
 
 export default function Navbar() {
   const { isAuthenticated } = useAuthStore();
+  const openAuthModal = useAuthModalStore((s) => s.openModal);
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -17,8 +19,8 @@ export default function Navbar() {
 
   const links = !isAuthenticated
     ? [
-        { href: "/login", label: "Đăng nhập" },
-        { href: "/register", label: "Đăng ký", primary: true },
+        { view: "login" as const, label: "Đăng nhập" },
+        { view: "register" as const, label: "Đăng ký", primary: true },
       ]
     : [];
 
@@ -41,13 +43,14 @@ export default function Navbar() {
         {/* Desktop links */}
         <div className="hidden items-center gap-3 text-sm font-medium text-ink md:flex">
           {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
+            <button
+              key={l.view}
+              type="button"
+              onClick={() => { setOpen(false); openAuthModal(l.view); }}
               className={l.primary ? "btn btn-primary" : "rounded-full px-3 py-2 transition hover:text-primary"}
             >
               {l.label}
-            </Link>
+            </button>
           ))}
 
           {isAuthenticated && <><NotificationCenter /><AccountPopover /></>}
@@ -76,18 +79,18 @@ export default function Navbar() {
         <div className="border-t border-line bg-canvas px-5 pt-2 pb-5 text-sm font-medium text-ink md:hidden">
           <div className="flex flex-col gap-1">
             {links.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                onClick={() => setOpen(false)}
+              <button
+                key={l.view}
+                type="button"
+                onClick={() => { setOpen(false); openAuthModal(l.view); }}
                 className={
                   l.primary
                     ? "btn btn-primary mt-1 w-full"
-                    : "rounded-xl px-4 py-3 transition hover:bg-primary/10 hover:text-primary"
+                    : "w-full rounded-xl px-4 py-3 text-left transition hover:bg-primary/10 hover:text-primary"
                 }
               >
                 {l.label}
-              </Link>
+              </button>
             ))}
           </div>
         </div>

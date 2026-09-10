@@ -5,6 +5,7 @@ import AuthInitializer from "@/components/AuthInitializer";
 import Navbar from "@/components/Navbar";
 import ConditionalFooter from "@/components/ConditionalFooter";
 import UnverifiedBanner from "@/components/UnverifiedBanner";
+import AuthModal from "@/components/AuthModal";
 
 const fraunces = Fraunces({
   variable: "--font-display",
@@ -43,6 +44,7 @@ export default function RootLayout({
         </div>
 
         <ConditionalFooter />
+        <AuthModal />
       </body>
     </html>
   );
