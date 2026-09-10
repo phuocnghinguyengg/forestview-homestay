@@ -106,29 +106,43 @@ export default function AuthModal() {
     forgot: "Quên mật khẩu",
   };
 
+  const AUTH_NAV: { view: AuthModalView; label: string }[] = [
+    { view: "login", label: "Đăng nhập" },
+    { view: "register", label: "Đăng ký" },
+  ];
+
   return createPortal(
     <div
       className="modal-overlay"
       onClick={(e) => { if (e.target === e.currentTarget) close(); }}
     >
-      <div role="dialog" aria-modal="true" aria-label={titles[view]} className="modal-panel h-[min(90vh,720px)] max-w-md">
-        <div className="modal-head flex items-center justify-between gap-4">
-          <div className="min-w-0">
-            <p className="text-[11px] font-bold tracking-[0.16em] text-primary uppercase">ForestView Homestay</p>
-            <h2 className="mt-1 truncate font-display text-2xl text-ink">{titles[view]}</h2>
+      <div role="dialog" aria-modal="true" aria-label={titles[view]} className="modal-panel modal-panel--row h-[min(90vh,720px)] max-w-2xl">
+        <aside className="side-nav">
+          {AUTH_NAV.map((item) => (
+            <button key={item.view} type="button" onClick={() => setView(item.view)} className={`side-nav-btn ${view === item.view ? "active" : ""}`}>
+              {item.label}
+            </button>
+          ))}
+        </aside>
+        <div className="flex min-w-0 flex-1 flex-col">
+          <div className="modal-head flex items-center justify-between gap-4">
+            <div className="min-w-0">
+              <p className="text-[11px] font-bold tracking-[0.16em] text-primary uppercase">ForestView Homestay</p>
+              <h2 className="mt-1 truncate font-display text-2xl text-ink">{titles[view]}</h2>
+            </div>
+            <button type="button" onClick={close} aria-label="Đóng" className="shrink-0 rounded-full border border-line p-2 text-neutral-500 transition hover:bg-canvas hover:text-ink">✕</button>
           </div>
-          <button type="button" onClick={close} aria-label="Đóng" className="shrink-0 rounded-full border border-line p-2 text-neutral-500 transition hover:bg-canvas hover:text-ink">✕</button>
-        </div>
 
-        <AuthModalBody
-          key={token}
-          view={view}
-          modalEmail={modalEmail}
-          setView={setView}
-          close={close}
-          login={login}
-          router={router}
-        />
+          <AuthModalBody
+            key={token}
+            view={view}
+            modalEmail={modalEmail}
+            setView={setView}
+            close={close}
+            login={login}
+            router={router}
+          />
+        </div>
       </div>
     </div>,
     document.body,

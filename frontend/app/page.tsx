@@ -134,6 +134,7 @@ const SECTIONS = [
   { id: "section-rooms", label: "Không gian lưu trú" },
   { id: "section-experiences", label: "Trải nghiệm & Ưu đãi" },
   { id: "section-reviews", label: "Đánh giá & Cam kết" },
+  { id: "section-about", label: "Giới thiệu & Liên hệ" },
 ];
 
 export default function Home() {
@@ -654,10 +655,10 @@ export default function Home() {
               <div className="flex items-center gap-3">
                 <button
                   type="button"
-                  onClick={() => scrollToSection("section-hero")}
+                  onClick={() => scrollToSection("section-about")}
                   className="text-xs font-semibold text-primary hover:underline"
                 >
-                  ↑ Về lại đầu trang (Tìm phòng)
+                  Giới thiệu & Liên hệ ↓
                 </button>
                 <Link
                   href="/room-types"
@@ -667,6 +668,74 @@ export default function Home() {
                 </Link>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* ================= KHẤC 5: GIỚI THIỆU & LIÊN HỆ ================= */}
+        <section
+          id="section-about"
+          className={`flex w-full flex-col justify-center border-t border-line/60 bg-surface px-5 py-10 md:min-h-[calc(100vh-69px)] md:snap-start md:snap-always md:py-8 ${reveal("section-about")}`}
+        >
+          <div className="mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-2 lg:gap-14">
+            <div>
+              <p className="font-display text-xs italic text-accent">Câu chuyện của chúng tôi</p>
+              <h2 className="mt-0.5 font-display text-2xl font-semibold text-ink sm:text-3xl">Về ForestView Homestay</h2>
+              <div className="mt-4 space-y-3 text-sm leading-relaxed text-neutral-600">
+                <p>
+                  ForestView Homestay là một căn nhà gỗ nhỏ nằm giữa rừng thông ở Đà Lạt, được chúng tôi
+                  xây dựng và vun đắp từ tình yêu với những buổi sáng sương mù và nhịp sống chậm rãi.
+                </p>
+                <p>
+                  Đây không phải là một nền tảng trung gian — ForestView là homestay của chính chúng tôi,
+                  và chúng tôi trực tiếp đón tiếp, chăm sóc từng vị khách trong suốt thời gian lưu trú.
+                </p>
+              </div>
+              <div className="mt-6 grid grid-cols-3 gap-3">
+                {[
+                  { label: "Loại phòng", value: "4" },
+                  { label: "Năm hoạt động", value: "3+" },
+                  { label: "Đánh giá", value: reviewSummary && reviewSummary.totalReviews > 0 ? `${reviewSummary.averageRating.toFixed(1)}/5` : "—" },
+                ].map((s) => (
+                  <div key={s.label} className="rounded-2xl border border-line bg-canvas/30 p-3.5 text-center">
+                    <p className="font-display text-xl text-primary">{s.value}</p>
+                    <p className="mt-0.5 text-[11px] text-neutral-500">{s.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="font-display text-xs italic text-accent">Chúng tôi luôn lắng nghe</p>
+              <h2 className="mt-0.5 font-display text-2xl font-semibold text-ink sm:text-3xl">Liên hệ với ForestView</h2>
+              <p className="mt-4 text-sm text-neutral-600">
+                Có thắc mắc về phòng nghỉ hoặc muốn đặt lịch trực tiếp với chúng tôi? Liên hệ ngay theo thông tin bên dưới.
+              </p>
+              <div className="mt-5 space-y-3 rounded-2xl border border-line bg-canvas/30 p-5 text-sm text-neutral-600">
+                <p><span className="font-medium text-ink">Địa chỉ:</span> Đà Lạt, Lâm Đồng</p>
+                <p><span className="font-medium text-ink">Email:</span> hello@forestview.vn</p>
+                <p><span className="font-medium text-ink">Điện thoại:</span> 0900 000 000</p>
+                <p><span className="font-medium text-ink">Giờ hỗ trợ:</span> 8:00 – 21:00 mỗi ngày</p>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2.5">
+                <a href="mailto:hello@forestview.vn" className="rounded-full bg-primary px-5 py-2.5 text-xs font-semibold text-white shadow-xs transition hover:bg-primary-dark">
+                  Gửi email cho chúng tôi
+                </a>
+                <a href="tel:0900000000" className="rounded-full border border-line bg-surface px-5 py-2.5 text-xs font-semibold text-ink transition hover:bg-neutral-100">
+                  Gọi ngay
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Next section hint */}
+          <div className="mx-auto mt-6 w-full max-w-6xl text-center">
+            <button
+              type="button"
+              onClick={() => scrollToSection("section-hero")}
+              className="text-xs text-neutral-400 transition hover:text-primary"
+            >
+              ↑ Về lại đầu trang (Tìm phòng)
+            </button>
           </div>
         </section>
 

@@ -22,29 +22,14 @@ export default function Footer({ embedded = false }: { embedded?: boolean }) {
 
             <ul className="mt-3 space-y-2 text-sm text-neutral-500">
               <li>
-                <Link
-                  href="/room-types"
-                  className="hover:text-primary"
-                >
+                <Link href="/room-types" className="hover:text-primary">
                   Chọn phòng
                 </Link>
               </li>
 
               <li>
-                <Link
-                  href="/about"
-                  className="hover:text-primary"
-                >
-                  Giới thiệu
-                </Link>
-              </li>
-
-              <li>
-                <Link
-                  href="/contact"
-                  className="hover:text-primary"
-                >
-                  Liên hệ
+                <Link href="/#section-about" className="hover:text-primary">
+                  Giới thiệu &amp; Liên hệ
                 </Link>
               </li>
             </ul>
@@ -66,22 +51,6 @@ export default function Footer({ embedded = false }: { embedded?: boolean }) {
             © {new Date().getFullYear()} ForestView Homestay. Đã đăng ký bản
             quyền.
           </p>
-
-          <div className="flex gap-4">
-            <Link
-              href="/about"
-              className="hover:text-primary"
-            >
-              Về chúng tôi
-            </Link>
-
-            <Link
-              href="/contact"
-              className="hover:text-primary"
-            >
-              Hỗ trợ
-            </Link>
-          </div>
         </div>
       </div>
     </footer>

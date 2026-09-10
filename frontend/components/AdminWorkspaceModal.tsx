@@ -20,25 +20,25 @@ export default function AdminWorkspaceModal({ open, onClose, initialPath = "/adm
 
   return createPortal(
     <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <div role="dialog" aria-modal="true" aria-label="Không gian quản trị" className="modal-panel h-[min(94vh,920px)] max-w-6xl">
-        <div className="modal-head flex flex-col gap-3">
-          <div className="flex items-center justify-between gap-4">
+      <div role="dialog" aria-modal="true" aria-label="Không gian quản trị" className="modal-panel modal-panel--row h-[min(94vh,920px)] max-w-6xl">
+        <aside className="side-nav" aria-label="Khu vực quản trị">
+          {ADMIN_LINKS.map((item) => (
+            <button key={item.href} type="button" onClick={() => setPath(item.href)} className={`side-nav-btn ${path === item.href ? "active" : ""}`}>
+              {item.label}
+            </button>
+          ))}
+        </aside>
+        <div className="flex min-w-0 flex-1 flex-col">
+          <div className="modal-head flex items-center justify-between gap-4">
             <div className="min-w-0">
               <p className="text-[11px] font-bold tracking-[0.16em] text-primary uppercase">Không gian quản trị</p>
               <h2 className="mt-1 truncate font-display text-2xl text-ink">{current.label}</h2>
             </div>
             <button type="button" onClick={onClose} className="shrink-0 rounded-full border border-line p-2 text-neutral-500 transition hover:bg-canvas hover:text-ink" aria-label="Đóng không gian quản trị">✕</button>
           </div>
-          <nav className="tab-row" aria-label="Khu vực quản trị">
-            {ADMIN_LINKS.map((item) => (
-              <button key={item.href} type="button" onClick={() => setPath(item.href)} className={`tab-row-btn ${path === item.href ? "active" : ""}`}>
-                {item.label}
-              </button>
-            ))}
-          </nav>
-        </div>
-        <div className="min-h-0 flex-1 bg-canvas/40">
-          <iframe key={path} title={current.label} src={`${path}?embedded=1`} className="h-full w-full border-0" />
+          <div className="min-h-0 flex-1 bg-canvas/40">
+            <iframe key={path} title={current.label} src={`${path}?embedded=1`} className="h-full w-full border-0" />
+          </div>
         </div>
       </div>
     </div>,

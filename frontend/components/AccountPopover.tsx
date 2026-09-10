@@ -235,29 +235,30 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
 
       {activeModal === "account" && typeof document !== "undefined" && createPortal(
         <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) setActiveModal(null); }}>
-          <div role="dialog" aria-modal="true" aria-label="Về tôi" className="modal-panel h-[min(86vh,740px)] max-w-2xl">
-            <div className="modal-head flex items-center justify-between gap-4">
-              <div className="flex min-w-0 flex-1 items-center gap-3">
-                <Avatar url={user.avatarUrl} name={user.fullName} size={48} />
-                <div className="flex min-w-0 flex-1 flex-col justify-center leading-tight">
-                  <p className="text-[11px] font-bold tracking-[0.16em] text-primary uppercase">Về tôi</p>
-                  <h2 className="mt-1 truncate font-display text-2xl leading-tight text-ink">{displayName(user.fullName)}</h2>
-                  <p className="mt-1 truncate text-xs text-neutral-500">{user.email}</p>
+          <div role="dialog" aria-modal="true" aria-label="Về tôi" className="modal-panel modal-panel--row h-[min(86vh,740px)] max-w-3xl">
+            <aside className="side-nav">
+              {TABS.map((tab) => (
+                <button key={tab.key} type="button" onClick={() => { setAboutTab(tab.key); if (tab.key === "history") void loadBookings(); }} className={`side-nav-btn ${aboutTab === tab.key ? "active" : ""}`}>
+                  {tab.label}
+                </button>
+              ))}
+            </aside>
+            <div className="flex min-w-0 flex-1 flex-col">
+              <div className="modal-head flex items-center justify-between gap-4">
+                <div className="flex min-w-0 flex-1 items-center gap-3">
+                  <Avatar url={user.avatarUrl} name={user.fullName} size={48} />
+                  <div className="flex min-w-0 flex-1 flex-col justify-center leading-tight">
+                    <p className="text-[11px] font-bold tracking-[0.16em] text-primary uppercase">Về tôi</p>
+                    <h2 className="mt-1 truncate font-display text-2xl leading-tight text-ink">{displayName(user.fullName)}</h2>
+                    <p className="mt-1 truncate text-xs text-neutral-500">{user.email}</p>
+                  </div>
                 </div>
+                <button type="button" onClick={() => setActiveModal(null)} className="shrink-0 rounded-full border border-line p-2 text-neutral-500 hover:bg-canvas hover:text-ink" aria-label="Đóng">✕</button>
               </div>
-              <button type="button" onClick={() => setActiveModal(null)} className="shrink-0 rounded-full border border-line p-2 text-neutral-500 hover:bg-canvas hover:text-ink" aria-label="Đóng">✕</button>
-            </div>
-            <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-5 sm:p-7">
-              <div className="tab-row">
-                {TABS.map((tab) => (
-                  <button key={tab.key} type="button" onClick={() => { setAboutTab(tab.key); if (tab.key === "history") void loadBookings(); }} className={`tab-row-btn ${aboutTab === tab.key ? "active" : ""}`}>
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-              {profileLoading && <p className="py-10 text-center text-sm text-neutral-500">Đang tải thông tin...</p>}
-              {!profileLoading && profileError && <p className="py-4 text-sm text-rose">{profileError}</p>}
-              {!profileLoading && !profileError && aboutTab === "info" && (
+              <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-5 sm:p-7">
+                {profileLoading && <p className="py-10 text-center text-sm text-neutral-500">Đang tải thông tin...</p>}
+                {!profileLoading && profileError && <p className="py-4 text-sm text-rose">{profileError}</p>}
+                {!profileLoading && !profileError && aboutTab === "info" && (
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="panel-card p-4">
                     <p className="text-[11px] font-semibold text-neutral-400 uppercase">Họ và tên</p>
@@ -347,6 +348,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                   ))}
                 </div>
               )}
+              </div>
             </div>
           </div>
         </div>,

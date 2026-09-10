@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, TreePine, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useAuthModalStore } from "@/hooks/useAuthModalStore";
 import AccountPopover from "@/components/AccountPopover";
@@ -32,9 +32,6 @@ export default function Navbar() {
           onClick={() => setOpen(false)}
           className="group flex items-center gap-2.5"
         >
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-lantern transition group-hover:bg-primary-dark">
-            <TreePine size={17} strokeWidth={2.25} />
-          </span>
           <span className="font-display text-xl leading-none text-ink sm:text-[1.35rem]">
             <span className="italic text-primary">ForestView</span> Homestay
           </span>

@@ -278,6 +278,48 @@ h1, h2, h3, .font-display {
   color: var(--color-primary);
 }
 
+/* ---------- Shared left-side nav column (login/register switch, "Về tôi" tabs, admin nav) ---------- */
+.side-nav {
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+  gap: 0.25rem;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--color-line);
+  background: var(--color-canvas);
+  padding: 0.6rem;
+}
+.side-nav-btn {
+  flex-shrink: 0;
+  border-radius: 0.75rem;
+  padding: 0.6rem 0.95rem;
+  text-align: left;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--color-ink) 55%, transparent);
+  transition: all 0.15s ease;
+}
+.side-nav-btn.active {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-soft);
+}
+.side-nav-btn:hover:not(.active) {
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-surface) 55%, transparent);
+}
+@media (min-width: 640px) {
+  .side-nav {
+    flex-direction: column;
+    width: 13rem;
+    overflow-x: visible;
+    overflow-y: auto;
+    border-right: 1px solid var(--color-line);
+    border-bottom: 0;
+  }
+}
+
 /* ---------- Badges ---------- */
 .badge {
   display: inline-flex;
