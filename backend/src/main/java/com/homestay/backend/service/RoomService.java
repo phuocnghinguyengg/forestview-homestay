@@ -43,6 +43,7 @@ public class RoomService {
     }
 
     public RoomResponse createRoom(RoomRequest request) {
+        validateRoomRequest(request);
         Room room = Room.builder()
                 .name(request.getName())
                 .description(request.getDescription())
@@ -70,6 +71,7 @@ public class RoomService {
     }
 
     public RoomResponse updateRoom(Long id, RoomRequest request) {
+        validateRoomRequest(request);
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Room not found: " + id));
 
@@ -109,6 +111,18 @@ public class RoomService {
             throw new ResourceNotFoundException("Room not found: " + id);
         }
         roomRepository.deleteById(id);
+    }
+
+    private void validateRoomRequest(RoomRequest request) {
+        if (request.getRecommendedGuests() != null && request.getRecommendedGuests() > request.getMaxGuests()) {
+            throw new IllegalArgumentException("Số khách khuyến nghị không được vượt quá sức chứa phòng");
+        }
+        if (request.getWeekendPrice() != null && request.getWeekendPrice().signum() <= 0) {
+            throw new IllegalArgumentException("Giá cuối tuần phải lớn hơn 0");
+        }
+        if (request.getHolidayPrice() != null && request.getHolidayPrice().signum() <= 0) {
+            throw new IllegalArgumentException("Giá ngày lễ phải lớn hơn 0");
+        }
     }
 
     public PricePreviewResponse getPricePreview(Long roomId, LocalDate checkIn, LocalDate checkOut, int guestCount) {

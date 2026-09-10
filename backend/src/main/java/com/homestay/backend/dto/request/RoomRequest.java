@@ -35,7 +35,9 @@ public class RoomRequest {
     @NotNull
     private com.homestay.backend.entity.enums.RoomType type;
 
+    @DecimalMin(value = "0.0", inclusive = false)
     private java.math.BigDecimal weekendPrice;
+    @DecimalMin(value = "0.0", inclusive = false)
     private java.math.BigDecimal holidayPrice;
 
     @Min(1)

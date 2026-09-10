@@ -13,8 +13,11 @@ import com.homestay.backend.entity.enums.MembershipTier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
+import java.security.MessageDigest;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
 @Service
@@ -50,10 +53,12 @@ public class AccountService {
                 .membershipDiscountPercent(tier.getDiscountPercent()).build();
     }
 
+    @Transactional
     public UserResponse updateProfile(String email, UpdateProfileRequest r) {
         User u = user(email); u.setFullName(r.getFullName().trim()); u.setPhone(r.getPhone()); u.setAvatarUrl(r.getAvatarUrl()); return profile(userRepository.save(u));
     }
 
+    @Transactional
     public void changePassword(String email, ChangePasswordRequest r) {
         User u = user(email);
         if (!passwordEncoder.matches(r.getCurrentPassword(), u.getPassword())) throw new IllegalArgumentException("Mật khẩu hiện tại không đúng");
@@ -61,6 +66,7 @@ public class AccountService {
         u.setPassword(passwordEncoder.encode(r.getNewPassword())); userRepository.save(u);
     }
 
+    @Transactional
     public void requestEmailChange(String currentEmail, ChangeEmailRequest r) {
         User u = user(currentEmail); String next = r.getNewEmail().trim().toLowerCase();
         if (next.equalsIgnoreCase(u.getEmail())) throw new IllegalArgumentException("Email mới phải khác email hiện tại");
@@ -69,10 +75,11 @@ public class AccountService {
         emailService.sendOtpEmail(next, u.getFullName(), code);
     }
 
+    @Transactional
     public AuthResponse verifyEmailChange(String currentEmail, VerifyEmailChangeRequest r) {
         User u = user(currentEmail); String next = r.getNewEmail().trim().toLowerCase();
         if (u.getPendingEmail() == null || !u.getPendingEmail().equalsIgnoreCase(next)) throw new IllegalArgumentException("Yêu cầu đổi email không hợp lệ");
-        if (u.getEmailChangeOtp() == null || !u.getEmailChangeOtp().equals(r.getOtp())) throw new IllegalArgumentException("Mã OTP không đúng");
+        if (u.getEmailChangeOtp() == null || !MessageDigest.isEqual(u.getEmailChangeOtp().getBytes(StandardCharsets.UTF_8), r.getOtp().getBytes(StandardCharsets.UTF_8))) throw new IllegalArgumentException("Mã OTP không đúng");
         if (u.getEmailChangeOtpExpiresAt() == null || u.getEmailChangeOtpExpiresAt().isBefore(LocalDateTime.now())) throw new IllegalArgumentException("Mã OTP đã hết hạn");
         if (userRepository.existsByEmail(next)) throw new IllegalArgumentException("Email này đã được sử dụng");
         u.setEmail(next); u.setPendingEmail(null); u.setEmailChangeOtp(null); u.setEmailChangeOtpExpiresAt(null); u.setEmailVerified(true);
@@ -90,15 +97,17 @@ public class AccountService {
                 .build();
     }
 
+    @Transactional
     public void forgotPassword(ForgotPasswordRequest r) {
         userRepository.findByEmail(r.getEmail().trim().toLowerCase()).ifPresent(u -> {
             String code = otp(); u.setResetOtpCode(code); u.setResetOtpExpiresAt(LocalDateTime.now().plusMinutes(10)); userRepository.save(u); emailService.sendPasswordResetOtpEmail(u.getEmail(), u.getFullName(), code);
         });
     }
 
+    @Transactional
     public void resetPassword(ResetPasswordRequest r) {
         User u = userRepository.findByEmail(r.getEmail().trim().toLowerCase()).orElseThrow(() -> new IllegalArgumentException("Email hoặc mã OTP không hợp lệ"));
-        if (u.getResetOtpCode() == null || !u.getResetOtpCode().equals(r.getOtp())) throw new IllegalArgumentException("Mã OTP không đúng");
+        if (u.getResetOtpCode() == null || !MessageDigest.isEqual(u.getResetOtpCode().getBytes(StandardCharsets.UTF_8), r.getOtp().getBytes(StandardCharsets.UTF_8))) throw new IllegalArgumentException("Mã OTP không đúng");
         if (u.getResetOtpExpiresAt() == null || u.getResetOtpExpiresAt().isBefore(LocalDateTime.now())) throw new IllegalArgumentException("Mã OTP đã hết hạn");
         u.setPassword(passwordEncoder.encode(r.getNewPassword())); u.setResetOtpCode(null); u.setResetOtpExpiresAt(null); userRepository.save(u);
     }

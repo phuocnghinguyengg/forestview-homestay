@@ -5,6 +5,8 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import jakarta.annotation.PostConstruct;
+import java.nio.charset.StandardCharsets;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -23,8 +25,18 @@ public class JwtService {
     @Value("${jwt.refresh-token-expiration}")
     private long refreshTokenExpiration;
 
+    @PostConstruct
+    void validateConfiguration() {
+        if (secret == null || secret.getBytes(StandardCharsets.UTF_8).length < 32) {
+            throw new IllegalStateException("JWT_SECRET must be at least 32 UTF-8 bytes long");
+        }
+        if (accessTokenExpiration <= 0 || refreshTokenExpiration <= 0) {
+            throw new IllegalStateException("JWT token expiration values must be positive");
+        }
+    }
+
     private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes());
+        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
     public String generateAccessToken(UserDetails userDetails, String role) {

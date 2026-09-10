@@ -16,8 +16,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.time.LocalDateTime;
 
 @Service
@@ -34,6 +37,7 @@ public class AuthService {
     private static final SecureRandom RANDOM =
             new SecureRandom();
 
+    @Transactional
     public RegisterResponse register(
             RegisterRequest request
     ) {
@@ -118,6 +122,7 @@ public class AuthService {
                 .build();
     }
 
+    @Transactional
     public AuthResponse verifyOtp(
             OtpVerifyRequest request
     ) {
@@ -141,8 +146,9 @@ public class AuthService {
         }
 
         if (user.getOtpCode() == null ||
-                !user.getOtpCode()
-                        .equals(request.getOtp())) {
+                !MessageDigest.isEqual(
+                        user.getOtpCode().getBytes(StandardCharsets.UTF_8),
+                        request.getOtp().getBytes(StandardCharsets.UTF_8))) {
 
             throw new IllegalArgumentException(
                     "Mã OTP không đúng"
@@ -172,31 +178,7 @@ public class AuthService {
         return buildAuthResponse(user);
     }
 
-    public AuthResponse skipVerification(
-            ResendOtpRequest request
-    ) {
-        String email = normalizeEmail(request.getEmail());
-
-        User user =
-                userRepository
-                        .findByEmail(email)
-                        .orElseThrow(
-                                () -> new IllegalArgumentException(
-                                        "Tài khoản không tồn tại"
-                                )
-                        );
-
-        if (Boolean.TRUE.equals(
-                user.getEmailVerified())) {
-
-            throw new IllegalArgumentException(
-                    "Tài khoản đã được xác thực trước đó"
-            );
-        }
-
-        return buildAuthResponse(user);
-    }
-
+    @Transactional
     public void resendOtp(
             ResendOtpRequest request
     ) {
@@ -256,6 +238,10 @@ public class AuthService {
             throw new IllegalArgumentException(
                     "Tên đăng nhập/email hoặc mật khẩu không đúng"
             );
+        }
+
+        if (!Boolean.TRUE.equals(user.getEmailVerified())) {
+            throw new IllegalArgumentException("Vui lòng xác thực email trước khi đăng nhập");
         }
 
         return buildAuthResponse(user);

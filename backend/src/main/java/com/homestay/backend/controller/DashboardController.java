@@ -25,6 +25,9 @@ public class DashboardController {
     @GetMapping("/api/admin/dashboard/revenue-chart")
     public ResponseEntity<List<RevenuePointResponse>> getRevenueChart(
         @RequestParam(defaultValue = "6") int months) {
-    return ResponseEntity.ok(dashboardService.getRevenueChart(months));
-}
+        if (months < 1 || months > 24) {
+            throw new IllegalArgumentException("Số tháng phải nằm trong khoảng 1-24");
+        }
+        return ResponseEntity.ok(dashboardService.getRevenueChart(months));
+    }
 }

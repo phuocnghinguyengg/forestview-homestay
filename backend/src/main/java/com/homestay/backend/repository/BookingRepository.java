@@ -5,6 +5,8 @@ import com.homestay.backend.entity.User;
 import com.homestay.backend.entity.enums.BookingStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.Lock;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
@@ -19,7 +21,19 @@ public interface BookingRepository
             User user
     );
 
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select b from Booking b where b.id = :id")
+    java.util.Optional<Booking> findByIdForUpdate(@Param("id") Long id);
+
     List<Booking> findAllByOrderByCreatedAtDesc();
+
+    @Query("""
+        SELECT b FROM Booking b
+        WHERE b.status = 'PENDING'
+        AND b.paymentHoldExpiresAt IS NOT NULL
+        AND b.paymentHoldExpiresAt <= :now
+        """)
+    List<Booking> findExpiredHolds(@Param("now") LocalDateTime now);
 
     @Query("""
         SELECT b FROM Booking b

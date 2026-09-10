@@ -8,8 +8,13 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      # Schema changes are managed by Flyway; use the dev profile only if you intentionally need Hibernate update.
+      ddl-auto: validate
     show-sql: false
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 1
   servlet:
     multipart:
       max-file-size: 10MB
@@ -35,6 +40,10 @@ resend:
   api-key: ${RESEND_API_KEY}
 
 app:
+  auth:
+    # false for local HTTP development; set true behind HTTPS in production.
+    cookie-secure: ${AUTH_COOKIE_SECURE:false}
+    cookie-same-site: ${AUTH_COOKIE_SAME_SITE:Lax}
   sample-data:
     # Set APP_SAMPLE_DATA_RESET_ON_START=true once to clear business data, retain ADMIN accounts, and load demo data.
     reset-on-start: ${APP_SAMPLE_DATA_RESET_ON_START:false}

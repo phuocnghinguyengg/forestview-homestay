@@ -20,8 +20,10 @@ public class BookingRequest {
     @NotNull @Min(1)
     private Integer guestCount;
 
+    @Size(max = 255)
     private String note;
 
+    @Size(max = 50)
     private String discountCode;
 
     private PaymentMethod paymentMethod = PaymentMethod.HOLD;

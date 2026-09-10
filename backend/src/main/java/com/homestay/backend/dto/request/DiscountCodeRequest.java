@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class DiscountCodeRequest {
 
     @NotBlank
+    @jakarta.validation.constraints.Pattern(regexp = "^[A-Za-z0-9_-]{3,50}$", message = "Mã giảm giá chỉ gồm chữ cái, số, gạch ngang hoặc gạch dưới (3-50 ký tự)")
     private String code;
 
     @NotNull @Min(1) @Max(100)

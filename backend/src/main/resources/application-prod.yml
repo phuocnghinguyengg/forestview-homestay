@@ -1,0 +1,8 @@
+# Production overrides. Run with SPRING_PROFILES_ACTIVE=prod after applying
+# your database migrations. Schema changes must be managed by migrations;
+# Hibernate must never mutate the production schema.
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false

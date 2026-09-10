@@ -107,7 +107,7 @@ public class BookingService {
 
     @Transactional
     public void cancelBooking(String userEmail, Long bookingId) {
-        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+        Booking booking = bookingRepository.findByIdForUpdate(bookingId).orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
         if (!booking.getUser().getEmail().equals(userEmail)) throw new IllegalArgumentException("You can only cancel your own booking");
         if (booking.getStatus() == BookingStatus.CANCELLED || booking.getStatus() == BookingStatus.COMPLETED) throw new IllegalArgumentException("Booking cannot be cancelled");
         booking.setStatus(BookingStatus.CANCELLED);
@@ -116,6 +116,7 @@ public class BookingService {
         bookingRepository.save(booking);
     }
 
+    @Transactional(readOnly = false)
     public List<BookingResponse> getAllBookings() {
         expireHolds();
         return bookingRepository.findAllByOrderByCreatedAtDesc().stream().map(b -> BookingMapper.toResponse(b, reviewRepository.existsByBookingId(b.getId()))).toList();
@@ -123,7 +124,7 @@ public class BookingService {
 
     @Transactional
     public BookingResponse updateBookingStatus(Long bookingId, BookingStatus status, String reason) {
-        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+        Booking booking = bookingRepository.findByIdForUpdate(bookingId).orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
         if (!isAllowedTransition(booking.getStatus(), status)) {
             throw new IllegalArgumentException("Không thể chuyển đơn từ " + booking.getStatus() + " sang " + status);
         }
@@ -156,8 +157,13 @@ public class BookingService {
     @Transactional
     public void expireHolds() {
         LocalDateTime now = LocalDateTime.now();
-        bookingRepository.findAllByOrderByCreatedAtDesc().stream()
-                .filter(b -> b.getStatus() == BookingStatus.PENDING && b.getPaymentHoldExpiresAt() != null && b.getPaymentHoldExpiresAt().isBefore(now))
-                .forEach(b -> { b.setStatus(BookingStatus.CANCELLED); b.setPaymentStatus(PaymentStatus.UNPAID); b.setPaymentHoldExpiresAt(null); b.setRejectionReason("Hết thời gian giữ chỗ 2 giờ"); bookingRepository.save(b); });
+        bookingRepository.findExpiredHolds(now)
+                .forEach(b -> {
+                    b.setStatus(BookingStatus.CANCELLED);
+                    b.setPaymentStatus(PaymentStatus.UNPAID);
+                    b.setPaymentHoldExpiresAt(null);
+                    b.setRejectionReason("Hết thời gian giữ chỗ 2 giờ");
+                    bookingRepository.save(b);
+                });
     }
 }
