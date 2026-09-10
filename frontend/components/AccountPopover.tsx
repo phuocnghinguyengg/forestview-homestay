@@ -353,7 +353,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                   className="flex w-full items-center rounded-2xl px-3.5 py-3 text-left text-xs font-semibold text-ink transition hover:bg-primary/10 hover:text-primary cursor-pointer"
                 >
                   <span>
-                    Không gian quản trị
+                    Thông tin của Homestay
                     <small className="mt-0.5 block text-[11px] font-normal text-neutral-500">Quản lý hệ thống ForestView</small>
                   </span>
                 </button>
