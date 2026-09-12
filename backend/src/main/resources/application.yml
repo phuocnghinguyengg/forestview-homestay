@@ -24,19 +24,28 @@ spring:
   # đầy đủ, MAIL_APP_PASSWORD là "App Password" 16 ký tự (KHÔNG phải mật khẩu
   # Gmail thường) — tạo tại https://myaccount.google.com/apppasswords
   # (yêu cầu tài khoản Google đã bật xác minh 2 bước).
-  # Muốn dùng SMTP khác (Outlook, công ty riêng...) chỉ cần đổi 3 biến môi
-  # trường MAIL_HOST / MAIL_PORT / MAIL_USERNAME / MAIL_APP_PASSWORD tương ứng.
+  #
+  # Mặc định dùng cổng 465 (SSL trực tiếp) thay vì 587 (STARTTLS) vì nhiều nhà
+  # mạng/hosting chặn cổng 587 nhưng vẫn cho 465. Nếu 465 vẫn timeout tức là nơi
+  # bạn host chặn TOÀN BỘ cổng SMTP đi ra ngoài (rất phổ biến ở PaaS miễn phí
+  # như Render/Railway) — khi đó cần đổi sang gửi qua HTTP API (Brevo, v.v.)
+  # thay vì SMTP thô, không phải do cấu hình.
+  #
+  # Muốn quay lại 587/STARTTLS: set MAIL_PORT=587, MAIL_SMTP_SSL=false,
+  # MAIL_SMTP_STARTTLS=true.
   mail:
     host: ${MAIL_HOST:smtp.gmail.com}
-    port: ${MAIL_PORT:587}
+    port: ${MAIL_PORT:465}
     username: ${MAIL_USERNAME}
     password: ${MAIL_APP_PASSWORD}
     properties:
       mail:
         smtp:
           auth: true
+          ssl:
+            enable: ${MAIL_SMTP_SSL:true}
           starttls:
-            enable: true
+            enable: ${MAIL_SMTP_STARTTLS:false}
           connectiontimeout: 8000
           timeout: 8000
           writetimeout: 8000
