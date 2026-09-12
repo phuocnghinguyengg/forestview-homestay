@@ -19,6 +19,27 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+  # Gửi email qua SMTP (mặc định cấu hình cho Gmail — miễn phí, không cần
+  # verify domain, gửi được tới bất kỳ ai). MAIL_USERNAME phải là địa chỉ Gmail
+  # đầy đủ, MAIL_APP_PASSWORD là "App Password" 16 ký tự (KHÔNG phải mật khẩu
+  # Gmail thường) — tạo tại https://myaccount.google.com/apppasswords
+  # (yêu cầu tài khoản Google đã bật xác minh 2 bước).
+  # Muốn dùng SMTP khác (Outlook, công ty riêng...) chỉ cần đổi 3 biến môi
+  # trường MAIL_HOST / MAIL_PORT / MAIL_USERNAME / MAIL_APP_PASSWORD tương ứng.
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_APP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 8000
+          timeout: 8000
+          writetimeout: 8000
 server:
   port: ${PORT:8080}
 
@@ -36,9 +57,6 @@ cloudinary:
   api-key: ${CLOUDINARY_API_KEY}
   api-secret: ${CLOUDINARY_API_SECRET}
 
-resend:
-  api-key: ${RESEND_API_KEY}
-
 app:
   auth:
     # false for local HTTP development; set true behind HTTPS in production.
@@ -48,5 +66,8 @@ app:
     # Set APP_SAMPLE_DATA_RESET_ON_START=true once to clear business data, retain ADMIN accounts, and load demo data.
     reset-on-start: ${APP_SAMPLE_DATA_RESET_ON_START:false}
   mail:
-    from: ${MAIL_FROM:onboarding@resend.dev}
+    # Gmail chỉ cho gửi với "from" trùng với MAIL_USERNAME đã xác thực, nên mặc
+    # định lấy luôn MAIL_USERNAME làm địa chỉ gửi.
+    from: ${MAIL_FROM:${MAIL_USERNAME}}
+    from-name: ${MAIL_FROM_NAME:ForestView Homestay}
     frontend-url: ${FRONTEND_URL:http://localhost:3000}

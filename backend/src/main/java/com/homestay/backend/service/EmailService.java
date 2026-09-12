@@ -1,41 +1,37 @@
 package com.homestay.backend.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.scheduling.annotation.Async;
+import lombok.RequiredArgsConstructor;
 
+import jakarta.mail.internet.MimeMessage;
 import java.math.BigDecimal;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class EmailService {
 
-    private static final String RESEND_API_URL = "https://api.resend.com/emails";
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter DATETIME_FMT = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
 
-    private final HttpClient httpClient = HttpClient.newHttpClient();
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    // Gửi qua SMTP (mặc định: Gmail) thay vì Resend — không cần verify domain,
+    // gửi được tới bất kỳ người nhận nào. Xem application.yml (spring.mail.*)
+    // và README để biết cách tạo App Password cho Gmail.
+    private final JavaMailSender mailSender;
 
-    @Value("${resend.api-key}")
-    private String resendApiKey;
-
-    @Value("${app.mail.from:onboarding@resend.dev}")
+    @Value("${app.mail.from}")
     private String fromEmail;
+
+    @Value("${app.mail.from-name:ForestView Homestay}")
+    private String fromName;
 
     public void sendOtpEmail(String toEmail, String fullName, String otp) {
         String subject = "Mã xác thực ForestView Homestay";
@@ -98,39 +94,19 @@ public class EmailService {
 
     private void send(String to, String subject, String html, boolean failRequestOnError) {
         try {
-            if (resendApiKey == null || resendApiKey.isBlank()) {
-                throw new IllegalStateException("RESEND_API_KEY chưa được cấu hình");
-            }
             if (fromEmail == null || fromEmail.isBlank()) {
-                throw new IllegalStateException("MAIL_FROM chưa được cấu hình");
+                throw new IllegalStateException("MAIL_USERNAME/MAIL_FROM chưa được cấu hình");
             }
 
-            Map<String, Object> payload = Map.of(
-                    "from", fromEmail,
-                    "to", List.of(to),
-                    "subject", subject,
-                    "html", html
-            );
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
+            helper.setFrom(fromEmail, fromName);
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(html, true);
 
-            String json = objectMapper.writeValueAsString(payload);
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(RESEND_API_URL))
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + resendApiKey)
-                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .header(HttpHeaders.USER_AGENT, "forestview-homestay-backend/1.0")
-                    .POST(HttpRequest.BodyPublishers.ofString(json))
-                    .build();
-
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-            if (response.statusCode() < 200 || response.statusCode() >= 300) {
-                String error = extractResendError(response.body());
-                throw new IllegalStateException("Resend API trả về HTTP " + response.statusCode() + ": " + error);
-            }
-
-            String emailId = extractEmailId(response.body());
-            log.info("Email sent successfully via Resend to {} (id={})", to, emailId);
+            mailSender.send(message);
+            log.info("Email sent successfully via SMTP to {}", to);
         } catch (Exception e) {
             if (failRequestOnError) {
                 log.error("Failed to send required email to {}: {}", to, e.getMessage(), e);
@@ -138,27 +114,6 @@ public class EmailService {
             }
             log.error("Failed to send non-critical email to {}: {}", to, e.getMessage(), e);
         }
-    }
-
-    private String extractEmailId(String body) {
-        try {
-            JsonNode node = objectMapper.readTree(body);
-            return node.path("id").asText("unknown");
-        } catch (Exception ignored) {
-            return "unknown";
-        }
-    }
-
-    private String extractResendError(String body) {
-        try {
-            JsonNode node = objectMapper.readTree(body);
-            String message = node.path("message").asText("");
-            String name = node.path("name").asText("");
-            if (!name.isBlank() && !message.isBlank()) return name + ": " + message;
-            if (!message.isBlank()) return message;
-        } catch (Exception ignored) {
-        }
-        return body == null || body.isBlank() ? "Unknown Resend error" : body;
     }
 
     private String escapeHtml(String value) {
