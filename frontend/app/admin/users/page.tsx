@@ -122,7 +122,7 @@ export default function AdminUsersPage() {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 rounded-none border border-line bg-surface p-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative flex-1">
           <Search size={16} className="absolute top-1/2 left-3 -translate-y-1/2 text-neutral-400" />
           <input
@@ -130,7 +130,7 @@ export default function AdminUsersPage() {
             placeholder="Tìm theo tên khách hàng, email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-xl border border-line bg-canvas/50 py-2 pr-3 pl-9 text-sm focus:border-primary focus:outline-none"
+            className="w-full rounded-none border border-line bg-canvas/50 py-2 pr-3 pl-9 text-sm focus:border-primary focus:outline-none"
           />
         </div>
 
@@ -138,7 +138,7 @@ export default function AdminUsersPage() {
           <button
             type="button"
             onClick={() => setRoleFilter("ALL")}
-            className={`rounded-xl px-3 py-1.5 text-xs font-medium transition ${
+            className={`rounded-none px-3 py-1.5 text-xs font-medium transition ${
               roleFilter === "ALL" ? "bg-primary text-white shadow-xs" : "bg-canvas text-neutral-600 hover:bg-neutral-200"
             }`}
           >
@@ -147,7 +147,7 @@ export default function AdminUsersPage() {
           <button
             type="button"
             onClick={() => setRoleFilter("USER")}
-            className={`rounded-xl px-3 py-1.5 text-xs font-medium transition ${
+            className={`rounded-none px-3 py-1.5 text-xs font-medium transition ${
               roleFilter === "USER" ? "bg-primary text-white shadow-xs" : "bg-canvas text-neutral-600 hover:bg-neutral-200"
             }`}
           >
@@ -156,7 +156,7 @@ export default function AdminUsersPage() {
           <button
             type="button"
             onClick={() => setRoleFilter("ADMIN")}
-            className={`rounded-xl px-3 py-1.5 text-xs font-medium transition ${
+            className={`rounded-none px-3 py-1.5 text-xs font-medium transition ${
               roleFilter === "ADMIN" ? "bg-primary text-white shadow-xs" : "bg-canvas text-neutral-600 hover:bg-neutral-200"
             }`}
           >
@@ -175,7 +175,7 @@ export default function AdminUsersPage() {
       {error && <p className="text-sm text-rose">{error}</p>}
 
       {/* Danh sách khách hàng - bảng cột cố định, không co giãn theo nội dung */}
-      <div className="overflow-x-auto rounded-2xl border border-line">
+      <div className="overflow-x-auto rounded-none border border-line">
         <div className="min-w-[880px]">
           {/* Header */}
           <div className="grid grid-cols-[minmax(0,1fr)_170px_120px_130px_190px] gap-3 border-b border-line bg-canvas/60 px-4 py-3 text-xs font-semibold tracking-wide text-neutral-500 uppercase">
@@ -199,7 +199,7 @@ export default function AdminUsersPage() {
               >
                 {/* Khách hàng */}
                 <div className="flex min-w-0 items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 font-display text-sm font-bold text-primary">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-none bg-primary/10 font-display text-sm font-bold text-primary">
                     {initial}
                   </div>
                   <div className="min-w-0">
@@ -212,7 +212,7 @@ export default function AdminUsersPage() {
                     <p className="truncate text-xs text-neutral-500">{u.email}</p>
                     <p className="text-[10px] text-neutral-400">Tham gia: {formatDate(u.createdAt)}</p>
                     <span
-                      className={`mt-0.5 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium ${
+                      className={`mt-0.5 inline-flex items-center gap-1 rounded-none px-2 py-0.5 text-[10px] font-medium ${
                         u.emailVerified ? "bg-primary/10 text-primary" : "bg-neutral-100 text-neutral-500"
                       }`}
                     >
@@ -235,7 +235,7 @@ export default function AdminUsersPage() {
                     value={u.membershipTier}
                     disabled={busyId === u.id}
                     onChange={(e) => handleMembershipChange(u.id, e.target.value as MembershipTier)}
-                    className="w-full rounded-xl border border-line bg-canvas/50 px-2.5 py-1.5 text-xs font-medium text-ink focus:border-primary focus:outline-none disabled:opacity-50"
+                    className="w-full rounded-none border border-line bg-canvas/50 px-2.5 py-1.5 text-xs font-medium text-ink focus:border-primary focus:outline-none disabled:opacity-50"
                   >
                     <option value="NONE">Chưa có hạng</option>
                     <option value="BRONZE">Đồng - 5%</option>
@@ -251,7 +251,7 @@ export default function AdminUsersPage() {
                     value={u.role}
                     disabled={isSelf || busyId === u.id}
                     onChange={(e) => handleRoleChange(u.id, e.target.value as Role)}
-                    className="w-full rounded-xl border border-line bg-canvas/50 px-2.5 py-1.5 text-xs font-medium text-ink focus:border-primary focus:outline-none disabled:opacity-50"
+                    className="w-full rounded-none border border-line bg-canvas/50 px-2.5 py-1.5 text-xs font-medium text-ink focus:border-primary focus:outline-none disabled:opacity-50"
                   >
                     <option value="USER">USER</option>
                     <option value="ADMIN">ADMIN</option>
@@ -264,7 +264,7 @@ export default function AdminUsersPage() {
                     type="button"
                     onClick={() => handleToggleEnabled(u.id)}
                     disabled={isSelf || busyId === u.id}
-                    className={`inline-flex w-full items-center justify-center gap-1 rounded-xl px-2.5 py-1.5 text-xs font-medium transition disabled:opacity-50 ${
+                    className={`inline-flex w-full items-center justify-center gap-1 rounded-none px-2.5 py-1.5 text-xs font-medium transition disabled:opacity-50 ${
                       u.enabled
                         ? "bg-primary/10 text-primary hover:bg-primary/20"
                         : "bg-rose/15 text-rose hover:bg-rose/20"
@@ -287,7 +287,7 @@ export default function AdminUsersPage() {
                   <button
                     type="button"
                     onClick={() => setEditingUser(u)}
-                    className="inline-flex items-center gap-1 rounded-xl border border-line bg-surface px-2.5 py-1.5 text-xs font-medium text-ink shadow-2xs hover:border-primary hover:text-primary"
+                    className="inline-flex items-center gap-1 rounded-none border border-line bg-surface px-2.5 py-1.5 text-xs font-medium text-ink shadow-2xs hover:border-primary hover:text-primary"
                   >
                     <Edit3 size={13} /> Sửa
                   </button>
@@ -296,7 +296,7 @@ export default function AdminUsersPage() {
                     type="button"
                     onClick={() => handleDelete(u.id)}
                     disabled={isSelf || busyId === u.id}
-                    className="rounded-xl p-1.5 text-neutral-400 hover:bg-rose/10 hover:text-rose disabled:opacity-50"
+                    className="rounded-none p-1.5 text-neutral-400 hover:bg-rose/10 hover:text-rose disabled:opacity-50"
                     title="Xóa tài khoản"
                   >
                     <Trash2 size={15} />

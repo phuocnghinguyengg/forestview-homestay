@@ -95,7 +95,7 @@ export default function AdminBookingsPage() {
       <div className="flex flex-wrap gap-2">
         <button
           onClick={() => setFilter("ALL")}
-          className={`rounded-full px-3 py-1.5 text-sm font-medium transition ${
+          className={`rounded-none px-3 py-1.5 text-sm font-medium transition ${
             filter === "ALL" ? "bg-primary text-white" : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
           }`}
         >
@@ -105,7 +105,7 @@ export default function AdminBookingsPage() {
           <button
             key={s}
             onClick={() => setFilter(s)}
-            className={`rounded-full px-3 py-1.5 text-sm font-medium transition ${
+            className={`rounded-none px-3 py-1.5 text-sm font-medium transition ${
               filter === s ? "bg-primary text-white" : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
             }`}
           >
@@ -119,7 +119,7 @@ export default function AdminBookingsPage() {
 
       <div className="space-y-4">
         {filtered.map((b) => (
-          <div key={b.id} className="rounded-2xl border border-line bg-surface p-4">
+          <div key={b.id} className="rounded-none border border-line bg-surface p-4">
             <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
               <div className="min-w-0 flex-1">
                 {b.bookingCode && <p className="font-display text-xs italic text-accent">#{b.bookingCode}</p>}
@@ -148,7 +148,7 @@ export default function AdminBookingsPage() {
                     onChange={(e) => {
                       if (e.target.value) handleStatusChange(b.id, e.target.value as BookingStatus);
                     }}
-                    className="w-full rounded-lg border border-line bg-surface px-2 py-1 text-sm focus:border-primary focus:outline-none"
+                    className="w-full rounded-none border border-line bg-surface px-2 py-1 text-sm focus:border-primary focus:outline-none"
                   >
                     <option value="">Cập nhật trạng thái</option>
                     {NEXT_STATUSES[b.status].map((s) => (

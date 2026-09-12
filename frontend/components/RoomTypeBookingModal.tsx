@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 
 import { roomTypeService } from "@/lib/services/roomTypeService";
 import { bookingService } from "@/lib/services/bookingService";
@@ -60,7 +59,6 @@ export default function RoomTypeBookingModal({
   checkOut: string;
   onClose: () => void;
 }) {
-  const router = useRouter();
 
   const { isAuthenticated, user } = useAuthStore();
   const openAuthModal = useAuthModalStore((s) => s.openModal);
@@ -359,7 +357,7 @@ export default function RoomTypeBookingModal({
   return (
     <>
       <div className="fixed inset-0 z-70 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
-        <div className="max-h-[92vh] w-full max-w-5xl overflow-y-auto rounded-3xl bg-surface shadow-2xl">
+        <div className="max-h-[92vh] w-full max-w-5xl overflow-y-auto rounded-none bg-surface shadow-2xl">
           {result ? (
             <div className="px-6 py-14 text-center sm:px-10">
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-2xl text-primary">
@@ -386,24 +384,17 @@ export default function RoomTypeBookingModal({
                 </p>
               )}
 
-              <div className="mt-7 flex justify-center gap-3">
+              <p className="mt-4 text-xs text-neutral-400">
+                Bạn có thể xem lại đơn đặt phòng này trong mục <b>Hội Viên</b> ở góc trên bên phải.
+              </p>
+
+              <div className="mt-5 flex justify-center gap-3">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="rounded-full border border-line px-5 py-2.5 text-sm font-medium hover:bg-neutral-100"
+                  className="rounded-none bg-primary px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-dark"
                 >
                   Đóng
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    onClose();
-                    router.push("/dashboard");
-                  }}
-                  className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-dark"
-                >
-                  Xem lịch sử đơn
                 </button>
               </div>
             </div>
@@ -426,7 +417,7 @@ export default function RoomTypeBookingModal({
                     setDetailRoom(null);
                     setDetailImageIdx(0);
                   }}
-                  className="rounded-full border border-line px-4 py-2 text-xs font-semibold text-neutral-600 transition hover:bg-neutral-100"
+                  className="rounded-none border border-line px-4 py-2 text-xs font-semibold text-neutral-600 transition hover:bg-neutral-100"
                 >
                   ← Quay lại danh sách phòng
                 </button>
@@ -443,17 +434,17 @@ export default function RoomTypeBookingModal({
 
                     return (
                       <div className="space-y-3">
-                        <div className="relative h-72 w-full overflow-hidden rounded-2xl bg-ink sm:h-96">
+                        <div className="relative h-72 w-full overflow-hidden rounded-none bg-ink sm:h-96">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={currentImg}
                             alt={detailRoom.name}
                             className="h-full w-full object-cover"
                           />
-                          <span className="absolute top-3 left-3 rounded-full bg-black/60 px-3 py-1 text-xs font-medium text-white backdrop-blur-md">
+                          <span className="absolute top-3 left-3 rounded-none bg-black/60 px-3 py-1 text-xs font-medium text-white backdrop-blur-md">
                             {detailImageIdx === 0 ? "⭐ Ảnh chính" : `🖼️ Ảnh chi tiết #${detailImageIdx}`}
                           </span>
-                          <span className="absolute top-3 right-3 rounded-full bg-black/60 px-2.5 py-1 text-xs text-white backdrop-blur-md">
+                          <span className="absolute top-3 right-3 rounded-none bg-black/60 px-2.5 py-1 text-xs text-white backdrop-blur-md">
                             {detailImageIdx + 1} / {gallery.length}
                           </span>
                         </div>
@@ -465,7 +456,7 @@ export default function RoomTypeBookingModal({
                                 key={img + idx}
                                 type="button"
                                 onClick={() => setDetailImageIdx(idx)}
-                                className={`relative h-16 w-20 shrink-0 overflow-hidden rounded-xl border-2 transition ${
+                                className={`relative h-16 w-20 shrink-0 overflow-hidden rounded-none border-2 transition ${
                                   detailImageIdx === idx
                                     ? "border-primary ring-2 ring-primary/20"
                                     : "border-transparent opacity-60 hover:opacity-100"
@@ -510,28 +501,28 @@ export default function RoomTypeBookingModal({
 
                   {/* Room specs grid */}
                   <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="rounded-xl border border-line bg-canvas/40 p-2.5">
+                    <div className="rounded-none border border-line bg-canvas/40 p-2.5">
                       <p className="text-neutral-400">Khách đề xuất</p>
                       <p className="font-semibold text-ink">{detailRoom.recommendedGuests} khách</p>
                     </div>
-                    <div className="rounded-xl border border-line bg-canvas/40 p-2.5">
+                    <div className="rounded-none border border-line bg-canvas/40 p-2.5">
                       <p className="text-neutral-400">Tối đa</p>
                       <p className="font-semibold text-ink">{detailRoom.maxGuests} khách</p>
                     </div>
                     {detailRoom.roomSize && (
-                      <div className="rounded-xl border border-line bg-canvas/40 p-2.5">
+                      <div className="rounded-none border border-line bg-canvas/40 p-2.5">
                         <p className="text-neutral-400">Diện tích</p>
                         <p className="font-semibold text-ink">{detailRoom.roomSize} m²</p>
                       </div>
                     )}
                     {detailRoom.bedConfiguration && (
-                      <div className="rounded-xl border border-line bg-canvas/40 p-2.5">
+                      <div className="rounded-none border border-line bg-canvas/40 p-2.5">
                         <p className="text-neutral-400">Giường</p>
                         <p className="font-semibold text-ink">{detailRoom.bedConfiguration}</p>
                       </div>
                     )}
                     {detailRoom.viewDescription && (
-                      <div className="col-span-2 rounded-xl border border-line bg-canvas/40 p-2.5">
+                      <div className="col-span-2 rounded-none border border-line bg-canvas/40 p-2.5">
                         <p className="text-neutral-400">Hướng nhìn</p>
                         <p className="font-semibold text-ink">{detailRoom.viewDescription}</p>
                       </div>
@@ -545,7 +536,7 @@ export default function RoomTypeBookingModal({
                         {detailRoom.amenities.map((amenity) => (
                           <span
                             key={amenity}
-                            className="rounded-full border border-line bg-surface px-2.5 py-1 text-[11px] text-neutral-600"
+                            className="rounded-none border border-line bg-surface px-2.5 py-1 text-[11px] text-neutral-600"
                           >
                             ✓ {amenity}
                           </span>
@@ -563,7 +554,7 @@ export default function RoomTypeBookingModal({
                       setDetailRoom(null);
                       setBookingError("");
                     }}
-                    className="w-full rounded-full bg-primary py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-dark"
+                    className="w-full rounded-none bg-primary py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-dark"
                   >
                     Chọn phòng này ({nights} đêm)
                   </button>
@@ -605,13 +596,13 @@ export default function RoomTypeBookingModal({
                 )}
 
                 {error && (
-                  <div className="rounded-xl border border-rose/30 bg-rose/10 p-4 text-sm text-rose">
+                  <div className="rounded-none border border-rose/30 bg-rose/10 p-4 text-sm text-rose">
                     {error}
                   </div>
                 )}
 
                 {!loading && !error && rooms.length === 0 && (
-                  <div className="rounded-2xl border border-dashed border-neutral-300 p-8 text-center text-sm text-neutral-500">
+                  <div className="rounded-none border border-dashed border-neutral-300 p-8 text-center text-sm text-neutral-500">
                     Không còn phòng trong khoảng {nights} đêm đã chọn.
                   </div>
                 )}
@@ -628,7 +619,7 @@ export default function RoomTypeBookingModal({
                             setDetailRoom(room);
                             setDetailImageIdx(0);
                           }}
-                          className={`group overflow-hidden rounded-3xl border text-left transition ${
+                          className={`group overflow-hidden rounded-none border text-left transition ${
                             selectedRoom?.id === room.id
                               ? "border-primary ring-2 ring-primary/20 bg-primary/5"
                               : "border-line bg-surface hover:border-primary/40 hover:shadow-lg"
@@ -649,7 +640,7 @@ export default function RoomTypeBookingModal({
                             )}
 
                             {photoCount > 0 && (
-                              <span className="absolute top-2.5 right-2.5 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-medium text-white backdrop-blur-xs">
+                              <span className="absolute top-2.5 right-2.5 rounded-none bg-black/60 px-2 py-0.5 text-[10px] font-medium text-white backdrop-blur-xs">
                                 📷 {photoCount} ảnh
                               </span>
                             )}
@@ -687,7 +678,7 @@ export default function RoomTypeBookingModal({
                 )}
 
                 {selectedRoom && (
-                  <div className="mt-7 rounded-2xl border border-line bg-canvas p-5 sm:p-6">
+                  <div className="mt-7 rounded-none border border-line bg-canvas p-5 sm:p-6">
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
@@ -751,7 +742,7 @@ export default function RoomTypeBookingModal({
                                 selectGuestCount(1);
                               }
                             }}
-                            className="h-10 w-16 rounded-lg border border-line bg-surface text-center font-semibold text-ink focus:border-primary focus:outline-none"
+                            className="h-10 w-16 rounded-none border border-line bg-surface text-center font-semibold text-ink focus:border-primary focus:outline-none"
                             aria-label="Số khách"
                           />
 
@@ -773,7 +764,7 @@ export default function RoomTypeBookingModal({
                         </div>
 
                         {extraGuests > 0 && (
-                          <div className="mt-3 rounded-xl border border-accent/20 bg-accent/10 p-3 text-sm text-accent">
+                          <div className="mt-3 rounded-none border border-accent/20 bg-accent/10 p-3 text-sm text-accent">
                             <b>Phụ thu khách</b>
 
                             <p className="mt-1">
@@ -792,7 +783,7 @@ export default function RoomTypeBookingModal({
                         </label>
 
                         {appliedCoupon ? (
-                          <div className="mt-2 flex items-center justify-between rounded-xl border border-primary/40 bg-primary/5 px-3 py-2 text-sm">
+                          <div className="mt-2 flex items-center justify-between rounded-none border border-primary/40 bg-primary/5 px-3 py-2 text-sm">
                             <span className="font-medium text-primary">
                               {appliedCoupon.code} · giảm {appliedCoupon.percent}%
                             </span>
@@ -810,13 +801,13 @@ export default function RoomTypeBookingModal({
                               value={couponInput}
                               onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
                               placeholder="Nhập mã giảm giá"
-                              className="flex-1 rounded-xl border border-line bg-surface px-3 py-2.5 text-sm uppercase focus:border-primary focus:outline-none"
+                              className="flex-1 rounded-none border border-line bg-surface px-3 py-2.5 text-sm uppercase focus:border-primary focus:outline-none"
                             />
                             <button
                               type="button"
                               onClick={applyCoupon}
                               disabled={checkingCoupon || !couponInput.trim()}
-                              className="rounded-xl border border-line px-3 py-2.5 text-sm hover:bg-neutral-50 disabled:opacity-50"
+                              className="rounded-none border border-line px-3 py-2.5 text-sm hover:bg-neutral-50 disabled:opacity-50"
                             >
                               {checkingCoupon ? "..." : "Áp dụng"}
                             </button>
@@ -841,12 +832,12 @@ export default function RoomTypeBookingModal({
                           }
                           rows={4}
                           placeholder="Ví dụ: nhận phòng muộn, kê thêm giường..."
-                          className="mt-2 w-full rounded-xl border border-line bg-surface px-3 py-2.5 text-sm focus:border-primary focus:outline-none"
+                          className="mt-2 w-full rounded-none border border-line bg-surface px-3 py-2.5 text-sm focus:border-primary focus:outline-none"
                         />
                       </div>
                     </div>
 
-                    <div className="mt-5 rounded-xl bg-surface p-4">
+                    <div className="mt-5 rounded-none bg-surface p-4">
                       <div className="flex justify-between text-sm">
                         <span>Giá phòng</span>
 
@@ -946,7 +937,7 @@ export default function RoomTypeBookingModal({
                           setPaymentOpen(true);
                         }
                       }}
-                      className="mt-4 w-full rounded-full bg-primary py-3 text-sm font-semibold text-white hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
+                      className="mt-4 w-full rounded-none bg-primary py-3 text-sm font-semibold text-white hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {submitting
                         ? "Đang xử lý..."

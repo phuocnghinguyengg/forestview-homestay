@@ -71,7 +71,7 @@ export default function AdminHolidaysPage() {
 
       <form
         onSubmit={add}
-        className="grid gap-3 rounded-2xl border border-line bg-surface p-4 sm:grid-cols-[1.2fr_1.5fr_auto] sm:p-5"
+        className="grid gap-3 rounded-none border border-line bg-surface p-4 sm:grid-cols-[1.2fr_1.5fr_auto] sm:p-5"
       >
         <div>
           <label className="text-xs font-medium text-neutral-600">Ngày lễ *</label>
@@ -87,14 +87,14 @@ export default function AdminHolidaysPage() {
             placeholder="VD: Lễ hội Hoa Đà Lạt"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="mt-1 w-full rounded-xl border border-line bg-canvas/50 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+            className="mt-1 w-full rounded-none border border-line bg-canvas/50 px-3 py-2 text-sm focus:border-primary focus:outline-none"
           />
         </div>
 
         <div className="flex items-end">
           <button
             disabled={busy}
-            className="inline-flex h-[38px] w-full items-center justify-center gap-1.5 rounded-full bg-primary px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-dark disabled:opacity-50 sm:w-auto"
+            className="inline-flex h-[38px] w-full items-center justify-center gap-1.5 rounded-none bg-primary px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-dark disabled:opacity-50 sm:w-auto"
           >
             <Plus size={16} />
             {busy ? "Đang lưu..." : "Thêm ngày lễ"}
@@ -118,10 +118,10 @@ export default function AdminHolidaysPage() {
         {items.map((h) => (
           <div
             key={h.id}
-            className="flex items-center justify-between rounded-2xl border border-line bg-surface p-4 transition hover:border-primary/40"
+            className="flex items-center justify-between rounded-none border border-line bg-surface p-4 transition hover:border-primary/40"
           >
             <div className="flex items-center gap-3.5">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-none bg-primary/10 text-primary">
                 <CalendarDays size={18} />
               </div>
               <div>
@@ -139,7 +139,7 @@ export default function AdminHolidaysPage() {
 
             <button
               onClick={() => remove(h.id)}
-              className="rounded-xl p-2 text-neutral-400 hover:bg-rose/10 hover:text-rose"
+              className="rounded-none p-2 text-neutral-400 hover:bg-rose/10 hover:text-rose"
               title="Xóa ngày lễ"
             >
               <Trash2 size={16} />
@@ -148,7 +148,7 @@ export default function AdminHolidaysPage() {
         ))}
 
         {!loading && items.length === 0 && (
-          <div className="rounded-2xl border border-line bg-surface p-8 text-center text-sm text-neutral-500">
+          <div className="rounded-none border border-line bg-surface p-8 text-center text-sm text-neutral-500">
             Chưa có ngày lễ riêng. Hệ thống vẫn tự động áp dụng giá lễ theo quy định đại lễ VN.
           </div>
         )}

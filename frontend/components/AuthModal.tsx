@@ -79,7 +79,7 @@ function OtpBoxes({
           onChange={(e) => handleDigitChange(idx, e.target.value)}
           onKeyDown={(e) => handleKeyDown(idx, e)}
           onPaste={idx === 0 ? handlePaste : undefined}
-          className={`h-12 w-10 rounded-xl border-2 bg-canvas text-center text-lg font-bold text-ink transition focus:bg-surface focus:outline-none sm:h-13 sm:w-11 sm:text-xl ${
+          className={`h-12 w-10 rounded-none border-2 bg-canvas text-center text-lg font-bold text-ink transition focus:bg-surface focus:outline-none sm:h-13 sm:w-11 sm:text-xl ${
             d ? "border-primary text-primary" : "border-line focus:border-primary"
           } ${hasError ? "border-rose/40" : ""}`}
         />
@@ -114,7 +114,7 @@ export default function AuthModal() {
       <div
         role="dialog"
         aria-modal="true"
-        className="relative w-full max-w-md overflow-hidden rounded-3xl border border-line bg-surface p-6 sm:p-8 shadow-2xl animate-in zoom-in-95 duration-200"
+        className="relative w-full max-w-md overflow-hidden rounded-none border border-line bg-surface p-6 sm:p-8 shadow-2xl animate-in zoom-in-95 duration-200"
       >
         {/* Close button */}
         <button
@@ -397,7 +397,7 @@ function AuthModalBody({
         </div>
 
         {loginError && (
-          <div className="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs text-rose-700">
+          <div className="mt-4 rounded-none border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs text-rose-700">
             {loginError}
           </div>
         )}
@@ -412,7 +412,7 @@ function AuthModalBody({
               placeholder="Nhập tên đăng nhập hoặc email..."
               value={loginIdentifier}
               onChange={(e) => setLoginIdentifier(e.target.value)}
-              className="w-full rounded-xl border border-line bg-canvas/40 px-3.5 py-2.5 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+              className="w-full rounded-none border border-line bg-canvas/40 px-3.5 py-2.5 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
             />
           </div>
 
@@ -434,7 +434,7 @@ function AuthModalBody({
                 placeholder="Nhập mật khẩu..."
                 value={loginPassword}
                 onChange={(e) => setLoginPassword(e.target.value)}
-                className="w-full rounded-xl border border-line bg-canvas/40 px-3.5 py-2.5 pr-10 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+                className="w-full rounded-none border border-line bg-canvas/40 px-3.5 py-2.5 pr-10 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
               />
               <button
                 type="button"
@@ -449,7 +449,7 @@ function AuthModalBody({
           <button
             type="submit"
             disabled={loginBusy}
-            className="w-full rounded-full bg-primary py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-primary-dark disabled:opacity-50 cursor-pointer mt-2"
+            className="w-full rounded-none bg-primary py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-primary-dark disabled:opacity-50 cursor-pointer mt-2"
           >
             {loginBusy ? "Đang đăng nhập..." : "Đăng nhập"}
           </button>
@@ -480,7 +480,7 @@ function AuthModalBody({
         </div>
 
         {regError && (
-          <div className="mt-3.5 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2 text-xs text-rose-700">
+          <div className="mt-3.5 rounded-none border border-rose-200 bg-rose-50 px-3.5 py-2 text-xs text-rose-700">
             {regError}
           </div>
         )}
@@ -495,7 +495,7 @@ function AuthModalBody({
               placeholder="VD: Nguyễn Văn An"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="w-full rounded-xl border border-line bg-canvas/40 px-3.5 py-2 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+              className="w-full rounded-none border border-line bg-canvas/40 px-3.5 py-2 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
             />
           </div>
 
@@ -509,7 +509,7 @@ function AuthModalBody({
                 placeholder="VD: vanan123"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full rounded-xl border border-line bg-canvas/40 px-3.5 py-2 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+                className="w-full rounded-none border border-line bg-canvas/40 px-3.5 py-2 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
               />
             </div>
 
@@ -521,7 +521,7 @@ function AuthModalBody({
                 placeholder="Số điện thoại"
                 value={regPhone}
                 onChange={setRegPhone}
-                className="w-full rounded-xl border border-line bg-canvas/40 px-3 py-1 text-xs focus-within:border-primary focus-within:bg-white"
+                className="w-full rounded-none border border-line bg-canvas/40 px-3 py-1 text-xs focus-within:border-primary focus-within:bg-white"
               />
             </div>
           </div>
@@ -534,7 +534,7 @@ function AuthModalBody({
               placeholder="email@example.com"
               value={regEmail}
               onChange={(e) => setRegEmail(e.target.value)}
-              className="w-full rounded-xl border border-line bg-canvas/40 px-3.5 py-2 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+              className="w-full rounded-none border border-line bg-canvas/40 px-3.5 py-2 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
             />
           </div>
 
@@ -548,7 +548,7 @@ function AuthModalBody({
                   placeholder="Tối thiểu 6 ký tự"
                   value={regPassword}
                   onChange={(e) => setRegPassword(e.target.value)}
-                  className="w-full rounded-xl border border-line bg-canvas/40 px-3 py-2 pr-8 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+                  className="w-full rounded-none border border-line bg-canvas/40 px-3 py-2 pr-8 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
                 />
                 <button
                   type="button"
@@ -569,7 +569,7 @@ function AuthModalBody({
                   placeholder="Nhập lại mật khẩu"
                   value={regConfirm}
                   onChange={(e) => setRegConfirm(e.target.value)}
-                  className="w-full rounded-xl border border-line bg-canvas/40 px-3 py-2 pr-8 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+                  className="w-full rounded-none border border-line bg-canvas/40 px-3 py-2 pr-8 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
                 />
                 <button
                   type="button"
@@ -585,7 +585,7 @@ function AuthModalBody({
           <button
             type="submit"
             disabled={regBusy}
-            className="w-full rounded-full bg-primary py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-primary-dark disabled:opacity-50 cursor-pointer mt-3"
+            className="w-full rounded-none bg-primary py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-primary-dark disabled:opacity-50 cursor-pointer mt-3"
           >
             {regBusy ? "Đang tạo tài khoản..." : "Đăng ký thành viên"}
           </button>
@@ -616,12 +616,12 @@ function AuthModalBody({
         </p>
 
         {otpError && (
-          <div className="mt-3 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700">
+          <div className="mt-3 rounded-none border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700">
             {otpError}
           </div>
         )}
         {otpMessage && (
-          <div className="mt-3 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
+          <div className="mt-3 rounded-none border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
             {otpMessage}
           </div>
         )}
@@ -632,7 +632,7 @@ function AuthModalBody({
           <button
             type="submit"
             disabled={otpBusy || otpDigits.join("").length !== 6}
-            className="w-full rounded-full bg-primary py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-primary-dark disabled:opacity-50 cursor-pointer"
+            className="w-full rounded-none bg-primary py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-primary-dark disabled:opacity-50 cursor-pointer"
           >
             {otpBusy ? "Đang xác thực..." : "Xác thực & Đăng nhập"}
           </button>
@@ -670,12 +670,12 @@ function AuthModalBody({
       </div>
 
       {forgotError && (
-        <div className="mt-3 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700">
+        <div className="mt-3 rounded-none border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700">
           {forgotError}
         </div>
       )}
       {forgotMessage && (
-        <div className="mt-3 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
+        <div className="mt-3 rounded-none border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
           {forgotMessage}
         </div>
       )}
@@ -691,14 +691,14 @@ function AuthModalBody({
               placeholder="email@example.com"
               value={forgotEmail}
               onChange={(e) => setForgotEmail(e.target.value)}
-              className="w-full rounded-xl border border-line bg-canvas/40 px-3.5 py-2.5 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+              className="w-full rounded-none border border-line bg-canvas/40 px-3.5 py-2.5 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
             />
           </div>
 
           <button
             type="submit"
             disabled={forgotBusy}
-            className="w-full rounded-full bg-primary py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-primary-dark disabled:opacity-50 cursor-pointer"
+            className="w-full rounded-none bg-primary py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-primary-dark disabled:opacity-50 cursor-pointer"
           >
             {forgotBusy ? "Đang gửi mã..." : "Gửi mã xác thực"}
           </button>
@@ -722,7 +722,7 @@ function AuthModalBody({
                   placeholder="Tối thiểu 6 ký tự"
                   value={forgotPassword}
                   onChange={(e) => setForgotPassword(e.target.value)}
-                  className="w-full rounded-xl border border-line bg-canvas/40 px-3 py-2 pr-8 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+                  className="w-full rounded-none border border-line bg-canvas/40 px-3 py-2 pr-8 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
                 />
                 <button
                   type="button"
@@ -743,7 +743,7 @@ function AuthModalBody({
                   placeholder="Nhập lại mật khẩu"
                   value={forgotConfirm}
                   onChange={(e) => setForgotConfirm(e.target.value)}
-                  className="w-full rounded-xl border border-line bg-canvas/40 px-3 py-2 pr-8 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+                  className="w-full rounded-none border border-line bg-canvas/40 px-3 py-2 pr-8 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
                 />
                 <button
                   type="button"
@@ -759,7 +759,7 @@ function AuthModalBody({
           <button
             type="submit"
             disabled={forgotBusy || forgotDigits.join("").length !== 6}
-            className="w-full rounded-full bg-primary py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-primary-dark disabled:opacity-50 cursor-pointer"
+            className="w-full rounded-none bg-primary py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-primary-dark disabled:opacity-50 cursor-pointer"
           >
             {forgotBusy ? "Đang đổi mật khẩu..." : "Đặt lại mật khẩu"}
           </button>
@@ -772,7 +772,7 @@ function AuthModalBody({
           <button
             type="button"
             onClick={() => setView("login")}
-            className="w-full rounded-full bg-primary py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-primary-dark cursor-pointer"
+            className="w-full rounded-none bg-primary py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-primary-dark cursor-pointer"
           >
             Đăng nhập ngay
           </button>

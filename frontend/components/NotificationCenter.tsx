@@ -76,7 +76,7 @@ export default function NotificationCenter() {
           setOpen((value) => !value);
           if (!open) load();
         }}
-        className="relative flex h-10 items-center gap-1.5 rounded-full border border-line bg-surface px-4 text-sm font-semibold text-ink transition hover:border-primary hover:text-primary"
+        className="relative flex h-10 items-center gap-1.5 rounded-none border border-line bg-surface px-4 text-sm font-semibold text-ink transition hover:border-primary hover:text-primary"
         aria-label="Mở thông báo"
       >
         Thông báo
@@ -86,7 +86,7 @@ export default function NotificationCenter() {
       {open && (
         <>
           <button type="button" aria-label="Đóng thông báo" onClick={() => setOpen(false)} className="fixed inset-0 z-40 cursor-default" />
-          <div className="absolute top-12 right-0 z-50 w-[min(22rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-line bg-surface shadow-xl">
+          <div className="absolute top-12 right-0 z-50 w-[min(22rem,calc(100vw-2rem))] overflow-hidden rounded-none border border-line bg-surface shadow-xl">
             <div role="dialog" aria-label="Thông báo">
               <div className="flex items-center justify-between border-b border-line px-4 py-4">
                 <p className="font-display text-xl text-ink">Thông báo</p>
@@ -104,7 +104,7 @@ export default function NotificationCenter() {
               {!loading && !error && notices.length > 0 && (
                 <div className="max-h-[min(28rem,65vh)] overflow-y-auto p-3">
                   {notices.map((notice) => (
-                    <Link key={notice.id} href={notice.href} onClick={() => setOpen(false)} className="block rounded-2xl p-3.5 transition hover:bg-canvas">
+                    <Link key={notice.id} href={notice.href} onClick={() => setOpen(false)} className="block rounded-none p-3.5 transition hover:bg-canvas">
                       <span className="block text-sm font-semibold text-ink">{notice.title}</span>
                       <span className="mt-0.5 block truncate text-xs text-neutral-500">{notice.description}</span>
                     </Link>

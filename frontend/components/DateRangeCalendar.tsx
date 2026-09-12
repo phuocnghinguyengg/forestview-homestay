@@ -91,7 +91,7 @@ export default function DateRangeCalendar({ checkIn, checkOut, onChange, minDate
 
   const nights = nightsBetween(checkIn, checkOut);
 
-  return <div className="rounded-2xl border border-line bg-surface p-4 shadow-sm">
+  return <div className="rounded-none border border-line bg-surface p-4 shadow-sm">
     <div className="mb-4 flex items-center justify-between">
       <button aria-label="Tháng trước" type="button" onClick={()=>setCursor(new Date(cursor.getFullYear(),cursor.getMonth()-1,1))} className="rounded-full p-2 text-primary hover:bg-primary/10"><ChevronLeft size={18}/></button>
       <div className="text-sm font-medium text-neutral-600">
@@ -101,10 +101,10 @@ export default function DateRangeCalendar({ checkIn, checkOut, onChange, minDate
     </div>
     <div className="flex flex-col gap-6 md:flex-row">{renderMonth(cursor)}{renderMonth(second)}</div>
     <div className="mt-4 flex flex-wrap gap-2 text-sm">
-      <span className="rounded-lg border border-line px-3 py-2">Nhận: <b>{checkIn || "—"}</b></span>
-      <span className="rounded-lg border border-line px-3 py-2">Trả: <b>{checkOut || "—"}</b></span>
+      <span className="rounded-none border border-line px-3 py-2">Nhận: <b>{checkIn || "—"}</b></span>
+      <span className="rounded-none border border-line px-3 py-2">Trả: <b>{checkOut || "—"}</b></span>
       {checkIn && checkOut && nights > 0 && (
-        <span className="rounded-lg bg-primary/10 px-3 py-2 text-primary"><b>{nights}</b> đêm</span>
+        <span className="rounded-none bg-primary/10 px-3 py-2 text-primary"><b>{nights}</b> đêm</span>
       )}
     </div>
   </div>;

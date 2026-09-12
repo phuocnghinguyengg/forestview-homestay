@@ -87,7 +87,7 @@ export default function RoomFormModal({
       <div role="dialog" aria-modal="true" aria-label={initial ? "Sửa thông tin phòng" : "Thêm phòng mới"} className="modal-panel max-h-[92vh] max-w-2xl">
         <div className="modal-head flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10"><BedDouble size={18} /></span>
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-none bg-white/10"><BedDouble size={18} /></span>
             <div>
               <h2 className="font-display text-xl sm:text-2xl">
                 {initial ? "Sửa thông tin phòng" : "Thêm phòng mới"}
@@ -115,7 +115,7 @@ export default function RoomFormModal({
           className="min-h-0 flex-1 space-y-5 overflow-y-auto p-5 sm:p-7"
         >
           {/* Section: Thông tin cơ bản */}
-          <div className="space-y-3 rounded-2xl border border-line bg-canvas/30 p-4">
+          <div className="space-y-3 rounded-none border border-line bg-canvas/30 p-4">
             <h3 className="flex items-center gap-2 text-sm font-semibold text-ink">
               <Building size={16} className="text-primary" /> Thông tin cơ bản
             </h3>
@@ -127,7 +127,7 @@ export default function RoomFormModal({
                   required
                   value={form.type}
                   onChange={(e) => setForm({ ...form, type: e.target.value as RoomTypeCode })}
-                  className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  className="mt-1 w-full rounded-none border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
                 >
                   {ROOM_TYPE_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>
@@ -144,7 +144,7 @@ export default function RoomFormModal({
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   placeholder="VD: Phòng Sunset Deluxe 101"
-                  className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  className="mt-1 w-full rounded-none border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
                 />
               </div>
             </div>
@@ -156,7 +156,7 @@ export default function RoomFormModal({
                 value={form.address}
                 onChange={(e) => setForm({ ...form, address: e.target.value })}
                 placeholder="VD: Đồi Dã Chiến, Phường 11, TP. Đà Lạt"
-                className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                className="mt-1 w-full rounded-none border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
               />
             </div>
 
@@ -167,13 +167,13 @@ export default function RoomFormModal({
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
                 rows={2}
                 placeholder="Mô tả không gian, phong cách bài trí..."
-                className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                className="mt-1 w-full rounded-none border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
               />
             </div>
           </div>
 
           {/* Section: Thông tin lưu trú & Chi tiết */}
-          <div className="space-y-3 rounded-2xl border border-line bg-canvas/30 p-4">
+          <div className="space-y-3 rounded-none border border-line bg-canvas/30 p-4">
             <h3 className="flex items-center gap-2 text-sm font-semibold text-ink">
               <BedDouble size={16} className="text-primary" /> Chi tiết phòng &amp; Lưu trú
             </h3>
@@ -187,7 +187,7 @@ export default function RoomFormModal({
                   value={form.roomSize ?? ""}
                   onChange={(e) => setForm({ ...form, roomSize: e.target.value ? Number(e.target.value) : undefined })}
                   placeholder="VD: 35"
-                  className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  className="mt-1 w-full rounded-none border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
                 />
               </div>
 
@@ -197,7 +197,7 @@ export default function RoomFormModal({
                   value={form.floor ?? ""}
                   onChange={(e) => setForm({ ...form, floor: e.target.value })}
                   placeholder="VD: Tầng 2, view rừng"
-                  className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  className="mt-1 w-full rounded-none border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
                 />
               </div>
 
@@ -207,7 +207,7 @@ export default function RoomFormModal({
                   value={form.bedConfiguration ?? ""}
                   onChange={(e) => setForm({ ...form, bedConfiguration: e.target.value })}
                   placeholder="VD: 1 giường King lớn"
-                  className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  className="mt-1 w-full rounded-none border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
                 />
               </div>
 
@@ -217,7 +217,7 @@ export default function RoomFormModal({
                   value={form.bathroomDescription ?? ""}
                   onChange={(e) => setForm({ ...form, bathroomDescription: e.target.value })}
                   placeholder="VD: Bồn tắm gỗ, tắm đứng"
-                  className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  className="mt-1 w-full rounded-none border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
                 />
               </div>
 
@@ -227,7 +227,7 @@ export default function RoomFormModal({
                   value={form.viewDescription ?? ""}
                   onChange={(e) => setForm({ ...form, viewDescription: e.target.value })}
                   placeholder="VD: Đồi thông &amp; thung lũng sương mù"
-                  className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  className="mt-1 w-full rounded-none border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
                 />
               </div>
             </div>
@@ -239,7 +239,7 @@ export default function RoomFormModal({
                   type="time"
                   value={form.checkInTime ?? "14:00"}
                   onChange={(e) => setForm({ ...form, checkInTime: e.target.value })}
-                  className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  className="mt-1 w-full rounded-none border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
                 />
               </div>
               <div>
@@ -248,7 +248,7 @@ export default function RoomFormModal({
                   type="time"
                   value={form.checkOutTime ?? "12:00"}
                   onChange={(e) => setForm({ ...form, checkOutTime: e.target.value })}
-                  className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  className="mt-1 w-full rounded-none border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
                 />
               </div>
             </div>
@@ -260,13 +260,13 @@ export default function RoomFormModal({
                 value={form.houseRules ?? ""}
                 onChange={(e) => setForm({ ...form, houseRules: e.target.value })}
                 placeholder="VD: Không hút thuốc lá trong phòng, giữ trật tự sau 22h..."
-                className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                className="mt-1 w-full rounded-none border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
               />
             </div>
           </div>
 
           {/* Section: Giá & Sức chứa */}
-          <div className="space-y-3 rounded-2xl border border-line bg-canvas/30 p-4">
+          <div className="space-y-3 rounded-none border border-line bg-canvas/30 p-4">
             <h3 className="flex items-center gap-2 text-sm font-semibold text-ink">
               <DollarSign size={16} className="text-primary" /> Giá &amp; Sức chứa
             </h3>
@@ -281,7 +281,7 @@ export default function RoomFormModal({
                   value={form.pricePerNight || ""}
                   onChange={(e) => setForm({ ...form, pricePerNight: Number(e.target.value) })}
                   placeholder="VD: 600000"
-                  className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  className="mt-1 w-full rounded-none border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
                 />
               </div>
 
@@ -293,7 +293,7 @@ export default function RoomFormModal({
                   value={form.weekendPrice ?? ""}
                   onChange={(e) => setForm({ ...form, weekendPrice: e.target.value === "" ? undefined : Number(e.target.value) })}
                   placeholder="Mặc định: giá thường"
-                  className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  className="mt-1 w-full rounded-none border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
                 />
               </div>
 
@@ -305,7 +305,7 @@ export default function RoomFormModal({
                   value={form.holidayPrice ?? ""}
                   onChange={(e) => setForm({ ...form, holidayPrice: e.target.value === "" ? undefined : Number(e.target.value) })}
                   placeholder="Mặc định: ×2 giá thường"
-                  className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  className="mt-1 w-full rounded-none border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
                 />
               </div>
             </div>
@@ -322,7 +322,7 @@ export default function RoomFormModal({
                     const max = Math.max(1, Number(e.target.value));
                     setForm({ ...form, maxGuests: max, recommendedGuests: Math.min(form.recommendedGuests, max) });
                   }}
-                  className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  className="mt-1 w-full rounded-none border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
                 />
               </div>
 
@@ -335,7 +335,7 @@ export default function RoomFormModal({
                   required
                   value={form.recommendedGuests}
                   onChange={(e) => setForm({ ...form, recommendedGuests: Math.min(form.maxGuests, Math.max(1, Number(e.target.value))) })}
-                  className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  className="mt-1 w-full rounded-none border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
                 />
               </div>
 
@@ -346,7 +346,7 @@ export default function RoomFormModal({
                   min={0}
                   value={form.extraGuestFee}
                   onChange={(e) => setForm({ ...form, extraGuestFee: Math.max(0, Number(e.target.value)) })}
-                  className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  className="mt-1 w-full rounded-none border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
                 />
               </div>
             </div>
@@ -366,12 +366,12 @@ export default function RoomFormModal({
                   }
                 }}
                 placeholder="VD: Wifi tốc độ cao, Ban công săn mây, Máy sấy tóc..."
-                className="flex-1 rounded-xl border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                className="flex-1 rounded-none border border-line bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none"
               />
               <button
                 type="button"
                 onClick={addAmenity}
-                className="rounded-xl border border-line px-4 py-2 text-sm font-medium hover:bg-neutral-100"
+                className="rounded-none border border-line px-4 py-2 text-sm font-medium hover:bg-neutral-100"
               >
                 + Thêm
               </button>
@@ -380,7 +380,7 @@ export default function RoomFormModal({
               {form.amenities.map((a) => (
                 <span
                   key={a}
-                  className="flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
+                  className="flex items-center gap-1.5 rounded-none bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
                 >
                   {a}
                   <button

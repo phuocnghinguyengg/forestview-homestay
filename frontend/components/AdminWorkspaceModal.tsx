@@ -47,7 +47,7 @@ export default function AdminWorkspaceModal({
         role="dialog"
         aria-modal="true"
         aria-label="Thông tin của Homestay"
-        className="flex h-[min(90vh,760px)] w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-line bg-surface shadow-2xl md:flex-row animate-in zoom-in-95"
+        className="flex h-[min(90vh,760px)] w-full max-w-5xl flex-col overflow-hidden rounded-none border border-line bg-surface shadow-2xl md:flex-row animate-in zoom-in-95"
       >
         {/* Sidebar tabs */}
         <aside className="w-full shrink-0 border-b border-line bg-canvas/50 p-4 md:w-64 md:border-b-0 md:border-r md:p-5">
@@ -69,7 +69,7 @@ export default function AdminWorkspaceModal({
                   key={item.href}
                   type="button"
                   onClick={() => setPath(item.href)}
-                  className={`flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
+                  className={`flex items-center gap-2.5 rounded-none px-3.5 py-2.5 text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
                     isActive
                       ? "bg-primary text-white shadow-xs"
                       : "text-neutral-600 hover:bg-surface hover:text-primary"

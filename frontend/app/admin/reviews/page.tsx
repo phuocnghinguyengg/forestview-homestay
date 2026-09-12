@@ -42,7 +42,7 @@ export default function AdminReviewsPage() {
           <h1 className="mt-1 font-display text-2xl text-ink">Đánh giá khách hàng</h1>
           <p className="mt-2 text-sm text-neutral-500">Theo dõi phản hồi và giữ chất lượng trải nghiệm lưu trú.</p>
         </div>
-        <div className="rounded-2xl bg-primary/10 px-5 py-3 text-right">
+        <div className="rounded-none bg-primary/10 px-5 py-3 text-right">
           <p className="text-2xl font-semibold text-primary">
             {average.toFixed(1)} <Star className="inline fill-current" size={19} />
           </p>
@@ -55,7 +55,7 @@ export default function AdminReviewsPage() {
       <div className="flex flex-wrap gap-2">
         <button
           onClick={() => setFilter("ALL")}
-          className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+          className={`rounded-none px-4 py-2 text-sm font-medium transition ${
             filter === "ALL" ? "bg-primary text-white" : "bg-canvas text-neutral-600 hover:bg-neutral-200"
           }`}
         >
@@ -65,7 +65,7 @@ export default function AdminReviewsPage() {
           <button
             key={rating}
             onClick={() => setFilter(String(rating))}
-            className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+            className={`rounded-none px-4 py-2 text-sm font-medium transition ${
               filter === String(rating) ? "bg-primary text-white" : "bg-canvas text-neutral-600 hover:bg-neutral-200"
             }`}
           >
@@ -76,7 +76,7 @@ export default function AdminReviewsPage() {
 
       <div className="space-y-3">
         {filtered.map((review) => (
-          <article key={review.id} className="flex gap-4 rounded-2xl border border-line p-5">
+          <article key={review.id} className="flex gap-4 rounded-none border border-line p-5">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent/10 font-display text-accent">
               {review.userFullName.slice(0, 1)}
             </div>
@@ -100,7 +100,7 @@ export default function AdminReviewsPage() {
             <button
               aria-label="Xóa đánh giá"
               onClick={() => remove(review.id)}
-              className="h-fit shrink-0 rounded-lg p-2 text-neutral-400 hover:bg-rose/10 hover:text-rose"
+              className="h-fit shrink-0 rounded-none p-2 text-neutral-400 hover:bg-rose/10 hover:text-rose"
             >
               <Trash2 size={17} />
             </button>

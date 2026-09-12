@@ -73,7 +73,7 @@ export default function ReviewFormModal({
           onChange={(e) => setComment(e.target.value)}
           rows={4}
           placeholder="Cảm nhận của bạn về phòng, dịch vụ, không gian..."
-          className="mt-5 w-full rounded-xl border border-line bg-canvas/40 px-3.5 py-2.5 text-sm text-ink focus:border-primary focus:outline-none"
+          className="mt-5 w-full rounded-none border border-line bg-canvas/40 px-3.5 py-2.5 text-sm text-ink focus:border-primary focus:outline-none"
         />
 
         {error && <p className="mt-2 text-sm text-rose">{error}</p>}

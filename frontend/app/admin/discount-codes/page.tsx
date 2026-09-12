@@ -117,7 +117,7 @@ export default function AdminDiscountCodesPage() {
       {/* Create form */}
       <form
         onSubmit={handleCreate}
-        className="grid gap-3 rounded-2xl border border-line bg-surface p-4 sm:grid-cols-2 sm:p-5"
+        className="grid gap-3 rounded-none border border-line bg-surface p-4 sm:grid-cols-2 sm:p-5"
       >
         <div>
           <label className="text-xs font-medium text-neutral-600">Mã giảm giá *</label>
@@ -126,7 +126,7 @@ export default function AdminDiscountCodesPage() {
             value={code}
             onChange={(e) => setCode(e.target.value)}
             placeholder="VD: FORESTVIEW10"
-            className="mt-1 w-full rounded-xl border border-line bg-canvas/50 px-3 py-2 text-sm uppercase focus:border-primary focus:outline-none"
+            className="mt-1 w-full rounded-none border border-line bg-canvas/50 px-3 py-2 text-sm uppercase focus:border-primary focus:outline-none"
           />
         </div>
 
@@ -140,7 +140,7 @@ export default function AdminDiscountCodesPage() {
               max={100}
               value={percent}
               onChange={(e) => setPercent(Number(e.target.value))}
-              className="w-full rounded-xl border border-line bg-canvas/50 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+              className="w-full rounded-none border border-line bg-canvas/50 px-3 py-2 text-sm focus:border-primary focus:outline-none"
             />
             <span className="absolute top-1/2 right-3 -translate-y-1/2 text-xs font-bold text-neutral-400">
               %
@@ -154,7 +154,7 @@ export default function AdminDiscountCodesPage() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="VD: Ưu đãi mừng năm mới giữa rừng thông"
-            className="mt-1 w-full rounded-xl border border-line bg-canvas/50 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+            className="mt-1 w-full rounded-none border border-line bg-canvas/50 px-3 py-2 text-sm focus:border-primary focus:outline-none"
           />
         </div>
 
@@ -173,7 +173,7 @@ export default function AdminDiscountCodesPage() {
               onChange={(e) =>
                 setStartAt(`${startAt.split("T")[0] || new Date().toISOString().slice(0, 10)}T${e.target.value}`)
               }
-              className="rounded-xl border border-line bg-canvas/50 px-2 py-2 text-sm focus:border-primary focus:outline-none"
+              className="rounded-none border border-line bg-canvas/50 px-2 py-2 text-sm focus:border-primary focus:outline-none"
             />
           </div>
         </div>
@@ -193,7 +193,7 @@ export default function AdminDiscountCodesPage() {
               onChange={(e) =>
                 setEndAt(`${endAt.split("T")[0] || new Date().toISOString().slice(0, 10)}T${e.target.value}`)
               }
-              className="rounded-xl border border-line bg-canvas/50 px-2 py-2 text-sm focus:border-primary focus:outline-none"
+              className="rounded-none border border-line bg-canvas/50 px-2 py-2 text-sm focus:border-primary focus:outline-none"
             />
           </div>
         </div>
@@ -201,7 +201,7 @@ export default function AdminDiscountCodesPage() {
         <div className="sm:col-span-2">
           <button
             disabled={submitting}
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-dark disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-none bg-primary px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-dark disabled:opacity-50"
           >
             <Plus size={16} />
             {submitting ? "Đang tạo & gửi email..." : "Tạo mã & gửi email cho khách hàng"}
@@ -226,18 +226,18 @@ export default function AdminDiscountCodesPage() {
         {items.map((d) => (
           <div
             key={d.id}
-            className={`flex flex-col gap-3 rounded-2xl border p-4 transition sm:flex-row sm:items-center sm:justify-between ${
+            className={`flex flex-col gap-3 rounded-none border p-4 transition sm:flex-row sm:items-center sm:justify-between ${
               d.active ? "border-line bg-surface hover:border-primary/40" : "border-dashed border-neutral-300 bg-neutral-50 opacity-70"
             }`}
           >
             <div className="flex items-start gap-3.5">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-accent/10 font-bold text-accent">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-none bg-accent/10 font-bold text-accent">
                 <Tag size={20} />
               </div>
               <div>
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-mono text-base font-bold tracking-wider text-ink">{d.code}</span>
-                  <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-bold text-primary">
+                  <span className="rounded-none bg-primary/10 px-2.5 py-0.5 text-xs font-bold text-primary">
                     -{d.percent}%
                   </span>
                   {d.description && <span className="text-xs text-neutral-500">· {d.description}</span>}
@@ -254,7 +254,7 @@ export default function AdminDiscountCodesPage() {
                 type="button"
                 onClick={() => handleToggle(d.id)}
                 disabled={busyId === d.id}
-                className={`rounded-xl px-3 py-1.5 text-xs font-medium transition disabled:opacity-50 ${
+                className={`rounded-none px-3 py-1.5 text-xs font-medium transition disabled:opacity-50 ${
                   d.active ? "bg-primary/10 text-primary hover:bg-primary/20" : "bg-neutral-200 text-neutral-600 hover:bg-neutral-300"
                 }`}
               >
@@ -265,7 +265,7 @@ export default function AdminDiscountCodesPage() {
                 type="button"
                 onClick={() => handleDelete(d.id)}
                 disabled={busyId === d.id}
-                className="rounded-xl p-1.5 text-neutral-400 hover:bg-rose/10 hover:text-rose disabled:opacity-50"
+                className="rounded-none p-1.5 text-neutral-400 hover:bg-rose/10 hover:text-rose disabled:opacity-50"
                 title="Xóa mã"
               >
                 <Trash2 size={16} />
@@ -275,7 +275,7 @@ export default function AdminDiscountCodesPage() {
         ))}
 
         {!loading && items.length === 0 && (
-          <div className="rounded-2xl border border-line bg-surface p-8 text-center text-sm text-neutral-500">
+          <div className="rounded-none border border-line bg-surface p-8 text-center text-sm text-neutral-500">
             Chưa có mã giảm giá nào.
           </div>
         )}

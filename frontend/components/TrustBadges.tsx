@@ -24,7 +24,7 @@ export default function TrustBadges() {
         {BADGES.map((b) => (
           <div
             key={b.title}
-            className="rounded-2xl border border-line bg-surface p-5"
+            className="rounded-none border border-line bg-surface p-5"
           >
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
               <span

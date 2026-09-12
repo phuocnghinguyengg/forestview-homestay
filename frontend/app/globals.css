@@ -1,29 +1,44 @@
 @import "tailwindcss";
 
 @theme {
-  /* Base */
-  --color-canvas: #f2ede1;
-  --color-canvas-deep: #16241d;
-  --color-ink: #201f18;
+  /* Base — white / black, matching the Archive reference */
+  --color-canvas: #ffffff;
+  --color-canvas-deep: #0a0a0a;
+  --color-ink: #0a0a0a;
   --color-surface: #ffffff;
-  --color-line: #e2d9c4;
+  --color-line: #e5e5e5;
 
-  /* Brand — pine forest + clay roof + lantern light */
+  /* Brand — single accent: pine green (kept from the previous theme) */
   --color-primary: #2b5749;
-  --color-primary-dark: #16332a;
-  --color-accent: #c1743a;
-  --color-accent-dark: #9a5a2a;
+  --color-primary-dark: #1c3c31;
+  --color-accent: #2b5749;
+  --color-accent-dark: #1c3c31;
   --color-lantern: #d99a35;
   --color-lantern-dark: #a8721f;
-  --color-mist: #e6ede6;
+  --color-mist: #eef3ef;
   --color-rose: #b6543f;
   --color-rose-dark: #8f3f2e;
 
   --font-display: var(--font-display), serif;
   --font-body: var(--font-body), sans-serif;
+  --font-label: var(--font-label), sans-serif;
 
   --shadow-soft: 0 1px 2px rgb(22 20 12 / 0.04), 0 12px 32px rgb(22 20 12 / 0.07);
   --shadow-lift: 0 2px 6px rgb(22 20 12 / 0.06), 0 24px 60px rgb(22 20 12 / 0.14);
+}
+
+html {
+  scroll-snap-type: y mandatory;
+  scroll-padding-top: 76px;
+  scroll-behavior: smooth;
+}
+
+.snap-section {
+  scroll-snap-align: start;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 body {
@@ -67,7 +82,7 @@ h1, h2, h3, .font-display {
 .admin-surface {
   min-height: calc(100vh - 128px);
   border: 1px solid var(--color-line);
-  border-radius: 1.75rem;
+  border-radius: 0;
   background: color-mix(in srgb, var(--color-surface) 88%, var(--color-canvas));
   padding: clamp(1.25rem, 3vw, 2.25rem);
   box-shadow: var(--shadow-soft);
@@ -79,14 +94,14 @@ h1, h2, h3, .font-display {
 
 .landing-shell {
   background:
-    radial-gradient(circle at 12% 12%, rgb(193 116 58 / 0.12), transparent 28rem),
-    radial-gradient(circle at 88% 20%, rgb(43 87 73 / 0.14), transparent 32rem),
+    radial-gradient(circle at 12% 12%, rgb(43 87 73 / 0.08), transparent 28rem),
+    radial-gradient(circle at 88% 20%, rgb(43 87 73 / 0.10), transparent 32rem),
     var(--color-canvas);
 }
 
 .landing-hero {
   background:
-    linear-gradient(180deg, rgb(242 237 225 / 0.18), rgb(242 237 225 / 0.85)),
+    linear-gradient(180deg, rgb(255 255 255 / 0.18), rgb(255 255 255 / 0.9)),
     radial-gradient(ellipse at 50% 0%, rgb(255 255 255 / 0.95), transparent 65%);
 }
 
@@ -102,7 +117,7 @@ h1, h2, h3, .font-display {
 
 /* ---------- Shared surfaces ---------- */
 .panel-card {
-  border-radius: 1.25rem;
+  border-radius: 0;
   border: 1px solid var(--color-line);
   background: var(--color-surface);
   box-shadow: var(--shadow-soft);
@@ -119,7 +134,7 @@ h1, h2, h3, .font-display {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(ellipse 60% 100% at 15% 0%, rgb(217 154 53 / 0.16), transparent 70%);
+  background: radial-gradient(ellipse 60% 100% at 15% 0%, rgb(43 87 73 / 0.28), transparent 70%);
 }
 
 .hairline-strip {
@@ -133,10 +148,13 @@ h1, h2, h3, .font-display {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border-radius: 999px;
+  border-radius: 0;
+  font-family: var(--font-label);
   font-weight: 600;
-  font-size: 0.875rem;
-  padding: 0.7rem 1.35rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.7rem 1.5rem;
   transition: all 0.15s ease;
   white-space: nowrap;
 }
@@ -147,7 +165,6 @@ h1, h2, h3, .font-display {
 .btn-primary {
   background: var(--color-primary);
   color: #fff;
-  box-shadow: 0 1px 2px rgb(22 20 12 / 0.08);
 }
 .btn-primary:hover:not(:disabled) {
   background: var(--color-primary-dark);
@@ -195,7 +212,7 @@ h1, h2, h3, .font-display {
 }
 .field-input {
   width: 100%;
-  border-radius: 0.85rem;
+  border-radius: 0;
   border: 1px solid var(--color-line);
   background: var(--color-surface);
   padding: 0.65rem 0.85rem;
@@ -226,7 +243,7 @@ h1, h2, h3, .font-display {
 }
 .modal-panel {
   width: 100%;
-  border-radius: 1.75rem;
+  border-radius: 0;
   border: 1px solid rgb(255 255 255 / 0.7);
   background: var(--color-surface);
   box-shadow: var(--shadow-lift);
@@ -254,14 +271,14 @@ h1, h2, h3, .font-display {
   display: flex;
   gap: 0.25rem;
   overflow-x: auto;
-  border-radius: 1rem;
+  border-radius: 0;
   border: 1px solid var(--color-line);
   background: var(--color-canvas);
   padding: 0.25rem;
 }
 .tab-row-btn {
   flex-shrink: 0;
-  border-radius: 0.75rem;
+  border-radius: 0;
   padding: 0.5rem 0.85rem;
   font-size: 0.75rem;
   font-weight: 600;
@@ -291,7 +308,7 @@ h1, h2, h3, .font-display {
 }
 .side-nav-btn {
   flex-shrink: 0;
-  border-radius: 0.75rem;
+  border-radius: 0;
   padding: 0.6rem 0.95rem;
   text-align: left;
   font-size: 0.8rem;
@@ -325,7 +342,7 @@ h1, h2, h3, .font-display {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  border-radius: 999px;
+  border-radius: 0;
   padding: 0.25rem 0.65rem;
   font-size: 0.6875rem;
   font-weight: 700;
@@ -381,7 +398,7 @@ h1, h2, h3, .font-display {
   align-items: center;
   gap: 8px;
   border: 1px solid var(--color-line);
-  border-radius: 0.85rem;
+  border-radius: 0;
   padding: 0.6rem 0.85rem;
   background: var(--color-surface);
 }

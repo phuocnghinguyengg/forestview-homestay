@@ -39,7 +39,7 @@ export default function ReviewShowcase({ limit = 3 }: { limit?: number }) {
 
   if (!reviews.length) {
     return (
-      <div className="rounded-2xl border border-dashed border-line bg-surface/60 p-8 text-center">
+      <div className="rounded-none border border-dashed border-line bg-surface/60 p-8 text-center">
         <p className="text-sm text-neutral-500">
           Chưa có đánh giá nào. Hãy là vị khách đầu tiên chia sẻ trải nghiệm
           lưu trú của bạn tại ForestView!
@@ -52,7 +52,7 @@ export default function ReviewShowcase({ limit = 3 }: { limit?: number }) {
     <div>
       {summary && (
         <div className="mb-5 flex justify-center">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-sm text-white">
+          <div className="inline-flex items-center gap-1.5 rounded-none bg-primary px-4 py-1.5 text-sm text-white">
             <span className="font-semibold">{summary.averageRating.toFixed(1)}</span>
             <Star size={15} className="fill-current" />
             <span className="text-white/75">({summary.totalReviews} đánh giá)</span>
@@ -64,7 +64,7 @@ export default function ReviewShowcase({ limit = 3 }: { limit?: number }) {
         {reviews.map((review) => (
           <article
             key={review.id}
-            className="flex flex-col rounded-2xl border border-line bg-surface p-5 shadow-2xs"
+            className="flex flex-col rounded-none border border-line bg-surface p-5 shadow-2xs"
           >
             <p className="text-xs text-lantern">
               {"★".repeat(review.rating)}

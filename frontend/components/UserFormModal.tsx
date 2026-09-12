@@ -41,7 +41,7 @@ export default function UserFormModal({
       <div role="dialog" aria-modal="true" aria-label="Sửa thông tin người dùng" className="modal-panel max-w-md">
         <div className="modal-head flex items-center justify-between gap-3 py-4">
           <div className="flex items-center gap-3">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10"><UserCog size={17} /></span>
+            <span className="flex h-9 w-9 items-center justify-center rounded-none bg-white/10"><UserCog size={17} /></span>
             <h2 className="font-display text-lg">Sửa thông tin người dùng</h2>
           </div>
           <button type="button" onClick={onClose} className="rounded-full p-1.5 text-white/60 hover:bg-white/10 hover:text-white" aria-label="Đóng"><X size={17} /></button>

@@ -31,7 +31,7 @@ export default function PaymentModal({ open, onClose, onConfirm, totalPrice, loa
           </div>
           <div className="space-y-2">
             {METHODS.map((m) => (
-              <button key={m.value} type="button" onClick={() => setMethod(m.value)} className={`w-full rounded-xl border p-3 text-left transition ${method === m.value ? "border-primary bg-primary/5" : "border-line hover:border-primary/40"}`}>
+              <button key={m.value} type="button" onClick={() => setMethod(m.value)} className={`w-full rounded-none border p-3 text-left transition ${method === m.value ? "border-primary bg-primary/5" : "border-line hover:border-primary/40"}`}>
                 <div className="flex items-center gap-3">
                   <span className={`h-4 w-4 shrink-0 rounded-full border ${method === m.value ? "border-primary bg-primary" : "border-neutral-300"}`} />
                   <div>
@@ -42,7 +42,7 @@ export default function PaymentModal({ open, onClose, onConfirm, totalPrice, loa
               </button>
             ))}
           </div>
-          {method === "HOLD" && <p className="rounded-lg bg-lantern/10 p-3 text-xs text-lantern-dark">Chỗ sẽ được giữ tối đa 2 giờ. Sau thời gian này nếu chưa được xác nhận, hệ thống tự giải phóng.</p>}
+          {method === "HOLD" && <p className="rounded-none bg-lantern/10 p-3 text-xs text-lantern-dark">Chỗ sẽ được giữ tối đa 2 giờ. Sau thời gian này nếu chưa được xác nhận, hệ thống tự giải phóng.</p>}
           <button disabled={loading} onClick={() => onConfirm(method)} className="btn btn-primary w-full py-3">{loading ? "Đang xử lý..." : method === "HOLD" ? "Giữ chỗ 2 giờ" : "Gửi yêu cầu đặt phòng"}</button>
         </div>
       </div>

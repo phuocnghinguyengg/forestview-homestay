@@ -16,7 +16,7 @@ export default function StatCard({
     <div className="panel-card relative overflow-hidden p-5">
       <div className="flex items-start justify-between gap-3">
         <p className="text-sm text-neutral-500">{label}</p>
-        <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${accent ? "bg-lantern/15 text-lantern-dark" : "bg-primary/10 text-primary"}`}>
+        <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-none ${accent ? "bg-lantern/15 text-lantern-dark" : "bg-primary/10 text-primary"}`}>
           <ShownIcon size={15} />
         </span>
       </div>

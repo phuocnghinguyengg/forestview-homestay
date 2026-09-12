@@ -64,7 +64,7 @@ export default function ImageUploader({
   const galleryImages = images.slice(1);
 
   return (
-    <div className="rounded-2xl border border-line bg-canvas/50 p-4">
+    <div className="rounded-none border border-line bg-canvas/50 p-4">
       <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <label className="flex items-center gap-2 font-medium text-ink">
@@ -76,7 +76,7 @@ export default function ImageUploader({
           </p>
         </div>
 
-        <label className="mt-2 inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-primary-dark sm:mt-0">
+        <label className="mt-2 inline-flex cursor-pointer items-center justify-center gap-2 rounded-none bg-primary px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-primary-dark sm:mt-0">
           <Upload size={14} />
           {uploading ? (uploadProgress || "Đang tải...") : "+ Chọn ảnh tải lên"}
           <input
@@ -102,26 +102,26 @@ export default function ImageUploader({
                 Ảnh chính (Hiển thị ở thẻ bên ngoài)
               </span>
             </div>
-            <div className="group relative h-48 w-full overflow-hidden rounded-xl border-2 border-lantern/40 bg-neutral-100 shadow-sm sm:h-56">
+            <div className="group relative h-48 w-full overflow-hidden rounded-none border-2 border-lantern/40 bg-neutral-100 shadow-sm sm:h-56">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={mainImage} alt="Main room cover" className="h-full w-full object-cover" />
               <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/40 opacity-0 transition group-hover:opacity-100">
                 <button
                   type="button"
                   onClick={() => setPreviewUrl(mainImage)}
-                  className="flex items-center gap-1 rounded-lg bg-white/90 px-3 py-1.5 text-xs font-medium text-ink shadow hover:bg-white"
+                  className="flex items-center gap-1 rounded-none bg-white/90 px-3 py-1.5 text-xs font-medium text-ink shadow hover:bg-white"
                 >
                   <Eye size={14} /> Xem
                 </button>
                 <button
                   type="button"
                   onClick={() => removeImage(0)}
-                  className="flex items-center gap-1 rounded-lg bg-rose px-3 py-1.5 text-xs font-medium text-white shadow hover:bg-rose-dark"
+                  className="flex items-center gap-1 rounded-none bg-rose px-3 py-1.5 text-xs font-medium text-white shadow hover:bg-rose-dark"
                 >
                   <Trash2 size={14} /> Xóa
                 </button>
               </div>
-              <span className="absolute bottom-2 left-2 rounded-md bg-black/70 px-2 py-0.5 text-[11px] font-medium text-white backdrop-blur-sm">
+              <span className="absolute bottom-2 left-2 rounded-none bg-black/70 px-2 py-0.5 text-[11px] font-medium text-white backdrop-blur-sm">
                 ⭐ Ảnh đại diện chính
               </span>
             </div>
@@ -144,7 +144,7 @@ export default function ImageUploader({
                   return (
                     <div
                       key={url + actualIdx}
-                      className="group relative h-28 overflow-hidden rounded-xl border border-line bg-neutral-100 shadow-xs"
+                      className="group relative h-28 overflow-hidden rounded-none border border-line bg-neutral-100 shadow-xs"
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={url} alt={`Detail ${actualIdx}`} className="h-full w-full object-cover" />
@@ -152,7 +152,7 @@ export default function ImageUploader({
                         <button
                           type="button"
                           onClick={() => setAsMain(actualIdx)}
-                          className="flex w-full items-center justify-center gap-1 rounded-md bg-lantern py-1 text-[11px] font-semibold text-white shadow hover:bg-lantern-dark"
+                          className="flex w-full items-center justify-center gap-1 rounded-none bg-lantern py-1 text-[11px] font-semibold text-white shadow hover:bg-lantern-dark"
                         >
                           <Star size={12} className="fill-current" /> Đặt làm chính
                         </button>
@@ -160,7 +160,7 @@ export default function ImageUploader({
                           <button
                             type="button"
                             onClick={() => setPreviewUrl(url)}
-                            className="rounded-md bg-white/90 p-1 text-ink hover:bg-white"
+                            className="rounded-none bg-white/90 p-1 text-ink hover:bg-white"
                             title="Xem ảnh"
                           >
                             <Eye size={13} />
@@ -168,7 +168,7 @@ export default function ImageUploader({
                           <button
                             type="button"
                             onClick={() => removeImage(actualIdx)}
-                            className="rounded-md bg-rose p-1 text-white hover:bg-rose-dark"
+                            className="rounded-none bg-rose p-1 text-white hover:bg-rose-dark"
                             title="Xóa ảnh"
                           >
                             <Trash2 size={13} />
@@ -186,7 +186,7 @@ export default function ImageUploader({
           )}
         </div>
       ) : (
-        <div className="mt-3 flex flex-col items-center justify-center rounded-xl border border-dashed border-neutral-300 py-8 text-center">
+        <div className="mt-3 flex flex-col items-center justify-center rounded-none border border-dashed border-neutral-300 py-8 text-center">
           <ImageIcon size={32} className="text-neutral-300" />
           <p className="mt-2 text-xs font-medium text-neutral-600">Chưa có ảnh nào được thêm</p>
           <p className="mt-0.5 text-[11px] text-neutral-400">
@@ -201,7 +201,7 @@ export default function ImageUploader({
           className="fixed inset-0 z-80 flex items-center justify-center bg-black/80 p-4"
           onClick={() => setPreviewUrl(null)}
         >
-          <div className="relative max-h-[90vh] max-w-4xl overflow-hidden rounded-2xl bg-black">
+          <div className="relative max-h-[90vh] max-w-4xl overflow-hidden rounded-none bg-black">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={previewUrl} alt="Preview" className="max-h-[85vh] w-auto object-contain" />
             <button

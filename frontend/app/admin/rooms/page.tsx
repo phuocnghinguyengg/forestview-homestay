@@ -110,14 +110,14 @@ export default function AdminRoomsPage() {
         </div>
         <button
           onClick={openCreate}
-          className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-dark"
+          className="inline-flex items-center justify-center gap-2 rounded-none bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-dark"
         >
           <Plus size={16} /> Thêm phòng mới
         </button>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 rounded-none border border-line bg-surface p-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative flex-1">
           <Search size={16} className="absolute top-1/2 left-3 -translate-y-1/2 text-neutral-400" />
           <input
@@ -125,7 +125,7 @@ export default function AdminRoomsPage() {
             placeholder="Tìm theo tên phòng, địa chỉ..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-xl border border-line bg-canvas/50 py-2 pr-3 pl-9 text-sm focus:border-primary focus:outline-none"
+            className="w-full rounded-none border border-line bg-canvas/50 py-2 pr-3 pl-9 text-sm focus:border-primary focus:outline-none"
           />
         </div>
 
@@ -135,7 +135,7 @@ export default function AdminRoomsPage() {
               key={tf.value}
               type="button"
               onClick={() => setSelectedType(tf.value)}
-              className={`rounded-xl px-3 py-1.5 text-xs font-medium transition ${
+              className={`rounded-none px-3 py-1.5 text-xs font-medium transition ${
                 selectedType === tf.value
                   ? "bg-primary text-white shadow-xs"
                   : "bg-canvas text-neutral-600 hover:bg-neutral-200"
@@ -157,7 +157,7 @@ export default function AdminRoomsPage() {
       {error && <p className="text-sm text-rose">{error}</p>}
 
       {/* Danh sách phòng - bảng cột cố định, không co giãn theo nội dung */}
-      <div className="overflow-x-auto rounded-2xl border border-line">
+      <div className="overflow-x-auto rounded-none border border-line">
         <div className="min-w-[900px]">
           {/* Header */}
           <div className="grid grid-cols-[130px_minmax(0,1fr)_190px_160px_150px_170px] gap-3 border-b border-line bg-canvas/60 px-4 py-3 text-xs font-semibold tracking-wide text-neutral-500 uppercase">
@@ -181,7 +181,7 @@ export default function AdminRoomsPage() {
                 }`}
               >
                 {/* Ảnh */}
-                <div className="relative h-16 w-24 shrink-0 overflow-hidden rounded-xl bg-neutral-100">
+                <div className="relative h-16 w-24 shrink-0 overflow-hidden rounded-none bg-neutral-100">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={cover} alt={room.name} className="h-full w-full object-cover" />
                   <span className="absolute right-1 bottom-1 flex items-center gap-1 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white backdrop-blur-xs">
@@ -192,7 +192,7 @@ export default function AdminRoomsPage() {
                 {/* Phòng */}
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-md bg-accent/10 px-2 py-0.5 text-[11px] font-semibold text-accent uppercase">
+                    <span className="rounded-none bg-accent/10 px-2 py-0.5 text-[11px] font-semibold text-accent uppercase">
                       {room.typeLabel || room.type}
                     </span>
                   </div>
@@ -233,7 +233,7 @@ export default function AdminRoomsPage() {
                     type="button"
                     onClick={() => handleToggleActive(room.id)}
                     title={room.active ? "Nhấn để ẩn phòng" : "Nhấn để kích hoạt phòng"}
-                    className={`inline-flex w-full items-center justify-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium transition ${
+                    className={`inline-flex w-full items-center justify-center gap-1.5 rounded-none px-3 py-1.5 text-xs font-medium transition ${
                       room.active
                         ? "bg-primary/10 text-primary hover:bg-primary/20"
                         : "bg-neutral-200 text-neutral-600 hover:bg-neutral-300"
@@ -256,7 +256,7 @@ export default function AdminRoomsPage() {
                   <button
                     type="button"
                     onClick={() => openEdit(room)}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-line bg-surface px-3 py-1.5 text-xs font-semibold text-ink shadow-2xs transition hover:border-primary hover:text-primary"
+                    className="inline-flex items-center gap-1.5 rounded-none border border-line bg-surface px-3 py-1.5 text-xs font-semibold text-ink shadow-2xs transition hover:border-primary hover:text-primary"
                   >
                     <Edit3 size={13} /> Sửa
                   </button>
@@ -264,7 +264,7 @@ export default function AdminRoomsPage() {
                   <button
                     type="button"
                     onClick={() => handleDelete(room.id)}
-                    className="inline-flex items-center gap-1 rounded-xl p-2 text-neutral-400 transition hover:bg-rose/10 hover:text-rose"
+                    className="inline-flex items-center gap-1 rounded-none p-2 text-neutral-400 transition hover:bg-rose/10 hover:text-rose"
                     title="Xóa phòng"
                   >
                     <Trash2 size={16} />

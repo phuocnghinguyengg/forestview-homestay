@@ -35,7 +35,7 @@ export default function RoomSearchResultsModal({
 }) {
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
-      <div className="max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-3xl bg-surface shadow-2xl">
+      <div className="max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-none bg-surface shadow-2xl">
         <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-line bg-surface/95 px-6 py-5 backdrop-blur sm:px-8">
           <div>
             <p className="font-display text-sm italic text-accent">
@@ -71,7 +71,7 @@ export default function RoomSearchResultsModal({
                 type="button"
                 disabled={soldOut}
                 onClick={() => onSelectType(rt.type)}
-                className={`group overflow-hidden rounded-3xl border border-line bg-surface text-left transition ${
+                className={`group overflow-hidden rounded-none border border-line bg-surface text-left transition ${
                   soldOut
                     ? "cursor-not-allowed opacity-50"
                     : "hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg"
@@ -92,7 +92,7 @@ export default function RoomSearchResultsModal({
                   )}
 
                   <span
-                    className={`absolute top-3 left-3 rounded-full px-3 py-1 text-xs font-semibold shadow-xs ${
+                    className={`absolute top-3 left-3 rounded-none px-3 py-1 text-xs font-semibold shadow-xs ${
                       soldOut ? "bg-neutral-200 text-neutral-600" : "bg-primary text-white"
                     }`}
                   >
@@ -126,7 +126,7 @@ export default function RoomSearchResultsModal({
                   </div>
 
                   <span
-                    className={`mt-4 inline-flex w-full items-center justify-center rounded-full py-2.5 text-xs font-semibold text-white shadow-xs transition ${
+                    className={`mt-4 inline-flex w-full items-center justify-center rounded-none py-2.5 text-xs font-semibold text-white shadow-xs transition ${
                       soldOut ? "bg-neutral-300 text-neutral-500" : "bg-primary group-hover:bg-primary-dark"
                     }`}
                   >

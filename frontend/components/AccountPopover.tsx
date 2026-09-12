@@ -319,7 +319,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
       {open && (
         <>
           <button type="button" aria-label="Đóng bảng điều khiển" onClick={() => setOpen(false)} className="fixed inset-0 z-40 cursor-default" />
-          <div className="absolute top-12 right-0 z-50 w-[min(21rem,calc(100vw-2rem))] overflow-hidden rounded-3xl border border-line bg-surface shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+          <div className="absolute top-12 right-0 z-50 w-[min(21rem,calc(100vw-2rem))] overflow-hidden rounded-none border border-line bg-surface shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between gap-3 border-b border-line bg-canvas/60 px-5 py-4">
               <div className="flex min-w-0 flex-1 items-center gap-3">
                 <Avatar url={user.avatarUrl} name={user.fullName} size={42} />
@@ -335,7 +335,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
               <button
                 type="button"
                 onClick={openAccount}
-                className="flex w-full items-center rounded-2xl px-3.5 py-3 text-left text-xs font-semibold text-ink transition hover:bg-primary/10 hover:text-primary cursor-pointer"
+                className="flex w-full items-center rounded-none px-3.5 py-3 text-left text-xs font-semibold text-ink transition hover:bg-primary/10 hover:text-primary cursor-pointer"
               >
                 <span>
                   Thông tin của tôi
@@ -350,7 +350,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                     setOpen(false);
                     setActiveModal("admin");
                   }}
-                  className="flex w-full items-center rounded-2xl px-3.5 py-3 text-left text-xs font-semibold text-ink transition hover:bg-primary/10 hover:text-primary cursor-pointer"
+                  className="flex w-full items-center rounded-none px-3.5 py-3 text-left text-xs font-semibold text-ink transition hover:bg-primary/10 hover:text-primary cursor-pointer"
                 >
                   <span>
                     Thông tin của Homestay
@@ -363,7 +363,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
               <button
                 type="button"
                 onClick={handleLogout}
-                className="flex w-full items-center rounded-2xl px-3.5 py-2.5 text-left text-xs font-semibold text-rose hover:bg-rose/10 cursor-pointer"
+                className="flex w-full items-center rounded-none px-3.5 py-2.5 text-left text-xs font-semibold text-rose hover:bg-rose/10 cursor-pointer"
               >
                 Đăng xuất
               </button>
@@ -383,7 +383,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
           <div
             role="dialog"
             aria-modal="true"
-            className="flex h-[min(90vh,760px)] w-full max-w-4xl flex-col overflow-hidden rounded-3xl border border-line bg-surface shadow-2xl md:flex-row animate-in zoom-in-95"
+            className="flex h-[min(90vh,760px)] w-full max-w-4xl flex-col overflow-hidden rounded-none border border-line bg-surface shadow-2xl md:flex-row animate-in zoom-in-95"
           >
             {/* Sidebar tabs */}
             <aside className="w-full shrink-0 border-b border-line bg-canvas/50 p-4 md:w-64 md:border-b-0 md:border-r md:p-5">
@@ -407,7 +407,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                         if (tab.key === "bookings") void loadBookings();
                         if (tab.key === "reviews") void loadReviews();
                       }}
-                      className={`flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
+                      className={`flex items-center gap-2.5 rounded-none px-3.5 py-2.5 text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
                         isActive
                           ? "bg-primary text-white shadow-xs"
                           : "text-neutral-600 hover:bg-surface hover:text-primary"
@@ -440,13 +440,13 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
               {/* Scrollable Body */}
               <div className="min-h-0 flex-1 overflow-y-auto p-6">
                 {profileError && (
-                  <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700 flex items-center gap-2">
+                  <div className="mb-4 rounded-none border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700 flex items-center gap-2">
                     <AlertCircle size={15} className="shrink-0" />
                     <span>{profileError}</span>
                   </div>
                 )}
                 {profileMessage && (
-                  <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-xs text-emerald-700 flex items-center gap-2">
+                  <div className="mb-4 rounded-none border border-emerald-200 bg-emerald-50 p-3 text-xs text-emerald-700 flex items-center gap-2">
                     <CheckCircle2 size={15} className="shrink-0" />
                     <span>{profileMessage}</span>
                   </div>
@@ -459,7 +459,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                   ) : (
                   <div className="max-w-xl space-y-6">
                     {/* Avatar & Header */}
-                    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 rounded-2xl border border-line bg-canvas/30 p-5">
+                    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 rounded-none border border-line bg-canvas/30 p-5">
                       <div className="relative group">
                         <Avatar
                           url={profile?.avatarUrl || user.avatarUrl}
@@ -487,7 +487,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                       <div className="flex-1 text-center sm:text-left">
                         {/* ROLE BADGE: Placed right above the name as requested! */}
                         <div className="mb-1">
-                          <span className="inline-block rounded-full bg-primary/10 border border-primary/20 px-2.5 py-0.5 text-[10px] font-bold text-primary uppercase">
+                          <span className="inline-block rounded-none bg-primary/10 border border-primary/20 px-2.5 py-0.5 text-[10px] font-bold text-primary uppercase">
                             {user.role === "ADMIN" ? "Quản trị viên" : "Thành viên"}
                           </span>
                         </div>
@@ -509,7 +509,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                             type="button"
                             disabled={avatarUploading}
                             onClick={() => fileInputRef.current?.click()}
-                            className="rounded-full border border-primary/30 bg-white px-3 py-1 text-xs font-semibold text-primary hover:bg-primary hover:text-white transition cursor-pointer"
+                            className="rounded-none border border-primary/30 bg-white px-3 py-1 text-xs font-semibold text-primary hover:bg-primary hover:text-white transition cursor-pointer"
                           >
                             {avatarUploading ? "Đang tải ảnh..." : "Đổi ảnh đại diện"}
                           </button>
@@ -519,24 +519,24 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
 
                     {/* Information Grid: Name, Email, Membership, Phone (NO separate role row) */}
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                      <div className="rounded-2xl border border-line bg-surface p-4">
+                      <div className="rounded-none border border-line bg-surface p-4">
                         <span className="text-[11px] font-semibold text-neutral-400 block uppercase">Họ và tên</span>
                         <p className="mt-1 text-sm font-bold text-ink">{profile?.fullName || user.fullName}</p>
                       </div>
 
-                      <div className="rounded-2xl border border-line bg-surface p-4">
+                      <div className="rounded-none border border-line bg-surface p-4">
                         <span className="text-[11px] font-semibold text-neutral-400 block uppercase">Địa chỉ Email</span>
                         <p className="mt-1 text-sm font-bold text-ink truncate">{profile?.email || user.email}</p>
                       </div>
 
-                      <div className="rounded-2xl border border-line bg-surface p-4">
+                      <div className="rounded-none border border-line bg-surface p-4">
                         <span className="text-[11px] font-semibold text-neutral-400 block uppercase">Hạng hội viên</span>
-                        <span className={`inline-block mt-1 rounded-full px-2.5 py-0.5 text-xs font-bold ${tierInfo.color}`}>
+                        <span className={`inline-block mt-1 rounded-none px-2.5 py-0.5 text-xs font-bold ${tierInfo.color}`}>
                           {tierInfo.label}
                         </span>
                       </div>
 
-                      <div className="rounded-2xl border border-line bg-surface p-4">
+                      <div className="rounded-none border border-line bg-surface p-4">
                         <span className="text-[11px] font-semibold text-neutral-400 block uppercase">Số điện thoại</span>
                         <p className="mt-1 text-sm font-bold text-ink">
                           {profile?.phone || user.phone || "Chưa cập nhật"}
@@ -551,7 +551,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                 {activeTab === "password" && (
                   <form onSubmit={handleChangePassword} className="max-w-md space-y-4">
                     {/* OTP Option */}
-                    <div className="rounded-2xl border border-line bg-canvas/30 p-3.5">
+                    <div className="rounded-none border border-line bg-canvas/30 p-3.5">
                       <p className="text-xs font-semibold text-neutral-700 mb-2">Tùy chọn nhận mã xác nhận (OTP):</p>
                       <div className="space-y-2 text-xs">
                         <label className="flex items-center gap-2 cursor-pointer font-medium text-ink">
@@ -562,7 +562,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                             checked={otpMethod === "email"}
                             onChange={() => setOtpMethod("email")}
                           />
-                          <span>Nhận qua Email ({profile?.email || user.email}) <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-bold text-primary">Khuyên dùng</span></span>
+                          <span>Nhận qua Email ({profile?.email || user.email}) <span className="rounded-none bg-primary/10 px-1.5 py-0.5 text-[10px] font-bold text-primary">Khuyên dùng</span></span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer text-neutral-500">
                           <input
@@ -572,7 +572,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                             checked={otpMethod === "sms"}
                             onChange={() => setOtpMethod("sms")}
                           />
-                          <span>Nhận qua Số điện thoại (SMS) <span className="rounded-full bg-neutral-200 px-1.5 py-0.5 text-[10px] text-neutral-500">Sắp hỗ trợ</span></span>
+                          <span>Nhận qua Số điện thoại (SMS) <span className="rounded-none bg-neutral-200 px-1.5 py-0.5 text-[10px] text-neutral-500">Sắp hỗ trợ</span></span>
                         </label>
                       </div>
                     </div>
@@ -584,7 +584,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                         required
                         value={currentPassword}
                         onChange={(e) => setCurrentPassword(e.target.value)}
-                        className="w-full rounded-xl border border-line bg-canvas/30 px-3.5 py-2.5 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+                        className="w-full rounded-none border border-line bg-canvas/30 px-3.5 py-2.5 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
                       />
                     </div>
 
@@ -597,7 +597,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                         placeholder="Tối thiểu 6 ký tự"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
-                        className="w-full rounded-xl border border-line bg-canvas/30 px-3.5 py-2.5 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+                        className="w-full rounded-none border border-line bg-canvas/30 px-3.5 py-2.5 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
                       />
                     </div>
 
@@ -610,14 +610,14 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                         placeholder="Nhập lại mật khẩu mới"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="w-full rounded-xl border border-line bg-canvas/30 px-3.5 py-2.5 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+                        className="w-full rounded-none border border-line bg-canvas/30 px-3.5 py-2.5 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
                       />
                     </div>
 
                     <button
                       type="submit"
                       disabled={passwordBusy}
-                      className="w-full rounded-full bg-primary py-2.5 text-xs font-bold text-white shadow-md hover:bg-primary-dark transition disabled:opacity-50 cursor-pointer mt-2"
+                      className="w-full rounded-none bg-primary py-2.5 text-xs font-bold text-white shadow-md hover:bg-primary-dark transition disabled:opacity-50 cursor-pointer mt-2"
                     >
                       {passwordBusy ? "Đang cập nhật..." : "Đổi mật khẩu"}
                     </button>
@@ -628,7 +628,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                 {activeTab === "email" && (
                   <div className="max-w-md space-y-4">
                     {/* OTP Option */}
-                    <div className="rounded-2xl border border-line bg-canvas/30 p-3.5">
+                    <div className="rounded-none border border-line bg-canvas/30 p-3.5">
                       <p className="text-xs font-semibold text-neutral-700 mb-2">Phương thức gửi mã xác nhận (OTP):</p>
                       <div className="space-y-2 text-xs">
                         <label className="flex items-center gap-2 cursor-pointer font-medium text-ink">
@@ -639,7 +639,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                             checked={otpMethod === "email"}
                             onChange={() => setOtpMethod("email")}
                           />
-                          <span>Gửi tới Email mới để xác minh <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-bold text-primary">Khuyên dùng</span></span>
+                          <span>Gửi tới Email mới để xác minh <span className="rounded-none bg-primary/10 px-1.5 py-0.5 text-[10px] font-bold text-primary">Khuyên dùng</span></span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer text-neutral-500">
                           <input
@@ -649,7 +649,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                             checked={otpMethod === "sms"}
                             onChange={() => setOtpMethod("sms")}
                           />
-                          <span>Gửi mã tới Số điện thoại (SMS) <span className="rounded-full bg-neutral-200 px-1.5 py-0.5 text-[10px] text-neutral-500">Sắp hỗ trợ</span></span>
+                          <span>Gửi mã tới Số điện thoại (SMS) <span className="rounded-none bg-neutral-200 px-1.5 py-0.5 text-[10px] text-neutral-500">Sắp hỗ trợ</span></span>
                         </label>
                       </div>
                     </div>
@@ -659,7 +659,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                       <input
                         disabled
                         value={profile?.email || user.email}
-                        className="w-full rounded-xl border border-line bg-neutral-100 px-3.5 py-2.5 text-xs font-medium text-neutral-500 cursor-not-allowed"
+                        className="w-full rounded-none border border-line bg-neutral-100 px-3.5 py-2.5 text-xs font-medium text-neutral-500 cursor-not-allowed"
                       />
                     </div>
 
@@ -675,13 +675,13 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                             setNewEmail(e.target.value);
                             setEmailSent(false);
                           }}
-                          className="flex-1 rounded-xl border border-line bg-canvas/30 px-3.5 py-2.5 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+                          className="flex-1 rounded-none border border-line bg-canvas/30 px-3.5 py-2.5 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
                         />
                         <button
                           type="button"
                           onClick={handleRequestEmail}
                           disabled={emailBusy}
-                          className="rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-white hover:bg-primary-dark transition disabled:opacity-50 cursor-pointer shrink-0"
+                          className="rounded-none bg-primary px-4 py-2.5 text-xs font-bold text-white hover:bg-primary-dark transition disabled:opacity-50 cursor-pointer shrink-0"
                         >
                           {emailBusy ? "Đang gửi..." : "Gửi OTP"}
                         </button>
@@ -689,7 +689,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                     </div>
 
                     {emailSent && (
-                      <form onSubmit={handleVerifyEmail} className="mt-4 space-y-3 rounded-2xl border border-primary/20 bg-primary/5 p-4 animate-in fade-in">
+                      <form onSubmit={handleVerifyEmail} className="mt-4 space-y-3 rounded-none border border-primary/20 bg-primary/5 p-4 animate-in fade-in">
                         <label className="block text-xs font-semibold text-primary">Nhập mã OTP 6 số đã nhận:</label>
                         <div className="flex gap-2">
                           <input
@@ -698,12 +698,12 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                             placeholder="Mã 6 số"
                             value={emailOtp}
                             onChange={(e) => setEmailOtp(e.target.value.replace(/\D/g, ""))}
-                            className="flex-1 rounded-xl border border-line bg-white px-3 py-2 text-center font-mono tracking-widest text-base font-bold text-ink focus:border-primary focus:outline-none"
+                            className="flex-1 rounded-none border border-line bg-white px-3 py-2 text-center font-mono tracking-widest text-base font-bold text-ink focus:border-primary focus:outline-none"
                           />
                           <button
                             type="submit"
                             disabled={emailBusy || emailOtp.length !== 6}
-                            className="rounded-xl bg-primary px-5 py-2 text-xs font-bold text-white hover:bg-primary-dark transition disabled:opacity-50 cursor-pointer"
+                            className="rounded-none bg-primary px-5 py-2 text-xs font-bold text-white hover:bg-primary-dark transition disabled:opacity-50 cursor-pointer"
                           >
                             Xác nhận
                           </button>
@@ -717,7 +717,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                 {activeTab === "phone" && (
                   <form onSubmit={handleSavePhone} className="max-w-md space-y-4">
                     {/* OTP Option */}
-                    <div className="rounded-2xl border border-line bg-canvas/30 p-3.5">
+                    <div className="rounded-none border border-line bg-canvas/30 p-3.5">
                       <p className="text-xs font-semibold text-neutral-700 mb-2">Tùy chọn xác thực thay đổi:</p>
                       <div className="space-y-2 text-xs">
                         <label className="flex items-center gap-2 cursor-pointer font-medium text-ink">
@@ -728,7 +728,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                             checked={otpMethod === "email"}
                             onChange={() => setOtpMethod("email")}
                           />
-                          <span>Xác minh qua Email chính ({profile?.email || user.email}) <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-bold text-primary">Khuyên dùng</span></span>
+                          <span>Xác minh qua Email chính ({profile?.email || user.email}) <span className="rounded-none bg-primary/10 px-1.5 py-0.5 text-[10px] font-bold text-primary">Khuyên dùng</span></span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer text-neutral-500">
                           <input
@@ -738,7 +738,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                             checked={otpMethod === "sms"}
                             onChange={() => setOtpMethod("sms")}
                           />
-                          <span>Xác minh qua SMS số mới <span className="rounded-full bg-neutral-200 px-1.5 py-0.5 text-[10px] text-neutral-500">Sắp hỗ trợ</span></span>
+                          <span>Xác minh qua SMS số mới <span className="rounded-none bg-neutral-200 px-1.5 py-0.5 text-[10px] text-neutral-500">Sắp hỗ trợ</span></span>
                         </label>
                       </div>
                     </div>
@@ -751,14 +751,14 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                         placeholder="VD: 0912345678"
                         value={newPhone}
                         onChange={(e) => setNewPhone(e.target.value)}
-                        className="w-full rounded-xl border border-line bg-canvas/30 px-3.5 py-2.5 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
+                        className="w-full rounded-none border border-line bg-canvas/30 px-3.5 py-2.5 text-xs font-medium text-ink focus:border-primary focus:bg-white focus:outline-none"
                       />
                     </div>
 
                     <button
                       type="submit"
                       disabled={phoneBusy}
-                      className="w-full rounded-full bg-primary py-2.5 text-xs font-bold text-white shadow-md hover:bg-primary-dark transition disabled:opacity-50 cursor-pointer"
+                      className="w-full rounded-none bg-primary py-2.5 text-xs font-bold text-white shadow-md hover:bg-primary-dark transition disabled:opacity-50 cursor-pointer"
                     >
                       {phoneBusy ? "Đang lưu..." : "Cập nhật số điện thoại"}
                     </button>
@@ -773,14 +773,14 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                     ) : bookingsError ? (
                       <p className="py-4 text-center text-xs text-rose">{bookingsError}</p>
                     ) : bookings.length === 0 ? (
-                      <div className="rounded-2xl border border-dashed border-line p-8 text-center">
+                      <div className="rounded-none border border-dashed border-line p-8 text-center">
                         <p className="text-xs text-neutral-500">Bạn chưa có đơn đặt phòng nào.</p>
                       </div>
                     ) : (
                       bookings.map((b) => (
                         <div
                           key={b.id}
-                          className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-line bg-canvas/20 p-4 transition hover:border-primary/40"
+                          className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-none border border-line bg-canvas/20 p-4 transition hover:border-primary/40"
                         >
                           <div>
                             <div className="flex items-center gap-2">
@@ -811,14 +811,14 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                     ) : reviewsError ? (
                       <p className="py-4 text-center text-xs text-rose">{reviewsError}</p>
                     ) : reviews.length === 0 ? (
-                      <div className="rounded-2xl border border-dashed border-line p-8 text-center">
+                      <div className="rounded-none border border-dashed border-line p-8 text-center">
                         <p className="text-xs text-neutral-500">Bạn chưa gửi đánh giá nào cho các kỳ nghỉ trước.</p>
                       </div>
                     ) : (
                       reviews.map((r) => (
                         <div
                           key={r.id}
-                          className="rounded-2xl border border-line bg-canvas/20 p-4 transition hover:border-primary/40"
+                          className="rounded-none border border-line bg-canvas/20 p-4 transition hover:border-primary/40"
                         >
                           <div className="flex items-center justify-between">
                             <h4 className="font-display text-xs font-bold text-ink">{r.roomName}</h4>
