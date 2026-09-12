@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { Bell } from "lucide-react";
 import { bookingService } from "@/lib/services/bookingService";
 import { Booking } from "@/types";
 import { useAuthStore } from "@/hooks/useAuthStore";
@@ -76,11 +77,15 @@ export default function NotificationCenter() {
           setOpen((value) => !value);
           if (!open) load();
         }}
-        className="relative flex h-10 items-center gap-1.5 rounded-none border border-line bg-surface px-4 text-sm font-semibold text-ink transition hover:border-primary hover:text-primary"
+        className="relative flex h-10 w-10 items-center justify-center rounded-full border border-line bg-surface text-ink shadow-sm transition hover:border-primary hover:text-primary cursor-pointer"
         aria-label="Mở thông báo"
       >
-        Thông báo
-        {notices.length > 0 && <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold text-white">{notices.length > 9 ? "9+" : notices.length}</span>}
+        <Bell size={18} />
+        {notices.length > 0 && (
+          <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold text-white">
+            {notices.length > 9 ? "9+" : notices.length}
+          </span>
+        )}
       </button>
 
       {open && (

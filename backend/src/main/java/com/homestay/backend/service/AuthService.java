@@ -33,6 +33,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final org.springframework.security.core.userdetails.UserDetailsService userDetailsService;
     private final EmailService emailService;
+    private final OtpRateLimiterService otpRateLimiterService;
 
     private static final SecureRandom RANDOM =
             new SecureRandom();
@@ -200,6 +201,8 @@ public class AuthService {
                     "Tài khoản đã được xác thực trước đó"
             );
         }
+
+        otpRateLimiterService.checkAndRecord("resend-otp:" + email);
 
         String otp = generateOtp();
 

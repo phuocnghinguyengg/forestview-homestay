@@ -29,6 +29,7 @@ public class AccountService {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
     private final MembershipService membershipService;
+    private final OtpRateLimiterService otpRateLimiterService;
     private static final SecureRandom RANDOM = new SecureRandom();
 
     private User user(String email) { return userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found")); }
@@ -71,6 +72,7 @@ public class AccountService {
         User u = user(currentEmail); String next = r.getNewEmail().trim().toLowerCase();
         if (next.equalsIgnoreCase(u.getEmail())) throw new IllegalArgumentException("Email mới phải khác email hiện tại");
         if (userRepository.existsByEmail(next)) throw new IllegalArgumentException("Email này đã được sử dụng");
+        otpRateLimiterService.checkAndRecord("email-change:" + u.getEmail());
         String code = otp(); u.setPendingEmail(next); u.setEmailChangeOtp(code); u.setEmailChangeOtpExpiresAt(LocalDateTime.now().plusMinutes(10)); userRepository.save(u);
         emailService.sendOtpEmail(next, u.getFullName(), code);
     }
@@ -99,7 +101,12 @@ public class AccountService {
 
     @Transactional
     public void forgotPassword(ForgotPasswordRequest r) {
-        userRepository.findByEmail(r.getEmail().trim().toLowerCase()).ifPresent(u -> {
+        String email = r.getEmail().trim().toLowerCase();
+        // Giới hạn tần suất được áp dụng cho MỌI email (kể cả email không tồn tại
+        // trong hệ thống) để hành vi phản hồi luôn giống nhau, tránh lộ thông tin
+        // email nào đã đăng ký thông qua sự khác biệt về thời gian chờ.
+        otpRateLimiterService.checkAndRecord("forgot-password:" + email);
+        userRepository.findByEmail(email).ifPresent(u -> {
             String code = otp(); u.setResetOtpCode(code); u.setResetOtpExpiresAt(LocalDateTime.now().plusMinutes(10)); userRepository.save(u); emailService.sendPasswordResetOtpEmail(u.getEmail(), u.getFullName(), code);
         });
     }
