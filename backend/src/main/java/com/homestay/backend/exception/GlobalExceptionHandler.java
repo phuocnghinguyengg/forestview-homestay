@@ -43,6 +43,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 
+    /** Lỗi hạ tầng (vd. gửi email OTP qua Resend thất bại: sai API key, domain
+     *  gửi chưa được xác minh, vượt quota...). Trả về 502 kèm lý do cụ thể thay
+     *  vì rơi vào handler "Đã xảy ra lỗi trên máy chủ" chung chung, để cả người
+     *  dùng lẫn người vận hành biết chính xác nguyên nhân không nhận được OTP. */
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalState(IllegalStateException ex) {
+        Map<String, String> body = new HashMap<>();
+        body.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(body);
+    }
+
     /** Safety net: any Spring Security auth failure (bad credentials, disabled account, etc.)
      *  that isn't already translated into an IllegalArgumentException still gets a clean,
      *  friendly JSON body instead of a generic 500. */

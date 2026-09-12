@@ -197,9 +197,12 @@ function AuthModalBody({
   const [forgotBusy, setForgotBusy] = useState(false);
   const [forgotCooldown, setForgotCooldown] = useState(0);
 
-  const afterAuth = (role: string) => {
+  const afterAuth = () => {
+    // Đăng nhập xong (dù là admin hay user thường) đều về landing page —
+    // admin tự vào "/admin" qua nút Quản trị trong AccountPopover khi cần,
+    // không tự động điều hướng vào dashboard ngay sau khi đăng nhập.
     close();
-    router.push(role === "ADMIN" ? "/admin" : "/");
+    router.push("/");
   };
 
   const runCooldown = (setter: React.Dispatch<React.SetStateAction<number>>) => {
@@ -235,7 +238,7 @@ function AuthModalBody({
         emailVerified: res.emailVerified,
         membershipTier: res.membershipTier,
       });
-      afterAuth(res.role);
+      afterAuth();
     } catch (err) {
       setLoginError(getErrorMessage(err, "Tên đăng nhập/email hoặc mật khẩu không đúng"));
     } finally {
@@ -297,7 +300,7 @@ function AuthModalBody({
         emailVerified: res.emailVerified,
         membershipTier: res.membershipTier,
       });
-      afterAuth(res.role);
+      afterAuth();
     } catch (err) {
       setOtpError(getErrorMessage(err, "Mã OTP không đúng hoặc đã hết hạn"));
     } finally {
@@ -337,7 +340,7 @@ function AuthModalBody({
         emailVerified: res.emailVerified,
         membershipTier: res.membershipTier,
       });
-      afterAuth(res.role);
+      afterAuth();
     } catch (err) {
       setOtpError(getErrorMessage(err, "Không thể bỏ qua xác thực lúc này"));
     } finally {

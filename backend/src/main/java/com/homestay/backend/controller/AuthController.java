@@ -59,6 +59,11 @@ public class AuthController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/skip-otp")
+    public ResponseEntity<AuthResponse> skipOtp(@Valid @RequestBody ResendOtpRequest request) {
+        return withRefreshCookie(authService.skipOtp(request));
+    }
+
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         return withRefreshCookie(authService.login(request));

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/hooks/useAuthStore";
+import { useAuthModalStore } from "@/hooks/useAuthModalStore";
 import { Role } from "@/types";
 
 export default function ProtectedRoute({
@@ -17,6 +18,7 @@ export default function ProtectedRoute({
   const user = useAuthStore((state) => state.user);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const hydrate = useAuthStore((state) => state.hydrate);
+  const openAuthModal = useAuthModalStore((s) => s.openModal);
 
   const [checked, setChecked] = useState(false);
 
@@ -42,14 +44,18 @@ export default function ProtectedRoute({
     if (!checked) return;
 
     if (!isAuthenticated) {
-      router.replace("/login");
+      // App không có trang /login riêng — chỉ có modal đăng nhập ở landing
+      // page. Điều hướng về "/" và mở sẵn modal thay vì trỏ tới route không
+      // tồn tại (trước đây là "/login" -> 404).
+      router.replace("/");
+      openAuthModal("login");
       return;
     }
 
     if (allowedRoles && (!user || !allowedRoles.includes(user.role))) {
       router.replace("/");
     }
-  }, [checked, isAuthenticated, user, allowedRoles, router]);
+  }, [checked, isAuthenticated, user, allowedRoles, router, openAuthModal]);
 
   if (!checked) {
     return (
@@ -62,7 +68,7 @@ export default function ProtectedRoute({
   if (!isAuthenticated) {
     return (
       <div className="p-10 text-center text-neutral-500">
-        Đang chuyển đến trang đăng nhập...
+        Đang chuyển về trang chủ để đăng nhập...
       </div>
     );
   }
