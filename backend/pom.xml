@@ -47,11 +47,6 @@
 			<artifactId>spring-boot-starter-webmvc</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-mail</artifactId>
-		</dependency>
-
 		<!-- Jackson 2 Databind: used across the app for JSON handling -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>

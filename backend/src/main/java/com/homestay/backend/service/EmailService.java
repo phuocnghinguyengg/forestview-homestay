@@ -1,31 +1,41 @@
 package com.homestay.backend.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.scheduling.annotation.Async;
-import lombok.RequiredArgsConstructor;
 
-import jakarta.mail.internet.MimeMessage;
 import java.math.BigDecimal;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class EmailService {
 
+    private static final String BREVO_API_URL = "https://api.brevo.com/v3/smtp/email";
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter DATETIME_FMT = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
 
-    // Gửi qua SMTP (mặc định: Gmail) thay vì Resend — không cần verify domain,
-    // gửi được tới bất kỳ người nhận nào. Xem application.yml (spring.mail.*)
-    // và README để biết cách tạo App Password cho Gmail.
-    private final JavaMailSender mailSender;
+    private final HttpClient httpClient = HttpClient.newHttpClient();
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    // Gửi qua Brevo API (HTTPS, cổng 443) thay vì SMTP thô — tránh bị chặn
+    // cổng SMTP ở nhiều nơi host, và chỉ cần verify 1 email gửi (không cần
+    // domain riêng) để gửi được tới bất kỳ người nhận nào.
+    @Value("${brevo.api-key}")
+    private String brevoApiKey;
 
     @Value("${app.mail.from}")
     private String fromEmail;
@@ -94,19 +104,39 @@ public class EmailService {
 
     private void send(String to, String subject, String html, boolean failRequestOnError) {
         try {
+            if (brevoApiKey == null || brevoApiKey.isBlank()) {
+                throw new IllegalStateException("BREVO_API_KEY chưa được cấu hình");
+            }
             if (fromEmail == null || fromEmail.isBlank()) {
-                throw new IllegalStateException("MAIL_USERNAME/MAIL_FROM chưa được cấu hình");
+                throw new IllegalStateException("MAIL_FROM chưa được cấu hình");
             }
 
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
-            helper.setFrom(fromEmail, fromName);
-            helper.setTo(to);
-            helper.setSubject(subject);
-            helper.setText(html, true);
+            Map<String, Object> payload = Map.of(
+                    "sender", Map.of("name", fromName, "email", fromEmail),
+                    "to", List.of(Map.of("email", to)),
+                    "subject", subject,
+                    "htmlContent", html
+            );
 
-            mailSender.send(message);
-            log.info("Email sent successfully via SMTP to {}", to);
+            String json = objectMapper.writeValueAsString(payload);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BREVO_API_URL))
+                    .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                    .header("api-key", brevoApiKey)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() < 200 || response.statusCode() >= 300) {
+                String error = extractBrevoError(response.body());
+                throw new IllegalStateException("Brevo API trả về HTTP " + response.statusCode() + ": " + error);
+            }
+
+            String messageId = extractMessageId(response.body());
+            log.info("Email sent successfully via Brevo to {} (messageId={})", to, messageId);
         } catch (Exception e) {
             if (failRequestOnError) {
                 log.error("Failed to send required email to {}: {}", to, e.getMessage(), e);
@@ -114,6 +144,27 @@ public class EmailService {
             }
             log.error("Failed to send non-critical email to {}: {}", to, e.getMessage(), e);
         }
+    }
+
+    private String extractMessageId(String body) {
+        try {
+            JsonNode node = objectMapper.readTree(body);
+            return node.path("messageId").asText("unknown");
+        } catch (Exception ignored) {
+            return "unknown";
+        }
+    }
+
+    private String extractBrevoError(String body) {
+        try {
+            JsonNode node = objectMapper.readTree(body);
+            String message = node.path("message").asText("");
+            String code = node.path("code").asText("");
+            if (!code.isBlank() && !message.isBlank()) return code + ": " + message;
+            if (!message.isBlank()) return message;
+        } catch (Exception ignored) {
+        }
+        return body == null || body.isBlank() ? "Unknown Brevo error" : body;
     }
 
     private String escapeHtml(String value) {
