@@ -19,7 +19,6 @@ public class RoomController {
 
     private final RoomService roomService;
 
-    // ---- Public ----
 
     @GetMapping("/api/rooms")
     public ResponseEntity<List<RoomResponse>> getAllRooms() {
@@ -40,7 +39,6 @@ public class RoomController {
         return ResponseEntity.ok(roomService.getPricePreview(id, checkIn, checkOut, guestCount));
     }
 
-    // ---- Admin ----
 
     @GetMapping("/api/admin/rooms")
     public ResponseEntity<List<RoomResponse>> getAllRoomsForAdmin() {

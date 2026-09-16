@@ -22,7 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -96,7 +98,8 @@ public class BookingService {
 
     public List<BookingResponse> getMyBookings(String userEmail) {
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        return bookingRepository.findByUserOrderByCreatedAtDesc(user).stream().map(b -> BookingMapper.toResponse(b, reviewRepository.existsByBookingId(b.getId()))).toList();
+        List<Booking> bookings = bookingRepository.findByUserOrderByCreatedAtDesc(user);
+        return mapBookingsWithReviewFlag(bookings);
     }
 
     public BookingResponse getBookingForUser(String userEmail, Long bookingId) {
@@ -119,7 +122,17 @@ public class BookingService {
     @Transactional(readOnly = false)
     public List<BookingResponse> getAllBookings() {
         expireHolds();
-        return bookingRepository.findAllByOrderByCreatedAtDesc().stream().map(b -> BookingMapper.toResponse(b, reviewRepository.existsByBookingId(b.getId()))).toList();
+        List<Booking> bookings = bookingRepository.findAllByOrderByCreatedAtDesc();
+        return mapBookingsWithReviewFlag(bookings);
+    }
+
+    private List<BookingResponse> mapBookingsWithReviewFlag(List<Booking> bookings) {
+        if (bookings.isEmpty()) return List.of();
+        List<Long> bookingIds = bookings.stream().map(Booking::getId).toList();
+        Set<Long> reviewedBookingIds = new HashSet<>(reviewRepository.findBookingIdsWithReview(bookingIds));
+        return bookings.stream()
+                .map(b -> BookingMapper.toResponse(b, reviewedBookingIds.contains(b.getId())))
+                .toList();
     }
 
     @Transactional

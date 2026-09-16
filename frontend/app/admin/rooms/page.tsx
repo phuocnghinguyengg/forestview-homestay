@@ -100,7 +100,6 @@ export default function AdminRoomsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-display text-2xl text-ink">Quản lý phòng</h1>
@@ -116,7 +115,6 @@ export default function AdminRoomsPage() {
         </button>
       </div>
 
-      {/* Filter and Search Bar */}
       <div className="flex flex-col gap-3 rounded-none border border-line bg-surface p-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative flex-1">
           <Search size={16} className="absolute top-1/2 left-3 -translate-y-1/2 text-neutral-400" />
@@ -156,10 +154,8 @@ export default function AdminRoomsPage() {
 
       {error && <p className="text-sm text-rose">{error}</p>}
 
-      {/* Danh sách phòng - bảng cột cố định, không co giãn theo nội dung */}
       <div className="overflow-x-auto rounded-none border border-line">
         <div className="min-w-[900px]">
-          {/* Header */}
           <div className="grid grid-cols-[130px_minmax(0,1fr)_190px_160px_150px_170px] gap-3 border-b border-line bg-canvas/60 px-4 py-3 text-xs font-semibold tracking-wide text-neutral-500 uppercase">
             <div>Ảnh</div>
             <div>Phòng</div>
@@ -180,16 +176,13 @@ export default function AdminRoomsPage() {
                   room.active ? "hover:bg-canvas/30" : "bg-neutral-50/70 opacity-75"
                 }`}
               >
-                {/* Ảnh */}
                 <div className="relative h-16 w-24 shrink-0 overflow-hidden rounded-none bg-neutral-100">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={cover} alt={room.name} className="h-full w-full object-cover" />
                   <span className="absolute right-1 bottom-1 flex items-center gap-1 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white backdrop-blur-xs">
                     <ImageIcon size={10} /> {imageCount}
                   </span>
                 </div>
 
-                {/* Phòng */}
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="rounded-none bg-accent/10 px-2 py-0.5 text-[11px] font-semibold text-accent uppercase">
@@ -200,7 +193,6 @@ export default function AdminRoomsPage() {
                   <p className="truncate text-xs text-neutral-500">{room.address}</p>
                 </div>
 
-                {/* Giá */}
                 <div className="text-xs">
                   <p className="font-semibold text-primary">
                     {formatPrice(room.pricePerNight)}
@@ -220,14 +212,12 @@ export default function AdminRoomsPage() {
                   )}
                 </div>
 
-                {/* Sức chứa */}
                 <div className="flex items-center gap-1 text-xs text-neutral-500">
                   <Users size={12} /> Tối đa {room.maxGuests}
                   <br />
                   (đề xuất {room.recommendedGuests || 2})
                 </div>
 
-                {/* Trạng thái */}
                 <div>
                   <button
                     type="button"
@@ -251,7 +241,6 @@ export default function AdminRoomsPage() {
                   </button>
                 </div>
 
-                {/* Hành động */}
                 <div className="flex items-center justify-end gap-2">
                   <button
                     type="button"

@@ -88,7 +88,6 @@ public class AuthController {
         ResponseCookie cookie = ResponseCookie.from("refresh_token", response.getRefreshToken())
                 .httpOnly(true).secure(cookieSecure).sameSite(cookieSameSite)
                 .path("/api/auth").maxAge(refreshCookieMaxAgeSeconds()).build();
-        // Do not expose the refresh token to browser JavaScript.
         response.setRefreshToken(null);
         return ResponseEntity.ok().header("Set-Cookie", cookie.toString()).body(response);
     }

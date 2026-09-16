@@ -104,7 +104,6 @@ export default function AdminHolidaysPage() {
 
       {error && <p className="text-sm text-rose">{error}</p>}
 
-      {/* Holiday list - Responsive cards */}
       <div className="space-y-3">
         <h2 className="font-display text-lg text-ink">Danh sách ngày lễ đặc biệt ({items.length})</h2>
 

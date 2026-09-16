@@ -52,10 +52,6 @@ public class JwtService {
         return buildToken(claims, userDetails.getUsername(), refreshTokenExpiration);
     }
 
-    /**
-     * Validates a refresh token (correct type, signature, not expired) and
-     * returns the email it was issued for, or null if invalid.
-     */
     public String extractEmailIfValidRefreshToken(String token) {
         try {
             Claims claims = extractAllClaims(token);

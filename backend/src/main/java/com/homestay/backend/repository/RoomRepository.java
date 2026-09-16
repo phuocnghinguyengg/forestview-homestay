@@ -13,6 +13,7 @@ import java.util.List;
 public interface RoomRepository extends JpaRepository<Room, Long> {
     long countByActiveTrue();
     List<Room> findByTypeAndActiveTrue(RoomType type);
+    List<Room> findByActiveTrue();
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select r from Room r where r.id = :id")

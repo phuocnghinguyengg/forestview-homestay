@@ -31,9 +31,6 @@ public class EmailService {
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    // Gửi qua Brevo API (HTTPS, cổng 443) thay vì SMTP thô — tránh bị chặn
-    // cổng SMTP ở nhiều nơi host, và chỉ cần verify 1 email gửi (không cần
-    // domain riêng) để gửi được tới bất kỳ người nhận nào.
     @Value("${brevo.api-key}")
     private String brevoApiKey;
 

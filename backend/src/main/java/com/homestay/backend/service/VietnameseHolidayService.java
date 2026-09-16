@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-/** Fixed Vietnamese public holidays plus the first 3 days of Lunar New Year for supported years. */
 public final class VietnameseHolidayService {
     private VietnameseHolidayService() {}
 

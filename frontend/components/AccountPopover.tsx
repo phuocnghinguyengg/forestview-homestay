@@ -38,10 +38,10 @@ type TabKey = (typeof TABS)[number]["key"];
 
 const TIER_NAME: Record<string, { label: string; color: string }> = {
   NONE: { label: "Thành viên tiêu chuẩn", color: "bg-neutral-100 text-neutral-700" },
-  BRONZE: { label: "Hội viên Bronze (Giảm 5%)", color: "bg-amber-100 text-amber-800" },
+  BRONZE: { label: "Hội viên Bronze (Giảm 5%)", color: "bg-lantern/15 text-lantern-dark" },
   SILVER: { label: "Hội viên Silver (Giảm 10%)", color: "bg-neutral-200 text-neutral-800" },
-  GOLD: { label: "Hội viên Gold (Giảm 15%)", color: "bg-yellow-100 text-yellow-800" },
-  DIAMOND: { label: "Hội viên Diamond (Giảm 20%)", color: "bg-emerald-100 text-emerald-800" },
+  GOLD: { label: "Hội viên Gold (Giảm 15%)", color: "bg-lantern text-white" },
+  DIAMOND: { label: "Hội viên Diamond (Giảm 20%)", color: "bg-primary/10 text-primary" },
 };
 
 function displayName(fullName?: string) {
@@ -81,38 +81,31 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
   const [activeModal, setActiveModal] = useState<"account" | "admin" | null>(null);
   const [activeTab, setActiveTab] = useState<TabKey>("overview");
 
-  // Profile data
   const [profile, setProfile] = useState<AccountProfile | null>(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileError, setProfileError] = useState("");
   const [profileMessage, setProfileMessage] = useState("");
   const [avatarUploading, setAvatarUploading] = useState(false);
 
-  // OTP channel preference
   const [otpMethod, setOtpMethod] = useState<"email" | "sms">("email");
 
-  // Password tab state
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordBusy, setPasswordBusy] = useState(false);
 
-  // Email tab state
   const [newEmail, setNewEmail] = useState("");
   const [emailOtp, setEmailOtp] = useState("");
   const [emailSent, setEmailSent] = useState(false);
   const [emailBusy, setEmailBusy] = useState(false);
 
-  // Phone tab state
   const [newPhone, setNewPhone] = useState("");
   const [phoneBusy, setPhoneBusy] = useState(false);
 
-  // Bookings state
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [bookingsLoading, setBookingsLoading] = useState(false);
   const [bookingsError, setBookingsError] = useState("");
 
-  // Reviews state
   const [reviews, setReviews] = useState<Review[]>([]);
   const [reviewsLoading, setReviewsLoading] = useState(false);
   const [reviewsError, setReviewsError] = useState("");
@@ -192,9 +185,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
     setProfileMessage("");
 
     try {
-      // 1. Upload image to server / Cloudinary
       const uploadedUrl = await accountService.uploadAvatar(file);
-      // 2. Update user profile with the new avatar url
       const updated = await accountService.updateProfile({
         fullName: profile?.fullName || user.fullName,
         phone: profile?.phone || "",
@@ -372,7 +363,6 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
         </>
       )}
 
-      {/* ================= MODAL: THÔNG TIN CỦA TÔI ================= */}
       {activeModal === "account" && typeof document !== "undefined" && createPortal(
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs animate-in fade-in"
@@ -385,7 +375,6 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
             aria-modal="true"
             className="flex h-[min(90vh,760px)] w-full max-w-4xl flex-col overflow-hidden rounded-none border border-line bg-surface shadow-2xl md:flex-row animate-in zoom-in-95"
           >
-            {/* Sidebar tabs */}
             <aside className="w-full shrink-0 border-b border-line bg-canvas/50 p-4 md:w-64 md:border-b-0 md:border-r md:p-5">
               <div className="mb-4 hidden md:block">
                 <p className="text-[11px] font-bold tracking-[0.16em] text-primary uppercase">Cài đặt tài khoản</p>
@@ -421,9 +410,7 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
               </nav>
             </aside>
 
-            {/* Main tab content */}
             <div className="flex min-w-0 flex-1 flex-col bg-surface">
-              {/* Head */}
               <div className="flex items-center justify-between border-b border-line px-6 py-4">
                 <h3 className="font-display text-lg font-bold text-ink">
                   {TABS.find((t) => t.key === activeTab)?.label}
@@ -437,7 +424,6 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                 </button>
               </div>
 
-              {/* Scrollable Body */}
               <div className="min-h-0 flex-1 overflow-y-auto p-6">
                 {profileError && (
                   <div className="mb-4 rounded-none border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700 flex items-center gap-2">
@@ -452,13 +438,11 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                   </div>
                 )}
 
-                {/* 1. TAB: TỔNG QUAN (OVERVIEW) */}
                 {activeTab === "overview" && (
                   profileLoading ? (
                     <p className="py-8 text-center text-xs text-neutral-400">Đang tải thông tin cá nhân...</p>
                   ) : (
                   <div className="max-w-xl space-y-6">
-                    {/* Avatar & Header */}
                     <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 rounded-none border border-line bg-canvas/30 p-5">
                       <div className="relative group">
                         <Avatar
@@ -485,19 +469,16 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                       </div>
 
                       <div className="flex-1 text-center sm:text-left">
-                        {/* ROLE BADGE: Placed right above the name as requested! */}
                         <div className="mb-1">
                           <span className="inline-block rounded-none bg-primary/10 border border-primary/20 px-2.5 py-0.5 text-[10px] font-bold text-primary uppercase">
                             {user.role === "ADMIN" ? "Quản trị viên" : "Thành viên"}
                           </span>
                         </div>
 
-                        {/* Name */}
                         <h4 className="font-display text-2xl font-bold text-ink">
                           {profile?.fullName || user.fullName}
                         </h4>
 
-                        {/* Username */}
                         {(profile?.username || user.username) && (
                           <p className="text-xs text-neutral-400 font-mono">
                             @{profile?.username || user.username}
@@ -517,7 +498,6 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                       </div>
                     </div>
 
-                    {/* Information Grid: Name, Email, Membership, Phone (NO separate role row) */}
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                       <div className="rounded-none border border-line bg-surface p-4">
                         <span className="text-[11px] font-semibold text-neutral-400 block uppercase">Họ và tên</span>
@@ -547,10 +527,8 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                   )
                 )}
 
-                {/* 2. TAB: THAY ĐỔI MẬT KHẨU */}
                 {activeTab === "password" && (
                   <form onSubmit={handleChangePassword} className="max-w-md space-y-4">
-                    {/* OTP Option */}
                     <div className="rounded-none border border-line bg-canvas/30 p-3.5">
                       <p className="text-xs font-semibold text-neutral-700 mb-2">Tùy chọn nhận mã xác nhận (OTP):</p>
                       <div className="space-y-2 text-xs">
@@ -624,10 +602,8 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                   </form>
                 )}
 
-                {/* 3. TAB: THAY ĐỔI EMAIL */}
                 {activeTab === "email" && (
                   <div className="max-w-md space-y-4">
-                    {/* OTP Option */}
                     <div className="rounded-none border border-line bg-canvas/30 p-3.5">
                       <p className="text-xs font-semibold text-neutral-700 mb-2">Phương thức gửi mã xác nhận (OTP):</p>
                       <div className="space-y-2 text-xs">
@@ -713,10 +689,8 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                   </div>
                 )}
 
-                {/* 4. TAB: THAY ĐỔI SỐ ĐIỆN THOẠI */}
                 {activeTab === "phone" && (
                   <form onSubmit={handleSavePhone} className="max-w-md space-y-4">
-                    {/* OTP Option */}
                     <div className="rounded-none border border-line bg-canvas/30 p-3.5">
                       <p className="text-xs font-semibold text-neutral-700 mb-2">Tùy chọn xác thực thay đổi:</p>
                       <div className="space-y-2 text-xs">
@@ -765,7 +739,6 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                   </form>
                 )}
 
-                {/* 5. TAB: LỊCH SỬ ĐẶT PHÒNG */}
                 {activeTab === "bookings" && (
                   <div className="space-y-3">
                     {bookingsLoading ? (
@@ -803,7 +776,6 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
                   </div>
                 )}
 
-                {/* 6. TAB: LỊCH SỬ ĐÁNH GIÁ */}
                 {activeTab === "reviews" && (
                   <div className="space-y-3">
                     {reviewsLoading ? (
@@ -842,7 +814,6 @@ export default function AccountPopover({ compact = false }: { compact?: boolean 
         document.body
       )}
 
-      {/* Admin Workspace Modal */}
       {activeModal === "admin" && (
         <AdminWorkspaceModal open={true} onClose={() => setActiveModal(null)} />
       )}

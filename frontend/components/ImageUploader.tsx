@@ -92,7 +92,6 @@ export default function ImageUploader({
 
       {error && <p className="mt-2 text-xs text-rose">{error}</p>}
 
-      {/* Main image highlight */}
       {mainImage ? (
         <div className="mt-4 space-y-3">
           <div>
@@ -103,7 +102,6 @@ export default function ImageUploader({
               </span>
             </div>
             <div className="group relative h-48 w-full overflow-hidden rounded-none border-2 border-lantern/40 bg-neutral-100 shadow-sm sm:h-56">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={mainImage} alt="Main room cover" className="h-full w-full object-cover" />
               <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/40 opacity-0 transition group-hover:opacity-100">
                 <button
@@ -127,7 +125,6 @@ export default function ImageUploader({
             </div>
           </div>
 
-          {/* Gallery images */}
           {galleryImages.length > 0 && (
             <div className="pt-2">
               <div className="mb-2 flex items-center justify-between">
@@ -146,7 +143,6 @@ export default function ImageUploader({
                       key={url + actualIdx}
                       className="group relative h-28 overflow-hidden rounded-none border border-line bg-neutral-100 shadow-xs"
                     >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={url} alt={`Detail ${actualIdx}`} className="h-full w-full object-cover" />
                       <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 bg-black/60 p-2 opacity-0 transition group-hover:opacity-100">
                         <button
@@ -195,14 +191,12 @@ export default function ImageUploader({
         </div>
       )}
 
-      {/* Lightbox Preview Modal */}
       {previewUrl && (
         <div
           className="fixed inset-0 z-80 flex items-center justify-center bg-black/80 p-4"
           onClick={() => setPreviewUrl(null)}
         >
           <div className="relative max-h-[90vh] max-w-4xl overflow-hidden rounded-none bg-black">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={previewUrl} alt="Preview" className="max-h-[85vh] w-auto object-contain" />
             <button
               type="button"

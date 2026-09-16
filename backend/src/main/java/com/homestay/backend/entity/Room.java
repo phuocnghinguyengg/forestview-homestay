@@ -58,7 +58,6 @@ public class Room {
     private BigDecimal weekendPrice;
     private BigDecimal holidayPrice;
 
-    /** Rich room information shown to guests before booking. */
     private Integer roomSize;
     private String bedConfiguration;
     private String viewDescription;

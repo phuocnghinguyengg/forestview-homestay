@@ -138,7 +138,6 @@ export default function AdminBookingsPage() {
                 <p className="mt-1 text-sm font-medium text-accent">{formatPrice(b.totalPrice)}</p>
               </div>
 
-              {/* Cột trạng thái/hành động có chiều rộng cố định, không co giãn theo nội dung bên trái */}
               <div className="flex shrink-0 flex-col items-end gap-2 sm:w-48">
                 <BookingStatusBadge status={b.status} />
                 {NEXT_STATUSES[b.status].length > 0 ? (

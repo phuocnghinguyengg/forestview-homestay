@@ -79,7 +79,6 @@ export default function RoomSearchResultsModal({
               >
                 <div className="relative h-44 overflow-hidden bg-neutral-100">
                   {rt.coverImage ? (
-                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={rt.coverImage}
                       alt={rt.label}

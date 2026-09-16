@@ -22,8 +22,7 @@ public class RoomService {
     private final PricingService pricingService;
 
     public List<RoomResponse> getAllActiveRooms() {
-        return roomRepository.findAll().stream()
-            .filter(room -> Boolean.TRUE.equals(room.getActive()))
+        return roomRepository.findByActiveTrue().stream()
                 .map(RoomMapper::toResponse)
                 .toList();
     }
@@ -34,7 +33,6 @@ public class RoomService {
         return RoomMapper.toResponse(room);
     }
 
-    // ---- Admin ----
 
     public List<RoomResponse> getAllRoomsForAdmin() {
         return roomRepository.findAll().stream()

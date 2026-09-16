@@ -71,10 +71,6 @@ public interface BookingRepository
             @Param("user") User user
     );
 
-    /*
-     * DOANH THU:
-     * Chỉ đơn đã HOÀN TẤT mới được tính doanh thu.
-     */
     @Query("""
             SELECT COALESCE(SUM(b.totalPrice), 0)
             FROM Booking b

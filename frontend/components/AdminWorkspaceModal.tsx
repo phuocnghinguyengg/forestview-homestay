@@ -49,7 +49,6 @@ export default function AdminWorkspaceModal({
         aria-label="Thông tin của Homestay"
         className="flex h-[min(90vh,760px)] w-full max-w-5xl flex-col overflow-hidden rounded-none border border-line bg-surface shadow-2xl md:flex-row animate-in zoom-in-95"
       >
-        {/* Sidebar tabs */}
         <aside className="w-full shrink-0 border-b border-line bg-canvas/50 p-4 md:w-64 md:border-b-0 md:border-r md:p-5">
           <div className="mb-4 hidden md:block">
             <p className="text-[11px] font-bold tracking-[0.16em] text-primary uppercase">
@@ -83,9 +82,7 @@ export default function AdminWorkspaceModal({
           </nav>
         </aside>
 
-        {/* Main content */}
         <div className="flex min-w-0 flex-1 flex-col bg-surface">
-          {/* Header */}
           <div className="flex items-center justify-between border-b border-line px-6 py-4">
             <h3 className="font-display text-lg font-bold text-ink">
               {current.label}
@@ -100,7 +97,6 @@ export default function AdminWorkspaceModal({
             </button>
           </div>
 
-          {/* Scrollable iframe body */}
           <div className="min-h-0 flex-1 bg-canvas/40">
             <iframe
               key={path}

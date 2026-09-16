@@ -44,9 +44,6 @@ export default function ProtectedRoute({
     if (!checked) return;
 
     if (!isAuthenticated) {
-      // App không có trang /login riêng — chỉ có modal đăng nhập ở landing
-      // page. Điều hướng về "/" và mở sẵn modal thay vì trỏ tới route không
-      // tồn tại (trước đây là "/login" -> 404).
       router.replace("/");
       openAuthModal("login");
       return;

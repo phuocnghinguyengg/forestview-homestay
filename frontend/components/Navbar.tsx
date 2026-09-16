@@ -25,8 +25,6 @@ export default function Navbar() {
 
   const isHome = pathname === "/";
 
-  // On the homepage, the header floats transparent over the hero until the
-  // user scrolls past it; everywhere else it's always solid.
   useEffect(() => {
     if (!isHome) return;
     const handler = () => setScrolledPastHero(window.scrollY > 64);
@@ -86,7 +84,6 @@ export default function Navbar() {
             </span>
           </button>
 
-          {/* Desktop nav */}
           <div
             className={`hidden items-center gap-x-8 font-label text-[15px] uppercase tracking-[3px] md:flex ${
               transparent ? "text-white" : "text-ink"
@@ -119,7 +116,6 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Mobile controls */}
           <div className="flex items-center gap-2 md:hidden">
             {isAuthenticated && (
               <>
@@ -139,7 +135,6 @@ export default function Navbar() {
           </div>
         </nav>
 
-        {/* Mobile drawer panel */}
         {open && (
           <div className="border-t border-line bg-canvas px-5 pt-3 pb-6 text-sm font-medium text-ink md:hidden shadow-lg animate-in slide-in-from-top-2">
             <div className="flex flex-col gap-1 font-label text-base uppercase tracking-[2px]">
@@ -167,9 +162,8 @@ export default function Navbar() {
         )}
       </header>
 
-      {/* Spacer: the header is fixed, so non-home pages (and the home page once
-          the hero has been scrolled past) need the layout pushed down by its height.
-          The homepage hero is designed to sit full-bleed behind the transparent header. */}
+      {
+}
       {!isHome && <div className="h-[68px] sm:h-[76px]" aria-hidden />}
     </>
   );

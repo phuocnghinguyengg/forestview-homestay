@@ -9,7 +9,6 @@ export const bookingService = {
 
   cancel: (id: number) => api.patch(`/bookings/${id}/cancel`),
 
-  // Admin
   getAllAdmin: () => api.get<Booking[]>("/admin/bookings").then((res) => res.data),
   updateStatus: (id: number, status: BookingStatus, reason?: string) =>
     api.patch(`/admin/bookings/${id}/status`, null, { params: { status, ...(reason ? { reason } : {}) } }),

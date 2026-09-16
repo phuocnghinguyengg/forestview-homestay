@@ -7,11 +7,6 @@ import ConditionalFooter from "@/components/ConditionalFooter";
 import UnverifiedBanner from "@/components/UnverifiedBanner";
 import AuthModal from "@/components/AuthModal";
 
-// Whole-site typography, synced with the reference template:
-// Gilda Display for headings (--font-display, used by h1/h2/h3 and .font-display
-// everywhere — home, modals, and the admin panel all pick this up automatically),
-// Barlow for body copy (--font-body), and Barlow Condensed for uppercase
-// tracked labels/nav/buttons (--font-label).
 const gildaDisplay = Gilda_Display({
   variable: "--font-display",
   subsets: ["latin"],

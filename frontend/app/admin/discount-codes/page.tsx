@@ -114,7 +114,6 @@ export default function AdminDiscountCodesPage() {
         </p>
       </div>
 
-      {/* Create form */}
       <form
         onSubmit={handleCreate}
         className="grid gap-3 rounded-none border border-line bg-surface p-4 sm:grid-cols-2 sm:p-5"
@@ -212,7 +211,6 @@ export default function AdminDiscountCodesPage() {
       {error && <p className="text-sm text-rose">{error}</p>}
       {success && <p className="text-sm text-primary">{success}</p>}
 
-      {/* List discount codes - No horizontal scroll! */}
       <div className="space-y-3">
         <h2 className="font-display text-lg text-ink">Danh sách mã ưu đãi ({items.length})</h2>
 

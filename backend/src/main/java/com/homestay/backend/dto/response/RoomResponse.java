@@ -35,6 +35,5 @@ public class RoomResponse {
     private String checkInTime;
     private String checkOutTime;
     private String houseRules;
-    /** Populated only for a date-specific availability search. */
     private java.math.BigDecimal quotedStayPrice;
 }

@@ -8,8 +8,6 @@ const api = axios.create({
   timeout: 15000,
 });
 
-// Separate, interceptor-free client for the refresh call itself so it never
-// recurses into the 401 handler below.
 const refreshClient = axios.create({
   baseURL: BASE_URL,
   timeout: 15000,
@@ -38,15 +36,11 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Access tokens expire after 1h; instead of forcing a full re-login every
-// time, we transparently exchange the refresh token for a new pair once and
-// retry the original request. Concurrent 401s share a single refresh call.
 let refreshPromise: Promise<string | null> | null = null;
 
 function redirectToLogin() {
   clearAuth();
   if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
-    // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- axios interceptor runs outside React tree, next/navigation router is unavailable here
     window.location.href = "/login";
   }
 }
@@ -86,8 +80,6 @@ api.interceptors.response.use(
 
     const url = originalRequest.url || "";
 
-    // Never try to refresh when the failing call is itself an auth
-    // endpoint (bad login/OTP, or the refresh call failing outright).
     if (isAuthUrl(url) || originalRequest._retry) {
       if (url.includes("/auth/refresh")) {
         redirectToLogin();

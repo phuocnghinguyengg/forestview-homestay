@@ -62,7 +62,6 @@ function getNights(a: string, b: string) {
   return Math.max(1, Math.round((end - start) / 86400000)) || 1;
 }
 
-// ================= DỮ LIỆU HẠNG PHÒNG =================
 const ROOM_TYPES = [
   {
     type: "STANDARD" as RoomTypeCode,
@@ -122,7 +121,6 @@ const ROOM_TYPES = [
   },
 ];
 
-// ================= FAQ NGẮN GỌN =================
 const FAQS = [
   {
     q: "Giờ nhận phòng và trả phòng tại homestay?",
@@ -144,15 +142,12 @@ const FAQS = [
 
 export default function Home() {
 
-  // Search dates & guests
   const [checkIn, setCheckIn] = useState(() => todayISO());
   const [checkOut, setCheckOut] = useState(() => tomorrowISO());
   const [guests, setGuests] = useState(2);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const calendarFieldRef = useRef<HTMLDivElement>(null);
 
-  // Khoá cuộn trang nền khi lịch đang mở (lịch hiển thị dạng overlay giữa màn hình,
-  // không còn phụ thuộc vị trí/scroll của khối Hero nên luôn xem được đầy đủ).
   useEffect(() => {
     if (!calendarOpen) return;
     const prevOverflow = document.body.style.overflow;
@@ -167,24 +162,19 @@ export default function Home() {
     };
   }, [calendarOpen]);
 
-  // Search results modal
   const [searching, setSearching] = useState(false);
   const [searchError, setSearchError] = useState("");
   const [searchResults, setSearchResults] = useState<RoomTypeAvailability[] | null>(null);
 
-  // Direct room booking modal
   const [activeModal, setActiveModal] = useState<{ type: RoomTypeCode; label: string } | null>(null);
 
-  // Reviews & rating summary
   const [reviews, setReviews] = useState<Review[]>([]);
 
-  // Promo code checker
   const [promoCode, setPromoCode] = useState("");
   const [promoChecking, setPromoChecking] = useState(false);
   const [promoResult, setPromoResult] = useState<DiscountCodePreview | null>(null);
   const [promoError, setPromoError] = useState("");
 
-  // Quick inquiry
   const [inquiryName, setInquiryName] = useState("");
   const [inquiryEmail, setInquiryEmail] = useState("");
   const [inquiryPhone, setInquiryPhone] = useState("");
@@ -249,7 +239,6 @@ export default function Home() {
 
   return (
     <main className="landing-shell min-h-screen text-ink scroll-smooth">
-      {/* ================= HERO: ẢNH TĨNH + THANH TÌM PHÒNG NẰM GẦN CUỐI HERO ================= */}
       <section className="snap-section relative w-full">
         <div className="absolute inset-0 overflow-hidden">
           <img
@@ -276,11 +265,9 @@ export default function Home() {
           </button>
         </div>
 
-        {/* Thanh tìm phòng — nổi đè lên gần mép dưới ảnh Hero */}
         <div className="relative z-30 -mt-24 px-4 sm:-mt-16">
           <div className="mx-auto max-w-4xl rounded-none border border-line bg-surface p-4 shadow-xl sm:p-5">
             <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-[1.5fr_1fr_auto]">
-              {/* Dates */}
               <div ref={calendarFieldRef} className="relative">
                 <div
                   onClick={() => setCalendarOpen((v) => !v)}
@@ -299,8 +286,8 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Lịch chọn ngày — hiển thị dạng overlay giữa màn hình (portal) để luôn
-                   xem được đầy đủ, không phụ thuộc vào vị trí của ô này hay việc cuộn trang. */}
+                {
+}
                 {calendarOpen &&
                   typeof document !== "undefined" &&
                   createPortal(
@@ -333,7 +320,6 @@ export default function Home() {
                             onChange={(start, end) => {
                               setCheckIn(start);
                               setCheckOut(end);
-                              // Tự đóng lịch ngay khi đã chọn xong đủ cặp ngày nhận/trả hợp lệ
                               if (start && end) setCalendarOpen(false);
                             }}
                           />
@@ -344,7 +330,6 @@ export default function Home() {
                   )}
               </div>
 
-              {/* Guests */}
               <div className="flex items-center gap-3 rounded-none border border-line bg-canvas/40 p-3 text-left">
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-none bg-accent/10 text-accent">
                   <Users size={18} />
@@ -373,7 +358,6 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Search button */}
               <button
                 type="button"
                 onClick={handleSearch}
@@ -389,29 +373,24 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Trust badges — hiển thị ngay trong Hero, ngay dưới thanh tìm phòng */}
         <div className="relative z-10">
           <TrustBadges />
         </div>
       </section>
 
-      {/* ================= 2. CÁC HẠNG PHÒNG NGHỈ (GỌN GÀNG, SANG TRỌNG) ================= */}
       <section id="section-rooms" className="snap-section border-t border-line/60 bg-surface px-4 py-16 sm:px-8 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col items-center gap-1 text-center">
             <h2 className="font-label text-4xl font-medium uppercase tracking-[3px] text-ink sm:text-5xl">Không gian lưu trú</h2>
           </div>
 
-          {/* Clean 4 Room Cards Grid */}
           <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {ROOM_TYPES.map((room) => (
               <div
                 key={room.type}
                 className="group flex flex-col overflow-hidden rounded-none bg-surface shadow-lg transition duration-300 hover:shadow-2xl"
               >
-                {/* Image */}
                 <div className="relative h-56 w-full overflow-hidden bg-neutral-100">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={room.image}
                     alt={room.name}
@@ -422,7 +401,6 @@ export default function Home() {
                   </span>
                 </div>
 
-                {/* Body */}
                 <div className="flex flex-1 flex-col p-4">
                   <h3 className="font-display text-lg font-bold text-ink group-hover:text-primary transition">
                     {room.name}
@@ -474,11 +452,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ================= 4. HỘI VIÊN (TRÁI) & ĐÁNH GIÁ THỰC TẾ (PHẢI) ================= */}
       <section id="section-perks" className="snap-section border-t border-line/60 bg-surface px-4 py-16 sm:px-8 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-start">
-            {/* Cột trái: Khách hàng thân thiết (trình bày trơn, không đóng khung — giống cột phải) */}
             <div>
               <h2 className="font-label text-4xl font-medium uppercase tracking-[3px] text-ink sm:text-5xl">
                 Khách hàng thân thiết
@@ -487,7 +463,6 @@ export default function Home() {
                 Hạng thành viên được tự động ghi nhận và nâng hạng dựa trên số lần đặt phòng hoặc tổng chi tiêu tại homestay — không cần đăng ký, đặt càng nhiều thì mức chiết khấu cho lần đặt tiếp theo càng cao. Chi tiết từng hạng và điều kiện đạt được ngay bên dưới:
               </p>
 
-              {/* Bảng hạng thành viên: quyền lợi + cách nhận được */}
               <div className="mt-5 space-y-2.5">
                 {[
                   { tier: "Bronze", percent: "5%", how: "Sau 20 lần đặt phòng thành công, hoặc tổng chi tiêu từ 10 triệu đồng" },
@@ -511,7 +486,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Cột phải: Đánh giá thực tế từ khách hàng (chỉ dữ liệu thật từ API, không dùng đánh giá ảo) */}
             <div>
               <div className="text-left">
                 <h2 className="font-label text-4xl font-medium uppercase tracking-[3px] text-ink sm:text-5xl">Khách hàng cảm nhận</h2>
@@ -544,7 +518,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Kiểm tra mã giảm giá — nằm giữa, bên dưới 2 cột */}
           <div className="mx-auto mt-10 max-w-md rounded-none border border-line bg-canvas/20 p-4">
             <div className="flex items-center justify-center gap-2">
               <Tag size={15} className="text-accent" />
@@ -578,8 +551,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ================= 6. HỎI ĐÁP & LIÊN HỆ (GỌN GÀNG) ================= */}
-      {/* ================= 6. HỎI ĐÁP & LIÊN HỆ (GỘP CHUNG) ================= */}
       <section id="section-faq" className="snap-section border-t border-line/60 bg-surface px-4 py-16 sm:px-8 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="text-center max-w-xl mx-auto">
@@ -587,7 +558,6 @@ export default function Home() {
           </div>
 
           <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
-            {/* FAQ — nội dung hiển thị đầy đủ, không cần bấm mở */}
             <div className="space-y-2.5">
               {FAQS.map((item, idx) => (
                 <div key={idx} className="rounded-none border border-line bg-canvas/20 p-4">
@@ -626,7 +596,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Quick Inquiry Form */}
             <div className="rounded-none border border-line bg-surface p-5 shadow-sm">
               <h4 className="font-display text-base font-bold text-ink">Yêu cầu tư vấn thêm</h4>
               <p className="mt-0.5 text-[11px] text-neutral-400">Để lại email và vấn đề bạn cần hỗ trợ, chúng tôi sẽ phản hồi sớm nhất.</p>
@@ -694,10 +663,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
       <Footer embedded />
 
-      {/* Search Results Modal */}
       {searchResults && (
         <RoomSearchResultsModal
           results={searchResults}
@@ -709,7 +676,6 @@ export default function Home() {
         />
       )}
 
-      {/* Direct Room Booking Modal */}
       {activeModal && (
         <RoomTypeBookingModal
           type={activeModal.type}

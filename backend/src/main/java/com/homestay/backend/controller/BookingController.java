@@ -19,7 +19,6 @@ public class BookingController {
 
     private final BookingService bookingService;
 
-    // ---- User ----
 
     @PostMapping("/api/bookings")
     public ResponseEntity<BookingResponse> createBooking(
@@ -42,7 +41,6 @@ public class BookingController {
         return ResponseEntity.noContent().build();
     }
 
-    // ---- Admin ----
 
     @GetMapping("/api/admin/bookings")
     public ResponseEntity<List<BookingResponse>> getAllBookings() {

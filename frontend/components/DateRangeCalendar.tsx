@@ -10,7 +10,6 @@ function daysInMonth(d: Date) { return new Date(d.getFullYear(), d.getMonth()+1,
 const months = ["Tháng 1","Tháng 2","Tháng 3","Tháng 4","Tháng 5","Tháng 6","Tháng 7","Tháng 8","Tháng 9","Tháng 10","Tháng 11","Tháng 12"];
 const weekdays = ["T2","T3","T4","T5","T6","T7","CN"];
 
-// Số đêm giữa 2 ngày, luôn >= 0, không bao giờ trả về số âm dù dữ liệu đầu vào có bị đảo ngược.
 function nightsBetween(checkIn: string, checkOut: string) {
   if (!checkIn || !checkOut) return 0;
   const diff = Math.round((parse(checkOut).getTime() - parse(checkIn).getTime()) / 86400000);
@@ -24,23 +23,19 @@ export default function DateRangeCalendar({ checkIn, checkOut, onChange, minDate
   const selectedStart = checkIn ? parse(checkIn) : null;
   const selectedEnd = checkOut ? parse(checkOut) : null;
 
-  // Bước hiện tại: chưa có ngày nhận -> chọn ngày nhận; đã có ngày nhận nhưng chưa có ngày trả -> chọn ngày trả.
   const pickingCheckOut = Boolean(checkIn) && !checkOut;
 
   const handleSelect = (value: string) => {
-    // Chưa chọn gì, hoặc đã có đủ cặp ngày trước đó -> bắt đầu lượt chọn mới, xoá sạch ngày trả cũ.
     if (!checkIn || (checkIn && checkOut)) {
       onChange(value, "");
       return;
     }
 
-    // Đang ở bước chọn ngày trả: ngày bấm phải sau ngày nhận, nếu không thì coi như chọn lại ngày nhận.
     if (value > checkIn) {
       onChange(checkIn, value);
     } else if (value < checkIn) {
       onChange(value, "");
     }
-    // value === checkIn: bấm trùng ngày nhận, bỏ qua để tránh chọn 0 đêm.
   };
 
   const renderMonth = (month: Date) => {
@@ -57,11 +52,9 @@ export default function DateRangeCalendar({ checkIn, checkOut, onChange, minDate
           const inRange=Boolean(selectedStart&&selectedEnd&&date>selectedStart&&date<selectedEnd);
           const start=checkIn===value; const end=checkOut===value;
           const isRangeDay = start || end || inRange;
-          // Trong lúc đang chờ chọn ngày trả, làm mờ những ngày <= ngày nhận để dễ nhận biết ngày hợp lệ.
           const beforeCheckIn = pickingCheckOut && checkIn ? value <= checkIn : false;
           return (
             <div key={value} className="relative flex h-9 items-center justify-center">
-              {/* Dấu gạch nối liền giữa ngày nhận và ngày trả, thay vì từng ô vuông rời rạc */}
               {isRangeDay && (
                 <span
                   className={`absolute inset-y-1 bg-primary/15 ${

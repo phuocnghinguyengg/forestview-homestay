@@ -2,9 +2,9 @@ import { BookingStatus } from "@/types";
 
 const STYLES: Record<BookingStatus, string> = {
   PENDING: "bg-lantern/15 text-lantern-dark",
-  CONFIRMED: "bg-green-100 text-green-700",
-  CANCELLED: "bg-neutral-100 text-neutral-500",
-  COMPLETED: "bg-blue-100 text-blue-700",
+  CONFIRMED: "bg-primary/10 text-primary",
+  CANCELLED: "bg-rose/10 text-rose-dark",
+  COMPLETED: "bg-primary text-white",
 };
 
 const LABELS: Record<BookingStatus, string> = {

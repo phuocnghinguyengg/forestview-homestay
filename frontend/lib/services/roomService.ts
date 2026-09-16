@@ -7,7 +7,6 @@ export const roomService = {
   getPricePreview: (id: number, checkIn: string, checkOut: string, guestCount: number) =>
     api.get<PricePreview>(`/rooms/${id}/price-preview`, { params: { checkIn, checkOut, guestCount } }).then((res) => res.data),
 
-  // Admin
   getAllAdmin: () => api.get<Room[]>("/admin/rooms").then((res) => res.data),
   create: (data: {
     name: string;

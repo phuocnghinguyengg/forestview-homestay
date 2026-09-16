@@ -102,9 +102,6 @@ public class AccountService {
     @Transactional
     public void forgotPassword(ForgotPasswordRequest r) {
         String email = r.getEmail().trim().toLowerCase();
-        // Giới hạn tần suất được áp dụng cho MỌI email (kể cả email không tồn tại
-        // trong hệ thống) để hành vi phản hồi luôn giống nhau, tránh lộ thông tin
-        // email nào đã đăng ký thông qua sự khác biệt về thời gian chờ.
         otpRateLimiterService.checkAndRecord("forgot-password:" + email);
         userRepository.findByEmail(email).ifPresent(u -> {
             String code = otp(); u.setResetOtpCode(code); u.setResetOtpExpiresAt(LocalDateTime.now().plusMinutes(10)); userRepository.save(u); emailService.sendPasswordResetOtpEmail(u.getEmail(), u.getFullName(), code);

@@ -114,7 +114,6 @@ export default function RoomFormModal({
           }}
           className="min-h-0 flex-1 space-y-5 overflow-y-auto p-5 sm:p-7"
         >
-          {/* Section: Thông tin cơ bản */}
           <div className="space-y-3 rounded-none border border-line bg-canvas/30 p-4">
             <h3 className="flex items-center gap-2 text-sm font-semibold text-ink">
               <Building size={16} className="text-primary" /> Thông tin cơ bản
@@ -172,7 +171,6 @@ export default function RoomFormModal({
             </div>
           </div>
 
-          {/* Section: Thông tin lưu trú & Chi tiết */}
           <div className="space-y-3 rounded-none border border-line bg-canvas/30 p-4">
             <h3 className="flex items-center gap-2 text-sm font-semibold text-ink">
               <BedDouble size={16} className="text-primary" /> Chi tiết phòng &amp; Lưu trú
@@ -265,7 +263,6 @@ export default function RoomFormModal({
             </div>
           </div>
 
-          {/* Section: Giá & Sức chứa */}
           <div className="space-y-3 rounded-none border border-line bg-canvas/30 p-4">
             <h3 className="flex items-center gap-2 text-sm font-semibold text-ink">
               <DollarSign size={16} className="text-primary" /> Giá &amp; Sức chứa
@@ -352,7 +349,6 @@ export default function RoomFormModal({
             </div>
           </div>
 
-          {/* Section: Tiện ích */}
           <div>
             <label className="text-xs font-medium text-neutral-600">Tiện ích phòng</label>
             <div className="mt-1 flex gap-2">
@@ -395,10 +391,8 @@ export default function RoomFormModal({
             </div>
           </div>
 
-          {/* Section: Upload ảnh (Main & Gallery) */}
           <ImageUploader images={form.images} onChange={(images) => setForm({ ...form, images })} />
 
-          {/* Buttons */}
           <div className="flex justify-end gap-3 border-t border-line pt-4">
             <button
               type="button"

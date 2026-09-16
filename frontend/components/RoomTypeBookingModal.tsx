@@ -424,7 +424,6 @@ export default function RoomTypeBookingModal({
               </div>
 
               <div className="grid gap-0 lg:grid-cols-[1.15fr_0.85fr]">
-                {/* Image Gallery */}
                 <div className="flex flex-col bg-ink p-4 sm:p-6">
                   {(() => {
                     const gallery = detailRoom.images && detailRoom.images.length > 0
@@ -435,7 +434,6 @@ export default function RoomTypeBookingModal({
                     return (
                       <div className="space-y-3">
                         <div className="relative h-72 w-full overflow-hidden rounded-none bg-ink sm:h-96">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={currentImg}
                             alt={detailRoom.name}
@@ -462,7 +460,6 @@ export default function RoomTypeBookingModal({
                                     : "border-transparent opacity-60 hover:opacity-100"
                                 }`}
                               >
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img src={img} alt={`Thumb ${idx + 1}`} className="h-full w-full object-cover" />
                               </button>
                             ))}
@@ -473,7 +470,6 @@ export default function RoomTypeBookingModal({
                   })()}
                 </div>
 
-                {/* Specs and Select */}
                 <div className="p-6 sm:p-8 space-y-5">
                   <div>
                     <p className="text-xs text-neutral-400">Vị trí</p>
@@ -499,7 +495,6 @@ export default function RoomTypeBookingModal({
                     </p>
                   </div>
 
-                  {/* Room specs grid */}
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <div className="rounded-none border border-line bg-canvas/40 p-2.5">
                       <p className="text-neutral-400">Khách đề xuất</p>
@@ -627,7 +622,6 @@ export default function RoomTypeBookingModal({
                         >
                           <div className="relative h-44 overflow-hidden bg-neutral-100">
                             {room.images?.[0] ? (
-                              // eslint-disable-next-line @next/next/no-img-element
                               <img
                                 src={room.images[0]}
                                 alt={room.name}

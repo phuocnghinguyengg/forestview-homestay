@@ -116,7 +116,6 @@ export default function AuthModal() {
         aria-modal="true"
         className="relative w-full max-w-md overflow-hidden rounded-none border border-line bg-surface p-6 sm:p-8 shadow-2xl animate-in zoom-in-95 duration-200"
       >
-        {/* Close button */}
         <button
           type="button"
           onClick={close}
@@ -156,14 +155,12 @@ function AuthModalBody({
   login: ReturnType<typeof useAuthStore.getState>["login"];
   router: ReturnType<typeof useRouter>;
 }) {
-  // ---- Login form ----
   const [loginIdentifier, setLoginIdentifier] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [loginShowPassword, setLoginShowPassword] = useState(false);
   const [loginError, setLoginError] = useState("");
   const [loginBusy, setLoginBusy] = useState(false);
 
-  // ---- Register form ----
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [regEmail, setRegEmail] = useState("");
@@ -175,7 +172,6 @@ function AuthModalBody({
   const [regError, setRegError] = useState("");
   const [regBusy, setRegBusy] = useState(false);
 
-  // ---- OTP (post-register) ----
   const [otpDigits, setOtpDigits] = useState(["", "", "", "", "", ""]);
   const [otpError, setOtpError] = useState("");
   const [otpBusy, setOtpBusy] = useState(false);
@@ -184,7 +180,6 @@ function AuthModalBody({
   const [otpMessage, setOtpMessage] = useState("");
   const [otpCooldown, setOtpCooldown] = useState(0);
 
-  // ---- Forgot password ----
   const [forgotStep, setForgotStep] = useState<ForgotStep>("email");
   const [forgotEmail, setForgotEmail] = useState(view === "forgot" ? modalEmail : "");
   const [forgotDigits, setForgotDigits] = useState(["", "", "", "", "", ""]);
@@ -198,9 +193,6 @@ function AuthModalBody({
   const [forgotCooldown, setForgotCooldown] = useState(0);
 
   const afterAuth = () => {
-    // Đăng nhập xong (dù là admin hay user thường) đều về landing page —
-    // admin tự vào "/admin" qua nút Quản trị trong AccountPopover khi cần,
-    // không tự động điều hướng vào dashboard ngay sau khi đăng nhập.
     close();
     router.push("/");
   };
@@ -389,7 +381,6 @@ function AuthModalBody({
     }
   };
 
-  // ================= VIEW: LOGIN =================
   if (view === "login") {
     return (
       <div>
@@ -472,7 +463,6 @@ function AuthModalBody({
     );
   }
 
-  // ================= VIEW: REGISTER =================
   if (view === "register") {
     return (
       <div>
@@ -608,7 +598,6 @@ function AuthModalBody({
     );
   }
 
-  // ================= VIEW: OTP =================
   if (view === "otp") {
     return (
       <div className="text-center">
@@ -664,7 +653,6 @@ function AuthModalBody({
     );
   }
 
-  // ================= VIEW: FORGOT PASSWORD =================
   return (
     <div>
       <div className="text-center">

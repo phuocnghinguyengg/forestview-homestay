@@ -15,7 +15,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/** Opt-in reset for a clean demo database. ADMIN users are deliberately preserved. */
 @Component
 @RequiredArgsConstructor
 @ConditionalOnProperty(name = "app.sample-data.reset-on-start", havingValue = "true")

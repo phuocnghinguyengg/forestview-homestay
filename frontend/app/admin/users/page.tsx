@@ -111,7 +111,6 @@ export default function AdminUsersPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-display text-2xl text-ink">Quản lý khách hàng</h1>
@@ -121,7 +120,6 @@ export default function AdminUsersPage() {
         </div>
       </div>
 
-      {/* Filter and Search Bar */}
       <div className="flex flex-col gap-3 rounded-none border border-line bg-surface p-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative flex-1">
           <Search size={16} className="absolute top-1/2 left-3 -translate-y-1/2 text-neutral-400" />
@@ -174,10 +172,8 @@ export default function AdminUsersPage() {
 
       {error && <p className="text-sm text-rose">{error}</p>}
 
-      {/* Danh sách khách hàng - bảng cột cố định, không co giãn theo nội dung */}
       <div className="overflow-x-auto rounded-none border border-line">
         <div className="min-w-[880px]">
-          {/* Header */}
           <div className="grid grid-cols-[minmax(0,1fr)_170px_120px_130px_190px] gap-3 border-b border-line bg-canvas/60 px-4 py-3 text-xs font-semibold tracking-wide text-neutral-500 uppercase">
             <div>Khách hàng</div>
             <div>Hạng thành viên</div>
@@ -197,7 +193,6 @@ export default function AdminUsersPage() {
                   u.enabled ? "hover:bg-canvas/30" : "bg-rose/10/40 opacity-75"
                 }`}
               >
-                {/* Khách hàng */}
                 <div className="flex min-w-0 items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-none bg-primary/10 font-display text-sm font-bold text-primary">
                     {initial}
@@ -229,7 +224,6 @@ export default function AdminUsersPage() {
                   </div>
                 </div>
 
-                {/* Hạng thành viên */}
                 <div>
                   <select
                     value={u.membershipTier}
@@ -245,7 +239,6 @@ export default function AdminUsersPage() {
                   </select>
                 </div>
 
-                {/* Vai trò */}
                 <div>
                   <select
                     value={u.role}
@@ -258,7 +251,6 @@ export default function AdminUsersPage() {
                   </select>
                 </div>
 
-                {/* Trạng thái */}
                 <div>
                   <button
                     type="button"
@@ -282,7 +274,6 @@ export default function AdminUsersPage() {
                   </button>
                 </div>
 
-                {/* Hành động */}
                 <div className="flex items-center justify-end gap-2">
                   <button
                     type="button"

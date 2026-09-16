@@ -13,7 +13,7 @@ public class DashboardStatsResponse {
     private long totalRooms;
     private long activeRooms;
     private long totalBookings;
-    private Map<String, Long> bookingsByStatus;   // PENDING: 3, CONFIRMED: 5...
-    private BigDecimal totalRevenue;               // tổng tiền từ booking CONFIRMED/COMPLETED
+    private Map<String, Long> bookingsByStatus;
+    private BigDecimal totalRevenue;
     private BigDecimal revenueThisMonth;
 }

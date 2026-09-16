@@ -32,12 +32,13 @@ public class RoomTypeService {
                     .filter(r -> r.getMaxGuests() != null && r.getMaxGuests() >= guestCount)
                     .toList();
 
-            long available = rooms.stream()
+            List<Room> availableRooms = rooms.stream()
                     .filter(r -> bookingRepository.findOverlappingBookings(r.getId(), checkIn, checkOut).isEmpty())
-                    .count();
+                    .toList();
 
-            BigDecimal minPrice = rooms.stream()
-                    .filter(r -> bookingRepository.findOverlappingBookings(r.getId(), checkIn, checkOut).isEmpty())
+            long available = availableRooms.size();
+
+            BigDecimal minPrice = availableRooms.stream()
                     .map(r -> pricingService.calculateTotalPrice(r, checkIn, checkOut))
                     .min(Comparator.naturalOrder())
                     .orElse(null);

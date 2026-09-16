@@ -179,12 +179,6 @@ public class AuthService {
         return buildAuthResponse(user);
     }
 
-    /**
-     * Cho phép người dùng bỏ qua bước xác thực OTP ngay sau khi đăng ký để đăng
-     * nhập luôn (tài khoản vẫn ở trạng thái emailVerified = false). Họ sẽ bị
-     * chặn ở bước đặt phòng (xem BookingService) và được nhắc xác thực qua
-     * banner cho tới khi hoàn tất OTP thật sự.
-     */
     @Transactional
     public AuthResponse skipOtp(
             ResendOtpRequest request
@@ -267,10 +261,6 @@ public class AuthService {
             );
         }
 
-        // Lưu ý: KHÔNG chặn đăng nhập chỉ vì email chưa xác thực — người dùng có
-        // thể đã bấm "Bỏ qua lúc này" ở bước OTP. Việc chặn thực sự diễn ra ở
-        // hành động đặt phòng (xem BookingService) và được nhắc bằng banner ở
-        // giao diện cho tới khi họ xác thực email.
         if (!Boolean.TRUE.equals(user.getEnabled())) {
             throw new IllegalArgumentException("Tài khoản đã bị vô hiệu hóa");
         }
@@ -278,11 +268,6 @@ public class AuthService {
         return buildAuthResponse(user);
     }
 
-    /**
-     * Exchanges a still-valid refresh token for a fresh access token
-     * (and a rotated refresh token). Rejects access tokens and expired
-     * or tampered refresh tokens alike.
-     */
     public AuthResponse refresh(
             String refreshToken
     ) {

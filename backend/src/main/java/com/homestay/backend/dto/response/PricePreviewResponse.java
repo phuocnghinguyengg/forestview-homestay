@@ -6,7 +6,6 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-/** Date-specific price before discounts so the client never has to guess seasonal pricing. */
 @Data
 @Builder
 public class PricePreviewResponse {

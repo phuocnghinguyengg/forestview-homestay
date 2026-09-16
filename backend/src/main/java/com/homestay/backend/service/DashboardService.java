@@ -83,9 +83,6 @@ public class DashboardService {
         LocalDateTime from =
                 fromMonth.atStartOfDay();
 
-        /*
-         * Biểu đồ cũng chỉ lấy COMPLETED.
-         */
         List<Booking> bookings =
                 bookingRepository
                         .findCompletedForRevenueSince(from);
